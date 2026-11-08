@@ -39,5 +39,14 @@ const { title, description, noindex = false } = Astro.props;
   </head>
   <body id="top">
     <slot />
+    <script>
+      // Reduced motion: background videos don't autoplay (DESIGN_SYSTEM §0 rule 5).
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.querySelectorAll<HTMLVideoElement>('video[data-autoplay]').forEach((v) => {
+          v.removeAttribute('autoplay');
+          v.pause();
+        });
+      }
+    </script>
   </body>
 </html>

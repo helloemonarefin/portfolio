@@ -5,7 +5,7 @@
  * Mobile: 2 columns, gap 8, wide = full width (350×220), square = 1 column (171×171).
  * grid-auto-flow: dense fills any holes.
  */
-import { Image } from 'astro:assets';
+import Media from '../ui/Media.astro';
 import SectionHeader from '../ui/SectionHeader.astro';
 import type { Photo } from '../../lib/content';
 
@@ -23,8 +23,8 @@ const { photos } = Astro.props;
         <ul class="lens__grid" role="list">
           {photos.map((p) => (
             <li class:list={['lens__item', `lens__item--${p.data.size}`]}>
-              <Image
-                src={p.data.image}
+              <Media
+                media={p.data.image}
                 alt={p.data.alt}
                 widths={p.data.size === 'wide' ? [350, 700, 680, 1360] : [171, 342, 332, 664]}
                 sizes={
@@ -63,7 +63,8 @@ const { photos } = Astro.props;
     .lens__item--square { aspect-ratio: 332 / 315.25; }
   }
 
-  .lens__item :global(img) {
+  .lens__item :global(img),
+  .lens__item :global(video) {
     width: 100%;
     height: 100%;
     object-fit: cover;

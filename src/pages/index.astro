@@ -12,6 +12,7 @@ import ShowcaseGallery from '../components/home/ShowcaseGallery.astro';
 import WorkSection from '../components/home/WorkSection.astro';
 import Pricing from '../components/home/Pricing.astro';
 import BookCall from '../components/home/BookCall.astro';
+import ProjectModal from '../components/home/ProjectModal.astro';
 import { getProjects, getSettings, getPricing, padCount } from '../lib/content';
 
 const projects = await getProjects();
@@ -32,5 +33,6 @@ const more = projects.filter((p) => p.data.showcase === 'more');
     <Pricing plans={pricing.plans} />
     <BookCall email={settings.email} calLink={settings.calLink} />
   </main>
+  {projects.map((p, i) => <ProjectModal project={p} index={i + 1} total={projects.length} />)}
   <Footer />
 </Base>

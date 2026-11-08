@@ -1,4 +1,6 @@
 alt: Placeholder photo 08
-image: ../../../assets/photos/placeholder-photo-08/image.png
+image:
+  discriminant: image
+  value: ../../../assets/photos/placeholder-photo-08/image.png
 size: wide
 order: 8

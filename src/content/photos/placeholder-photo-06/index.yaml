@@ -1,4 +1,6 @@
 alt: Placeholder photo 06
-image: ../../../assets/photos/placeholder-photo-06/image.png
+image:
+  discriminant: image
+  value: ../../../assets/photos/placeholder-photo-06/image.png
 size: square
 order: 6

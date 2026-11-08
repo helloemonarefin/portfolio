@@ -1,10 +1,10 @@
 ---
 /**
- * Showcase Gallery — DESIGN_SYSTEM.md §5.4 / BUILD_PROMPT.md §6.5. Figma: Showcase Gallery (Step 1).
- * Phase 4 = static layout (Step 1). Autoplay, drag, arrows and dots get wired up in Phase 6
- * (markup is already shaped for Embla: viewport > container > slides).
+ * Showcase Gallery — DESIGN_SYSTEM.md §5.4 / BUILD_PROMPT.md §6.5. Figma: Showcase Gallery.
+ * Two Embla carousels (featured + more) that advance together every 5s,
+ * with drag/swipe, arrows and dots. Images or videos from project thumbnails.
  */
-import { Image } from 'astro:assets';
+import Media from '../ui/Media.astro';
 import Icon from '../ui/Icon.astro';
 import type { Project } from '../../lib/content';
 
@@ -23,52 +23,48 @@ const fill = <T,>(items: T[], min = 5): T[] => {
 };
 const featuredSlides = fill(featured);
 const moreSlides = fill(more);
-// Static Step 1: the slide before the first one peeks on the left.
-const featuredOrdered = featuredSlides.length
-  ? [featuredSlides[featuredSlides.length - 1]!, ...featuredSlides.slice(0, -1)]
-  : [];
 ---
 
 {
   featuredSlides.length > 0 && (
-    <section class="showcase" aria-roledescription="carousel" aria-label="Showcase">
+    <section
+      class="showcase"
+      aria-roledescription="carousel"
+      aria-label="Showcase"
+      data-showcase
+      data-unique={featured.length}
+    >
       <div class="showcase__row showcase__row--featured">
-        <div class="showcase__viewport">
+        <div class="showcase__viewport" data-featured>
           <div class="showcase__track">
-            {featuredOrdered.map((p, i) => (
+            {featuredSlides.map((p, i) => (
               <div class="showcase__slide" role="group" aria-roledescription="slide">
-                <Image
-                  src={p.data.thumbnail}
-                  alt=""
+                <Media
+                  media={p.data.thumbnail}
                   widths={[330, 660, 940, 1880]}
                   sizes="(min-width: 1024px) 940px, 330px"
-                  loading={i === 1 ? 'eager' : 'lazy'}
-                  fetchpriority={i === 1 ? 'high' : undefined}
+                  loading={i === 0 ? 'eager' : 'lazy'}
+                  fetchpriority={i === 0 ? 'high' : undefined}
                 />
               </div>
             ))}
           </div>
         </div>
-        <button class="showcase__arrow showcase__arrow--prev" type="button" aria-label="Previous">
+        <button class="showcase__arrow showcase__arrow--prev" type="button" aria-label="Previous" data-prev>
           <Icon name="arrow-left" />
         </button>
-        <button class="showcase__arrow showcase__arrow--next" type="button" aria-label="Next">
+        <button class="showcase__arrow showcase__arrow--next" type="button" aria-label="Next" data-next>
           <Icon name="arrow-right" />
         </button>
       </div>
 
       {moreSlides.length > 0 && (
         <div class="showcase__row showcase__row--more">
-          <div class="showcase__viewport">
+          <div class="showcase__viewport" data-more>
             <div class="showcase__track">
               {moreSlides.map((p) => (
                 <div class="showcase__card">
-                  <Image
-                    src={p.data.thumbnail}
-                    alt=""
-                    widths={[220, 355, 440, 710]}
-                    sizes="(min-width: 1024px) 355px, 220px"
-                  />
+                  <Media media={p.data.thumbnail} widths={[220, 355, 440, 710]} sizes="(min-width: 1024px) 355px, 220px" />
                 </div>
               ))}
             </div>
@@ -76,26 +72,130 @@ const featuredOrdered = featuredSlides.length
         </div>
       )}
 
-      <div class="showcase__pagination">
-        <div class="showcase__dots">
-          {featured.map((_, i) => (
-            <button
-              class="showcase__dot"
-              type="button"
-              aria-label={`Go to slide ${i + 1}`}
-              aria-current={i === 0 ? 'true' : undefined}
-            />
-          ))}
+      {featured.length > 1 && (
+        <div class="showcase__pagination">
+          <div class="showcase__dots">
+            {featured.map((_, i) => (
+              <button
+                class="showcase__dot"
+                type="button"
+                aria-label={`Go to slide ${i + 1}`}
+                aria-current={i === 0 ? 'true' : undefined}
+                data-dot={i}
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </section>
   )
 }
 
+<script>
+  import EmblaCarousel, { type EmblaCarouselType } from 'embla-carousel';
+  import Autoplay from 'embla-carousel-autoplay';
+
+  const HOLD = 4000; // 4s hold + ~1s slide ≈ one item every 5s
+  const RESUME_AFTER = 5000; // resume autoplay 5s after the last interaction
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-showcase]')) {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const unique = Number(root.dataset.unique) || 1;
+    const featuredEl = root.querySelector<HTMLElement>('[data-featured]')!;
+    const moreEl = root.querySelector<HTMLElement>('[data-more]');
+
+    root.classList.add('is-ready');
+
+    const autoplay = Autoplay({
+      delay: HOLD,
+      playOnInit: !reduceMotion,
+      stopOnInteraction: false,
+      stopOnMouseEnter: false,
+      stopOnFocusIn: false,
+    });
+
+    const featured = EmblaCarousel(
+      featuredEl,
+      { loop: true, align: 'center', duration: 38, skipSnaps: false },
+      [autoplay],
+    );
+    const more = moreEl ? EmblaCarousel(moreEl, { loop: true, align: 'start', duration: 38 }) : null;
+
+    // ── Keep both rows in sync (moving one moves the other the same number of steps) ──
+    let syncing = false;
+    const lastIndex = new WeakMap<EmblaCarouselType, number>();
+    const stepDelta = (api: EmblaCarouselType) => {
+      const n = api.scrollSnapList().length;
+      const prev = lastIndex.get(api) ?? 0;
+      const next = api.selectedScrollSnap();
+      lastIndex.set(api, next);
+      let d = (next - prev + n) % n;
+      if (d > n / 2) d -= n;
+      return d;
+    };
+    const follow = (source: EmblaCarouselType, target: EmblaCarouselType | null) => {
+      const d = stepDelta(source);
+      if (!target || syncing || d === 0) return;
+      syncing = true;
+      const n = target.scrollSnapList().length;
+      const to = (((target.selectedScrollSnap() + d) % n) + n) % n;
+      target.scrollTo(to);
+      lastIndex.set(target, to);
+      syncing = false;
+    };
+    lastIndex.set(featured, 0);
+    if (more) lastIndex.set(more, 0);
+    featured.on('select', () => follow(featured, more));
+    more?.on('select', () => follow(more, featured));
+
+    // ── Dots ──
+    const dots = [...root.querySelectorAll<HTMLButtonElement>('[data-dot]')];
+    const updateDots = () => {
+      const active = featured.selectedScrollSnap() % unique;
+      dots.forEach((d, i) => (i === active ? d.setAttribute('aria-current', 'true') : d.removeAttribute('aria-current')));
+    };
+    featured.on('select', updateDots);
+    dots.forEach((dot, i) =>
+      dot.addEventListener('click', () => {
+        // jump to the nearest copy of slide i
+        const n = featured.scrollSnapList().length;
+        const cur = featured.selectedScrollSnap();
+        let best = i;
+        for (let k = i; k < n; k += unique) if (Math.abs(k - cur) < Math.abs(best - cur)) best = k;
+        featured.scrollTo(best);
+        interacted();
+      }),
+    );
+
+    // ── Arrows ──
+    root.querySelector('[data-prev]')?.addEventListener('click', () => { featured.scrollPrev(); interacted(); });
+    root.querySelector('[data-next]')?.addEventListener('click', () => { featured.scrollNext(); interacted(); });
+
+    // ── Pause while hovered, dragged or hidden; resume 5s after the last interaction ──
+    let resumeTimer: number | undefined;
+    let hovering = false;
+    const pause = () => { window.clearTimeout(resumeTimer); autoplay.stop(); };
+    const scheduleResume = () => {
+      window.clearTimeout(resumeTimer);
+      if (reduceMotion || hovering || document.hidden) return;
+      resumeTimer = window.setTimeout(() => autoplay.play(), RESUME_AFTER);
+    };
+    function interacted() { pause(); scheduleResume(); }
+
+    root.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') { hovering = true; pause(); } });
+    root.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') { hovering = false; scheduleResume(); } });
+    for (const api of [featured, more]) {
+      api?.on('pointerDown', pause);
+      api?.on('pointerUp', scheduleResume);
+    }
+    document.addEventListener('visibilitychange', () => (document.hidden ? pause() : scheduleResume()));
+  }
+</script>
+
 <style>
   .showcase {
-    background: var(--bg-secondary);
-    padding: 16px 0 72px;
+    background: var(--bg-primary);
+    padding: 8px 0 72px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -105,10 +205,10 @@ const featuredOrdered = featuredSlides.length
     --card-w: 220px;
     --card-h: 140px;
     --gap: 8px;
+    --more-offset: 60px;
   }
   @media (min-width: 1024px) {
     .showcase {
-      background: var(--bg-primary); /* Figma update 2026-11-08: white on desktop */
       padding: 12px 0 128px;
       gap: 14px;
       --slide-w: 940px;
@@ -116,41 +216,47 @@ const featuredOrdered = featuredSlides.length
       --card-w: 355px;
       --card-h: 200px;
       --gap: 14px;
+      --more-offset: 160px;
     }
   }
 
   .showcase__row { position: relative; }
   .showcase__viewport { overflow: hidden; }
+  .showcase__viewport:active { cursor: grabbing; }
   .showcase__track {
     display: flex;
-    gap: var(--gap);
+    touch-action: pan-y pinch-zoom;
   }
 
-  /* Featured: the second slide is centred, its neighbours peek on both sides. */
-  .showcase__row--featured .showcase__track {
-    margin-left: calc(50% - var(--slide-w) / 2 - var(--slide-w) - var(--gap));
-  }
-  .showcase__slide {
-    flex: none;
-    width: var(--slide-w);
-    height: var(--slide-h);
-  }
-  /* More: first card cut off on the left (−60 mobile / −160 desktop). */
-  .showcase__row--more .showcase__track { margin-left: -60px; }
-  @media (min-width: 1024px) {
-    .showcase__row--more .showcase__track { margin-left: -160px; }
-  }
+  /* Each slide carries its own gap as right margin (Embla measures margins). */
+  .showcase__slide,
   .showcase__card {
     flex: none;
-    width: var(--card-w);
-    height: var(--card-h);
+    margin-right: var(--gap);
   }
+  .showcase__slide { width: var(--slide-w); height: var(--slide-h); }
+  .showcase__card { width: var(--card-w); height: var(--card-h); }
+
+  /* Before the script runs: centre the first featured slide (no jump on load). */
+  .showcase:not(.is-ready) .showcase__row--featured .showcase__track {
+    margin-left: calc(50% - var(--slide-w) / 2);
+  }
+  /* More row: first card cut off on the left (−60 mobile / −160 desktop). */
+  .showcase__row--more .showcase__viewport {
+    margin-left: calc(var(--more-offset) * -1);
+  }
+
   .showcase__slide :global(img),
-  .showcase__card :global(img) {
+  .showcase__slide :global(video),
+  .showcase__card :global(img),
+  .showcase__card :global(video) {
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: top;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
   }
 
   /* Arrows */
@@ -177,6 +283,10 @@ const featuredOrdered = featuredSlides.length
     .showcase__arrow--prev { left: max(8px, calc(50% - 548px)); }
     .showcase__arrow--next { right: max(8px, calc(50% - 548px)); }
   }
+  .showcase__arrow:focus-visible { scale: 1.05; }
+  @media (hover: hover) and (pointer: fine) {
+    .showcase__arrow:hover { scale: 1.05; }
+  }
 
   /* Pagination */
   .showcase__pagination {
@@ -200,6 +310,7 @@ const featuredOrdered = featuredSlides.length
     .showcase__dots { gap: 10px; height: 32px; padding: 0 16px; }
   }
   .showcase__dot {
+    position: relative;
     width: 8px;
     height: 8px;
     border-radius: 999px;
@@ -207,6 +318,8 @@ const featuredOrdered = featuredSlides.length
     opacity: 0.6;
     transition: background-color 200ms ease, opacity 200ms ease;
   }
+  /* Bigger invisible hit area around each 8px dot. */
+  .showcase__dot::after { content: ""; position: absolute; inset: -8px -5px; }
   .showcase__dot[aria-current='true'] {
     background: var(--text-primary);
     opacity: 1;

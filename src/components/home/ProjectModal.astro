@@ -1,0 +1,398 @@
+---
+/**
+ * Project Modal — DESIGN_SYSTEM.md §5.10 / BUILD_PROMPT.md §6.7. Figma: Project Modal (Desktop Split / Mobile).
+ * One native <dialog> per project, rendered at build time.
+ *  - Desktop ≥1024: two columns (gallery | details), centred panel.
+ *  - Mobile/tablet: bottom sheet starting 48px from the top, sticky "View live site" bar.
+ * Behaviour lives in the <script> below (open from cards or #project-<slug>, close, thumbnails).
+ * Open/close animation is added in Phase 7.
+ */
+import Media from '../ui/Media.astro';
+import Icon from '../ui/Icon.astro';
+import Button from '../ui/Button.astro';
+import { padCount, type Project } from '../../lib/content';
+
+interface Props {
+  project: Project;
+  index: number;
+  total: number;
+}
+const { project, index, total } = Astro.props;
+const { title, summary, gallery, liveUrl, priceRange, duration, scope, tags } = project.data;
+const id = `project-${project.id}`;
+const titleId = `${id}-title`;
+const stats = [
+  { label: 'Price range', value: priceRange },
+  { label: 'Duration', value: duration },
+  { label: 'Scope', value: scope },
+].filter((s) => s.value);
+---
+
+<dialog class="modal" id={id} aria-labelledby={titleId} data-project-modal={project.id}>
+  <div class="modal__grabber" aria-hidden="true"></div>
+
+  <div class="modal__top">
+    <p class="modal__counter t-label">Case study · {padCount(index)} / {padCount(total)}</p>
+    <button class="modal__close" type="button" aria-label="Close" data-close autofocus>
+      <Icon name="close" />
+    </button>
+  </div>
+
+  <div class="modal__gallery">
+    <div class="modal__main">
+      {
+        gallery.map((m, i) => (
+          <div class="modal__slide" data-slide={i} aria-hidden={i === 0 ? undefined : 'true'} data-active={i === 0 ? '' : undefined}>
+            <Media
+              media={m}
+              alt={i === 0 ? `${title} — preview` : ''}
+              widths={[350, 700, 664, 1328]}
+              sizes="(min-width: 1024px) 664px, 100vw"
+              autoplay={false}
+            />
+          </div>
+        ))
+      }
+    </div>
+    {
+      gallery.length > 1 && (
+        <div class="modal__thumbs" role="group" aria-label="Gallery">
+          {gallery.map((m, i) => (
+            <button
+              class="modal__thumb"
+              type="button"
+              data-thumb={i}
+              aria-label={`Show item ${i + 1} of ${gallery.length}`}
+              aria-pressed={i === 0 ? 'true' : 'false'}
+            >
+              <Media media={m} widths={[120, 240]} sizes="120px" autoplay={false} />
+            </button>
+          ))}
+        </div>
+      )
+    }
+  </div>
+
+  <div class="modal__body">
+    <div class="modal__info">
+      <h2 id={titleId} class="t-h2">{title}</h2>
+      <p class="modal__summary t-body-lg">{summary}</p>
+    </div>
+
+    {
+      stats.length > 0 && (
+        <dl class="modal__stats">
+          {stats.map((s) => (
+            <div class:list={['modal__stat', { 'modal__stat--wide': s.label === 'Scope' }]}>
+              <dt class="t-caption">{s.label}</dt>
+              <dd class="t-h5">{s.value}</dd>
+            </div>
+          ))}
+        </dl>
+      )
+    }
+
+    <div class="modal__spacer"></div>
+
+    <div class="modal__footer">
+      {
+        tags.length > 0 && (
+          <p class="modal__tags t-caption">
+            {tags.map((t) => (
+              <span class="modal__tag">{t}</span>
+            ))}
+          </p>
+        )
+      }
+      {
+        liveUrl && (
+          <div class="modal__cta-desktop">
+            <Button label="View live site" layout="fill" href={liveUrl} external />
+          </div>
+        )
+      }
+    </div>
+  </div>
+
+  {
+    liveUrl && (
+      <div class="modal__bar">
+        <div class="modal__bar-fade" aria-hidden="true"></div>
+        <div class="modal__bar-body">
+          <Button label="View live site" layout="fill" href={liveUrl} external />
+        </div>
+      </div>
+    )
+  }
+</dialog>
+
+<script>
+  const modals = new Map<string, HTMLDialogElement>();
+  document.querySelectorAll<HTMLDialogElement>('dialog[data-project-modal]').forEach((d) => modals.set(d.dataset.projectModal!, d));
+
+  const playActive = (dialog: HTMLDialogElement, play: boolean) => {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    dialog.querySelectorAll<HTMLElement>('[data-slide]').forEach((slide) => {
+      const video = slide.querySelector('video');
+      if (!video) return;
+      if (play && slide.hasAttribute('data-active') && !reduce) video.play().catch(() => {});
+      else video.pause();
+    });
+  };
+
+  const open = (slug: string) => {
+    const dialog = modals.get(slug);
+    if (!dialog || dialog.open) return;
+    dialog.showModal();
+    document.documentElement.classList.add('is-locked');
+    history.replaceState(null, '', `#project-${slug}`);
+    playActive(dialog, true);
+  };
+
+  modals.forEach((dialog) => {
+    // Close button
+    dialog.querySelector('[data-close]')?.addEventListener('click', () => dialog.close());
+    // Backdrop click (a click on the dialog element itself, outside its box)
+    dialog.addEventListener('click', (e) => {
+      if (e.target !== dialog) return;
+      const r = dialog.getBoundingClientRect();
+      const inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+      if (!inside) dialog.close();
+    });
+    // Esc is handled natively. After any close: unlock scroll, clear the hash, stop videos.
+    // (The browser returns focus to the card that opened the dialog.)
+    dialog.addEventListener('close', () => {
+      document.documentElement.classList.remove('is-locked');
+      if (location.hash === `#${dialog.id}`) history.replaceState(null, '', location.pathname + location.search);
+      playActive(dialog, false);
+    });
+
+    // Thumbnails → cross-fade the main media
+    const slides = [...dialog.querySelectorAll<HTMLElement>('[data-slide]')];
+    const thumbs = [...dialog.querySelectorAll<HTMLButtonElement>('[data-thumb]')];
+    thumbs.forEach((thumb, i) =>
+      thumb.addEventListener('click', () => {
+        slides.forEach((s, k) => {
+          s.toggleAttribute('data-active', k === i);
+          if (k === i) s.removeAttribute('aria-hidden');
+          else s.setAttribute('aria-hidden', 'true');
+        });
+        thumbs.forEach((t, k) => t.setAttribute('aria-pressed', String(k === i)));
+        playActive(dialog, true);
+      }),
+    );
+  });
+
+  // Work cards open their project
+  document.querySelectorAll<HTMLElement>('[data-open-project]').forEach((card) =>
+    card.addEventListener('click', () => open(card.dataset.openProject!)),
+  );
+
+  // Shareable links: /#project-<slug> opens that project
+  const openFromHash = () => {
+    if (location.hash.startsWith('#project-')) open(decodeURIComponent(location.hash.slice('#project-'.length)));
+  };
+  openFromHash();
+  window.addEventListener('hashchange', openFromHash);
+</script>
+
+<style>
+  /* ── Shared ──────────────────────────────────────────────────────────── */
+  .modal {
+    border: 0;
+    padding: 0;
+    color: var(--text-primary);
+    background: var(--bg-primary);
+  }
+  .modal::backdrop {
+    background: var(--surface-scrim);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+
+  .modal__top {
+    grid-area: top;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .modal__counter { color: var(--text-secondary); }
+  .modal__close {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    flex: none;
+  }
+
+  .modal__gallery { grid-area: gallery; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .modal__main {
+    position: relative;
+    display: grid;
+    aspect-ratio: 350 / 241;
+    background: var(--bg-tertiary);
+    overflow: hidden;
+  }
+  .modal__slide {
+    grid-area: 1 / 1;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 200ms ease, visibility 0s linear 200ms;
+  }
+  .modal__slide[data-active] {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 200ms ease, visibility 0s;
+  }
+  .modal__slide :global(img),
+  .modal__slide :global(video),
+  .modal__thumb :global(img),
+  .modal__thumb :global(video) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+  }
+
+  .modal__thumbs { display: flex; gap: 8px; }
+  .modal__thumb {
+    position: relative;
+    flex: 0 0 calc((100% - 4 * 8px) / 5); /* room for 5 thumbs */
+    height: 48px;
+    background: var(--bg-tertiary);
+    overflow: hidden;
+  }
+  .modal__thumb[aria-pressed='true']::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    box-shadow: inset 0 0 0 1.5px var(--text-primary); /* 1.5px inside outline */
+  }
+
+  .modal__body { grid-area: body; display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+  .modal__info { display: flex; flex-direction: column; gap: 12px; }
+  .modal__summary { color: var(--text-secondary); }
+
+  .modal__stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border-primary);
+    margin: 0;
+  }
+  .modal__stat { display: flex; flex-direction: column; gap: 6px; width: calc(50% - 10px); }
+  .modal__stat--wide { width: 100%; }
+  .modal__stat dt { color: var(--text-secondary); }
+  .modal__stat dd { margin: 0; }
+
+  .modal__spacer { display: none; }
+  .modal__tags { display: flex; align-items: center; gap: 10px; color: var(--text-secondary); }
+  .modal__tag + .modal__tag::before {
+    content: "";
+    display: inline-block;
+    width: 1px;
+    height: 14px;
+    margin-right: 10px;
+    vertical-align: -2px;
+    background: var(--border-secondary);
+  }
+  .modal__cta-desktop { display: none; }
+
+  /* ── Mobile / tablet: bottom sheet ───────────────────────────────────── */
+  .modal {
+    position: fixed;
+    inset: 48px 0 0 0;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    max-height: none;
+    margin: 0;
+    border-radius: 20px 20px 0 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .modal[open] {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "grabber" "top" "gallery" "body" "bar";
+    align-content: start;
+    row-gap: 16px;
+    padding: 12px 20px 0;
+  }
+  .modal__grabber {
+    grid-area: grabber;
+    justify-self: center;
+    width: 36px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--border-secondary);
+  }
+  .modal__body { padding-bottom: 8px; }
+  .modal__gallery { margin-bottom: 8px; } /* gallery → info = 24 */
+
+  /* Sticky action bar: 32px fade + solid body, always visible while the sheet scrolls. */
+  .modal__bar {
+    grid-area: bar;
+    position: sticky;
+    bottom: 0;
+    margin: 0 -20px;
+    margin-top: 48px; /* tags → button ≈ 36px, as in Figma; the last item always clears the bar */
+  }
+  .modal__bar-fade {
+    height: 32px;
+    margin-top: -32px;
+    background: linear-gradient(to bottom, transparent, var(--bg-primary));
+    pointer-events: none;
+  }
+  .modal__bar-body {
+    background: var(--bg-primary);
+    padding: 4px 20px calc(24px + env(safe-area-inset-bottom)) 20px;
+  }
+
+  /* ── Desktop ≥1024: split panel ──────────────────────────────────────── */
+  @media (min-width: 1024px) {
+    .modal {
+      inset: 0;
+      width: min(1120px, 100vw - 64px);
+      height: fit-content; /* centred by margin:auto instead of stretching */
+      max-height: calc(100dvh - 64px);
+      margin: auto;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .modal[open] {
+      grid-template-columns: minmax(0, 664fr) minmax(0, 376fr);
+      grid-template-rows: auto minmax(0, 1fr);
+      grid-template-areas:
+        "gallery top"
+        "gallery body";
+      column-gap: 32px;
+      row-gap: 24px;
+      padding: 24px;
+    }
+    .modal__grabber,
+    .modal__bar { display: none; }
+    .modal__gallery { margin: 0; align-self: start; }
+    .modal__main { aspect-ratio: 664 / 457; }
+    .modal__thumb { height: 84px; }
+
+    .modal__body { overflow-y: auto; padding-bottom: 0; }
+    .modal__stats { flex-direction: column; gap: 16px; }
+    .modal__stat,
+    .modal__stat--wide {
+      width: 100%;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .modal__stat dd { text-align: right; }
+    .modal__spacer { display: block; flex: 1; }
+    .modal__footer { display: flex; flex-direction: column; gap: 12px; }
+    .modal__cta-desktop { display: block; }
+  }
+</style>

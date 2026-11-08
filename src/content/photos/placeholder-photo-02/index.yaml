@@ -1,4 +1,6 @@
 alt: Placeholder photo 02
-image: ../../../assets/photos/placeholder-photo-02/image.png
+image:
+  discriminant: image
+  value: ../../../assets/photos/placeholder-photo-02/image.png
 size: wide
 order: 2

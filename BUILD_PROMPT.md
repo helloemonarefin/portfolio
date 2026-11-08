@@ -89,8 +89,8 @@ The goal is a **Framer-CMS-like experience**: I open `/keystatic`, fill in a for
 | `category` | select: Agency, SaaS, Portfolio, Templates | drives the filter chips |
 | `tags` | array of text (max 3) | shown as `Portfolio \| AI \| Framer` |
 | `summary` | multiline text | 2–3 sentences, shown in the modal |
-| `thumbnail` | image | Work card image; ~4:3, at least 1400px wide; cropped from the **top** |
-| `gallery` | array of images (1–5) | modal main image + thumbnails; first item is shown first |
+| `thumbnail` | media (Image or Video) | Work card image; ~4:3, at least 1400px wide; cropped from the **top** |
+| `gallery` | array of media (1–5) | modal main media + thumbnails; first item is shown first |
 | `liveUrl` | url | "View live site" button; opens in a new tab |
 | `priceRange` | text | e.g. "$600 – $800" |
 | `duration` | text | e.g. "7 – 10 days" |
@@ -126,7 +126,7 @@ Image fields must save into `src/assets/projects/<slug>/` so the Astro schema ca
 - **Reduced motion:** under `@media (prefers-reduced-motion: reduce)`, remove every transition and animation and show final states instantly (including the hero intro and gallery autoplay).
 - **Focus ring:** 2px solid `--text-primary`, 2px offset, on every interactive element.
 - **Section anchors:** `#work`, `#pricing`, `#book`. Nav "Works" → `/#work`, "Pricing" → `/#pricing`, "Contact" and every "Hire Me" / "Book a call" → `/#book`, "About" → `/about`, "Home" → `/`. Use `scroll-behavior: smooth` (disabled under reduced motion) with `scroll-margin-top` equal to the nav height.
-- **Section backgrounds** (DESIGN_SYSTEM.md §4, updated 2026-11-08): Hero white (grey arc) → Showcase white on desktop / grey on mobile → Work white → Pricing white with grey cards → Book white → Footer white with a top border.
+- **Section backgrounds** (DESIGN_SYSTEM.md §4, updated 2026-11-08): Hero white (grey arc) → Showcase white → Work white → Pricing white with grey cards → Book white → Footer white with a top border.
 - **Section header:** desktop = one row with the heading (`display`) on the left and an optional right slot (filters or meta) aligned to the bottom. Mobile = heading, then the right-slot content underneath, left-aligned, gap 20. **There are no subheadings.**
 
 ---
@@ -163,7 +163,7 @@ Props: `variant` (`primary` | `secondary` | `secondary-chip`), `size` (`md` 40px
 - Desktop (≥1024): height 85, padding `24 48`, transparent background, `position: absolute` over the hero, `z-index: 4`. Left: brand (logo mark 32 + "Emon Arefin" in `h5`). Centre: links (`label`, `--text-secondary`; hover `--text-primary` 150ms), "Works" followed by the count in `--text-tertiary`. Right: primary sm "Hire Me".
 - Mobile: height 64, padding `14 20`; brand + 36×36 menu button (radius 6, `--bg-secondary`, two-line icon).
 - **Mobile menu (not designed in Figma; build this and show me):** tapping the menu button opens a white panel under the nav with the links stacked (`h4`, gap 20, padding 20) and a full-width primary "Hire Me" at the bottom. It fades in and moves 8px down over 250ms; the icon morphs to an ×. It closes on link tap, ×, or Esc; focus is trapped while open and body scroll is locked.
-- **Sticky behaviour (optional, ask me first):** after scrolling past the hero, the nav becomes fixed with `--surface-overlay` + 12px backdrop blur and a 1px `--border-primary` bottom border.
+- **Not sticky (decided 2026-11-08):** the nav stays static at the top of the page.
 
 ### 6.4 Hero (`home/Hero.astro`) — layers and intro animation
 
@@ -205,7 +205,7 @@ Props: `variant` (`primary` | `secondary` | `secondary-chip`), `size` (`md` 40px
 - Two rows of **pure imagery**: no captions or buttons on the slides. Images come from projects with `showcase = featured` (top row) and `showcase = more` (bottom row), using `thumbnail`, `object-fit: cover; object-position: top`, square corners.
 - **Featured row:** slide 940×504 desktop / 330×212 mobile (keep the ratio between sizes), gap 14 / 8, centred, with neighbours peeking on both sides, infinite loop.
 - **More row:** card 355×200 / 220×140, gap 14 / 8, loop, starting offset so the first card is partly cut off at the left (desktop −160px, mobile −60px).
-- Spacing: section padding 12 top / 128 bottom (mobile 16 / 72); 14px between rows (8 mobile); pagination 18px below (16 mobile).
+- Spacing: section padding 12 top / 128 bottom (mobile 8 / 72); 14px between rows (8 mobile); pagination 18px below (16 mobile).
 - **Autoplay:** both rows advance **together**, one item every **5s** (4s hold + ~1s slide), easing as close as Embla allows to `cubic-bezier(.645,.045,.355,1)`. Pause while hovered, while the tab is hidden, and while the user drags; resume 5s after the last interaction.
 - **Drag/swipe** either row left or right; keep the two rows in sync (moving one moves the other to the matching index). If a row has fewer than 5 items, duplicate them so the loop still looks full.
 - **Arrows:** round buttons 40×40 (32×32 mobile), `--surface-overlay` + `backdrop-filter: blur(12px)`, chevron 16px `--text-primary`, vertically centred on the featured row. Desktop: sitting on the peeking slides, `left: calc(50% - 548px)` and `right: calc(50% - 548px)` (24px outside the featured slide's edges). Mobile: 8px from the screen edges. Previous/next move both rows by one. Hover: scale 1.05, 200ms.

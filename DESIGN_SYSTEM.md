@@ -147,13 +147,13 @@
 | Section header → content gap | 56 | 32 |
 | Work grid | 2 columns, gap 24 (col) / 40 (row) | 1 column, gap 32 |
 | Pricing plans | 2 columns, gap 16 | stacked, gap 16 |
-| Showcase section padding (top/bottom) | 12 / 128 | 16 / 72 |
+| Showcase section padding (top/bottom) | 12 / 128 | 8 / 72 |
 
 Tablet (768–1023): use mobile spacing with 2‑column grids where they fit; type stays on mobile scale. Above 1440 the content stays centred at max 1376 + 32px side padding.
 
 **Anchors:** sections have ids `#work`, `#pricing`, `#book`; `scroll-behavior: smooth` (off under reduced motion) and `scroll-margin-top` = nav height.
 
-**Section backgrounds** (updated 2026-11-08 to match Figma): Hero `--bg-primary` (grey arc) → Showcase `--bg-primary` on desktop (`--bg-secondary` on mobile, as in the Figma mobile frame) → Work `--bg-primary` → Pricing `--bg-primary` with `--bg-secondary` plan cards → Book a Call `--bg-primary` → Footer `--bg-primary` with a 1px `--border-primary` top border.
+**Section backgrounds** (updated 2026-11-08 to match Figma): Hero `--bg-primary` (grey arc) → Showcase `--bg-primary` (all sizes) → Work `--bg-primary` → Pricing `--bg-primary` with `--bg-secondary` plan cards → Book a Call `--bg-primary` → Footer `--bg-primary` with a 1px `--border-primary` top border.
 
 **Spacing scale (px):** 4, 6, 8, 12, 14, 16, 20, 24, 32, 40, 48, 56, 64, 72, 96, 128.
 
@@ -187,7 +187,7 @@ Each maps to a Figma component of the same name (page "Portfolio Website", right
 - Desktop (≥1024): height 85, padding `24 48`, transparent background, `position: absolute` over the hero, `z-index: 4`. Brand (logo mark 32 + "Emon Arefin" `h5`) · links: Home, Works <count>, About, Pricing, Contact (`label`, `--text-secondary`, hover `--text-primary` 150ms; the count in `--text-tertiary`) · Primary sm "Hire Me".
 - Mobile: height 64, padding `14 20`. Brand + 36×36 menu button (radius 6, `--bg-secondary`, two-line icon).
 - **Mobile menu (not designed in Figma — build, then confirm with Emon):** a white panel under the nav with the links stacked (`h4`, gap 20, padding 20) and a full-width primary "Hire Me" at the bottom; fades in and moves 8px down over 250ms; the icon morphs to ×. Closes on link tap, ×, or Esc; focus trapped and body scroll locked while open.
-- **Sticky on scroll (optional — ask Emon first):** after the hero, the nav becomes fixed with `--surface-overlay` + 12px backdrop blur and a 1px `--border-primary` bottom border.
+- **Not sticky (decided 2026-11-08):** the nav stays static at the top of the page and scrolls away with it.
 - On the About page the nav appears without the intro animation.
 
 ### 5.3 Hero
@@ -370,8 +370,8 @@ Managed with **Astro content collections** + **Keystatic** (visual admin at `/ke
 | `category` | select: Agency · SaaS · Portfolio · Templates | drives filters |
 | `tags` | array of text (max 3) | e.g. Portfolio, AI, Framer |
 | `summary` | multiline text | 2–3 sentences, modal body |
-| `thumbnail` | image → `src/assets/projects/<slug>/` | Work card + Showcase (≈ 4:3, ≥1400px wide, cropped from the top) |
-| `gallery` | array of images (1–5) | modal main image + thumbnails; first shown first |
+| `thumbnail` | **media**: Image or Video switch (see below) | Work card + Showcase (≈ 4:3, ≥1400px wide, cropped from the top) |
+| `gallery` | array of **media** (1–5) | modal main media + thumbnails; first shown first |
 | `liveUrl` | url | "View live site", new tab |
 | `priceRange` | text | "$600 – $800" |
 | `duration` | text | "7 – 10 days" |
@@ -382,7 +382,9 @@ Managed with **Astro content collections** + **Keystatic** (visual admin at `/ke
 | `draft` | checkbox | hidden everywhere when ticked |
 
 ### `photos` (collection) — Through My Lens
-`image` (→ `src/assets/photos/`), `alt` (required), `size` (wide · square), `order`.
+`image` (**media**: Image or Video), `alt` (required), `size` (wide · square), `order`.
+
+**Media fields** (decided 2026-11-08): every project/photo media slot is an Image / Video switch. Images (PNG, JPG, WebP, AVIF) save to `src/assets/<projects|photos>/<slug>/` and are optimised by Astro. Videos (MP4/WebM recommended; MOV plays in Safari only) save to `public/media/<projects|photos>/<slug>/` and play muted, looped and inline (no autoplay under reduced motion), with an optional poster image.
 
 ### `settings` (singleton)
 `email`, `calLink` (Cal.com `username/event`), `socials` (linkedin, x, dribbble, behance, resumeUrl), `stats` (years, projects), `currentRole` (title "Product Designer", company "Rubik", summary — the one-line sub under the About "Now" statement), `milestones[]` (`year`, `title`), `aboutBio` (2 paragraphs), `siteDescription` (SEO).
@@ -444,8 +446,8 @@ CLAUDE.md, DESIGN_SYSTEM.md (this file), BUILD_PROMPT.md
 - [ ] Official SVGs for ChatGPT, Gemini, Claude, Perplexity, and social icons; logo SVG for the dotted band.
 - [x] Through My Lens empty grid cell — solved with `grid-auto-flow: dense`.
 - [ ] Mobile menu open state (not in Figma — build per §5.2, then confirm).
-- [ ] Sticky nav on scroll (optional — ask first).
-- [ ] Cal.com event link.
+- [x] Sticky nav — decided: no, the nav is static.
+- [x] Cal.com event link — `helloemonarefin/30min`.
 
 ---
 

@@ -1,7 +1,7 @@
 ---
 /**
  * Work section — DESIGN_SYSTEM.md §5.6–5.7 / BUILD_PROMPT.md §6.6. Figma: Work.
- * Filter chips are static in Phase 4 ("All" active); filtering is wired in Phase 6.
+ * Filter chips filter the grid client-side by data-category (fade 200ms, then leave the layout).
  */
 import SectionHeader from '../ui/SectionHeader.astro';
 import WorkCard from './WorkCard.astro';
@@ -41,8 +41,40 @@ const filters = [{ value: 'all', label: 'All' }, ...Object.entries(categoryLabel
   </div>
 </section>
 
+<script>
+  const FADE = 200;
+  for (const section of document.querySelectorAll<HTMLElement>('#work')) {
+    const chips = [...section.querySelectorAll<HTMLButtonElement>('[data-filter]')];
+    const items = [...section.querySelectorAll<HTMLElement>('.work__item')];
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let timer: number | undefined;
+
+    const apply = (filter: string) => {
+      chips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.filter === filter)));
+      const show = (el: HTMLElement) => filter === 'all' || el.dataset.category === filter;
+      window.clearTimeout(timer);
+
+      // 1) fade out the ones that should go (and undo a half-finished fade on the ones that stay)
+      items.forEach((el) => el.classList.toggle('is-fading', !show(el)));
+      // 2) after the fade, remove them from the layout and fade the rest in
+      timer = window.setTimeout(() => {
+        const appearing = items.filter((el) => el.hidden && show(el));
+        appearing.forEach((el) => el.classList.add('is-fading'));
+        items.forEach((el) => (el.hidden = !show(el)));
+        requestAnimationFrame(() =>
+          requestAnimationFrame(() => appearing.forEach((el) => el.classList.remove('is-fading'))),
+        );
+      }, reduce ? 0 : FADE);
+    };
+
+    chips.forEach((chip) => chip.addEventListener('click', () => apply(chip.dataset.filter ?? 'all')));
+  }
+</script>
+
 <style>
   .work { background: var(--bg-primary); }
+  .work__item { transition: opacity 200ms ease; }
+  .work__item.is-fading { opacity: 0; }
 
   .filters {
     display: flex;

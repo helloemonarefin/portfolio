@@ -6,7 +6,7 @@
  *
  * Content model: DESIGN_SYSTEM.md §10 / BUILD_PROMPT.md §4.
  */
-import { defineCollection } from 'astro:content';
+import { defineCollection, type SchemaContext } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
@@ -17,6 +17,19 @@ const folderId = ({ entry }: { entry: string }) => entry.split('/')[0]!;
 const optionalText = z.string().nullish().transform((v) => v ?? '');
 const optionalUrl = z.url().nullish().transform((v) => v ?? '');
 
+/**
+ * Media = Image or Video (matches `media()` in keystatic.config.ts).
+ * Image → optimised by Astro. Video → a URL under /media/…, plus an optional poster image.
+ */
+const media = (image: SchemaContext['image']) =>
+  z.discriminatedUnion('discriminant', [
+    z.object({ discriminant: z.literal('image'), value: image() }),
+    z.object({
+      discriminant: z.literal('video'),
+      value: z.object({ file: z.string().min(1), poster: image().nullish() }),
+    }),
+  ]);
+
 // ─── Projects: Work grid, Showcase Gallery, Project Modal ───────────────────
 const projects = defineCollection({
   loader: glob({ pattern: '*/index.yaml', base: './src/content/projects', generateId: folderId }),
@@ -26,8 +39,8 @@ const projects = defineCollection({
       category: z.enum(['agency', 'saas', 'portfolio', 'templates']),
       tags: z.array(z.string()).max(3).default([]),
       summary: z.string(),
-      thumbnail: image(),
-      gallery: z.array(image()).min(1).max(5),
+      thumbnail: media(image),
+      gallery: z.array(media(image)).min(1).max(5),
       liveUrl: optionalUrl,
       priceRange: optionalText,
       duration: optionalText,
@@ -45,7 +58,7 @@ const photos = defineCollection({
   schema: ({ image }) =>
     z.object({
       alt: z.string().min(1),
-      image: image(),
+      image: media(image),
       size: z.enum(['wide', 'square']).default('wide'),
       order: z.number().int().nullish().transform((v) => v ?? 0),
     }),

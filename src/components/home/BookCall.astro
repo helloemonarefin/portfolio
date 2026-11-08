@@ -1,7 +1,8 @@
 ---
 /**
  * Book a Call — DESIGN_SYSTEM.md §5.9 / BUILD_PROMPT.md §6.9. Figma: Book a Call.
- * Phase 4 = placeholder box. The Cal.com inline embed is loaded in Phase 6.
+ * Cal.com inline embed (official snippet), loaded only when the section nears the viewport.
+ * A calm placeholder shows until the calendar is ready.
  */
 import SectionHeader from '../ui/SectionHeader.astro';
 import Icon from '../ui/Icon.astro';
@@ -35,12 +36,17 @@ const meta = [
     </SectionHeader>
 
     <div class="book__body">
-      <div class="book__embed" data-cal-link={calLink}>
-        <div class="book__placeholder">
-          <Icon name="calendar" />
-          <p class="t-h5">Loading calendar…</p>
-        </div>
-      </div>
+      {
+        calLink && (
+          <div class="book__embed" data-cal-link={calLink}>
+            <div class="book__placeholder" data-cal-placeholder>
+              <Icon name="calendar" />
+              <p class="t-h5">Loading calendar…</p>
+            </div>
+            <div class="book__cal" id="cal-inline" data-cal-target />
+          </div>
+        )
+      }
 
       {
         email && (
@@ -53,6 +59,72 @@ const meta = [
     </div>
   </div>
 </section>
+
+<script>
+  // Cal.com inline embed — based on the official snippet from Cal.com (Embed → Inline).
+  // https://cal.com/docs/core-features/embed
+  type CalFn = ((...args: unknown[]) => void) & { ns: Record<string, (...args: unknown[]) => void> };
+
+  const NS = 'book';
+
+  function loadCal() {
+    /* eslint-disable */
+    (function (C: any, A: string, L: string) {
+      const p = function (a: any, ar: any) { a.q.push(ar); };
+      const d = C.document;
+      C.Cal = C.Cal || function () {
+        const cal = C.Cal; const ar = arguments;
+        if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement('script')).src = A; cal.loaded = true; }
+        if (ar[0] === L) {
+          const api: any = function () { p(api, arguments); };
+          const namespace = ar[1]; api.q = api.q || [];
+          if (typeof namespace === 'string') { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, ['initNamespace', namespace]); }
+          else p(cal, ar);
+          return;
+        }
+        p(cal, ar);
+      };
+    })(window, 'https://app.cal.com/embed/embed.js', 'init');
+    /* eslint-enable */
+  }
+
+  for (const box of document.querySelectorAll<HTMLElement>('[data-cal-link]')) {
+    const calLink = box.dataset.calLink!;
+    const start = () => {
+      loadCal();
+      const Cal = (window as unknown as { Cal: CalFn }).Cal;
+      Cal('init', NS, { origin: 'https://app.cal.com' });
+      const api = Cal.ns[NS]!;
+      api('inline', {
+        elementOrSelector: '#cal-inline',
+        calLink,
+        config: { layout: 'month_view', useSlotsViewOnSmallScreen: 'true', theme: 'light' },
+      });
+      api('ui', {
+        theme: 'light',
+        hideEventTypeDetails: false,
+        layout: 'month_view',
+        cssVarsPerTheme: { light: { 'cal-brand': '#162026' } },
+      });
+      api('on', {
+        action: 'linkReady',
+        callback: () => box.classList.add('is-loaded'),
+      });
+    };
+
+    // Load only when the section comes near the viewport.
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          io.disconnect();
+          start();
+        }
+      },
+      { rootMargin: '600px 0px' },
+    );
+    io.observe(box);
+  }
+</script>
 
 <style>
   .book { background: var(--bg-primary); }
@@ -84,6 +156,7 @@ const meta = [
   }
 
   .book__embed {
+    position: relative;
     height: 620px;
     border-radius: 20px;
     background: var(--bg-secondary);
@@ -94,7 +167,9 @@ const meta = [
     .book__embed { height: 680px; }
   }
   .book__placeholder {
-    height: 100%;
+    position: absolute;
+    inset: 0;
+    transition: opacity 300ms ease;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -103,6 +178,13 @@ const meta = [
     color: var(--text-tertiary);
   }
   .book__placeholder p { color: var(--text-primary); }
+  .book__cal {
+    position: relative;
+    height: 100%;
+    overflow: auto;
+  }
+  .book__embed.is-loaded { border-style: solid; border-color: transparent; }
+  .book__embed.is-loaded .book__placeholder { opacity: 0; pointer-events: none; }
 
   .book__email {
     display: flex;

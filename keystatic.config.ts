@@ -8,6 +8,48 @@
  */
 import { config, collection, singleton, fields } from '@keystatic/core';
 
+/**
+ * Media field: an Image / Video switch.
+ *  - Image → saved in src/assets/<folder>/<slug>/ (optimised by Astro).
+ *  - Video → saved in public/media/<folder>/<slug>/ (served as-is; MP4 or WebM recommended),
+ *            with an optional poster image shown while the video loads.
+ */
+const media = (label: string, folder: 'projects' | 'photos', description?: string) =>
+  fields.conditional(
+    fields.select({
+      label,
+      description,
+      options: [
+        { label: 'Image (PNG, JPG, WebP, AVIF)', value: 'image' },
+        { label: 'Video (MP4, WebM, MOV)', value: 'video' },
+      ],
+      defaultValue: 'image',
+    }),
+    {
+      image: fields.image({
+        label: `${label} — image`,
+        directory: `src/assets/${folder}`,
+        publicPath: `../../../assets/${folder}/`,
+        validation: { isRequired: true },
+      }),
+      video: fields.object({
+        file: fields.file({
+          label: `${label} — video file`,
+          description: 'MP4 (H.264) or WebM plays everywhere. MOV only plays in Safari. Keep it short and under ~10 MB.',
+          directory: `public/media/${folder}`,
+          publicPath: `/media/${folder}/`,
+          validation: { isRequired: true },
+        }),
+        poster: fields.image({
+          label: 'Poster image (optional)',
+          description: 'Shown while the video loads. Use the first frame.',
+          directory: `src/assets/${folder}`,
+          publicPath: `../../../assets/${folder}/`,
+        }),
+      }),
+    },
+  );
+
 export default config({
   // Files are saved in this project folder. Switches to GitHub storage in Phase 9.
   storage: { kind: 'local' },
@@ -59,27 +101,17 @@ export default config({
           multiline: true,
           validation: { isRequired: true },
         }),
-        thumbnail: fields.image({
-          label: 'Thumbnail',
-          description: 'Work card + Showcase image. About 4:3, at least 1400px wide. Cropped from the top.',
-          directory: 'src/assets/projects',
-          publicPath: '../../../assets/projects/',
-          validation: { isRequired: true },
-        }),
-        gallery: fields.array(
-          fields.image({
-            label: 'Image',
-            directory: 'src/assets/projects',
-            publicPath: '../../../assets/projects/',
-            validation: { isRequired: true },
-          }),
-          {
-            label: 'Gallery',
-            itemLabel: (props) => props.value?.filename ?? 'Image',
-            description: '1–5 images for the modal. The first one is shown first.',
-            validation: { length: { min: 1, max: 5 } },
-          },
+        thumbnail: media(
+          'Thumbnail',
+          'projects',
+          'Work card + Showcase. Image or video, about 4:3, at least 1400px wide. Cropped from the top.',
         ),
+        gallery: fields.array(media('Gallery item', 'projects'), {
+            label: 'Gallery',
+            itemLabel: (props) => (props.discriminant === 'video' ? 'Video' : 'Image'),
+            description: '1–5 images or videos for the modal. The first one is shown first.',
+            validation: { length: { min: 1, max: 5 } },
+          }),
         liveUrl: fields.url({
           label: 'Live site URL',
           description: '"View live site" button — opens in a new tab.',
@@ -126,12 +158,7 @@ export default config({
             validation: { isRequired: true },
           },
         }),
-        image: fields.image({
-          label: 'Photo',
-          directory: 'src/assets/photos',
-          publicPath: '../../../assets/photos/',
-          validation: { isRequired: true },
-        }),
+        image: media('Photo', 'photos'),
         size: fields.select({
           label: 'Size in grid',
           description: 'Wide = 2 columns, Square = 1 column.',

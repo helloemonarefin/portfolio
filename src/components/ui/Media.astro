@@ -1,0 +1,75 @@
+---
+/**
+ * Media — renders a CMS media field (Image or Video).
+ *  - Image: Astro <Image> (optimised, responsive).
+ *  - Video: muted, looping, inline autoplay (like a moving image), with an optional
+ *    optimised poster. Under reduced motion the video does not autoplay (see global script).
+ */
+import { Image, getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+export type MediaField =
+  | { discriminant: 'image'; value: ImageMetadata }
+  | { discriminant: 'video'; value: { file: string; poster?: ImageMetadata | null } };
+
+interface Props {
+  media: MediaField;
+  alt?: string;
+  widths: number[];
+  sizes: string;
+  loading?: 'eager' | 'lazy';
+  fetchpriority?: 'high' | 'low' | 'auto';
+  class?: string;
+  /** Video only: start playing automatically (muted, looped). Default true. */
+  autoplay?: boolean;
+}
+
+const {
+  media,
+  alt = '',
+  widths,
+  sizes,
+  loading = 'lazy',
+  fetchpriority,
+  class: className,
+  autoplay = true,
+} = Astro.props;
+
+let posterSrc: string | undefined;
+if (media.discriminant === 'video' && media.value.poster) {
+  const largest = Math.max(...widths);
+  posterSrc = (await getImage({ src: media.value.poster, width: largest, format: 'webp' })).src;
+}
+const ext = media.discriminant === 'video' ? media.value.file.split('.').pop()?.toLowerCase() : '';
+const type = ext === 'webm' ? 'video/webm' : ext === 'mov' ? 'video/quicktime' : 'video/mp4';
+---
+
+{
+  media.discriminant === 'image' ? (
+    <Image
+      class={className}
+      src={media.value}
+      alt={alt}
+      widths={widths}
+      sizes={sizes}
+      loading={loading}
+      fetchpriority={fetchpriority}
+    />
+  ) : (
+    <video
+      class={className}
+      poster={posterSrc}
+      muted
+      loop
+      playsinline
+      autoplay={autoplay}
+      data-autoplay={autoplay ? '' : undefined}
+      preload={loading === 'eager' ? 'auto' : 'metadata'}
+      aria-label={alt || undefined}
+      aria-hidden={alt ? undefined : 'true'}
+      disablepictureinpicture
+    >
+      <source src={media.value.file} type={type} />
+    </video>
+  )
+}

@@ -38,6 +38,9 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Scroll lock while the project modal or mobile menu is open. */
+html.is-locked { overflow: hidden; }
+
 /* ---------- Layout helper ---------- */
 /* Content max 1376 + side padding (20 mobile / 32 desktop), centred above 1440. */
 .container {
