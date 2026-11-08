@@ -1,0 +1,213 @@
+---
+/**
+ * Showcase Gallery — DESIGN_SYSTEM.md §5.4 / BUILD_PROMPT.md §6.5. Figma: Showcase Gallery (Step 1).
+ * Phase 4 = static layout (Step 1). Autoplay, drag, arrows and dots get wired up in Phase 6
+ * (markup is already shaped for Embla: viewport > container > slides).
+ */
+import { Image } from 'astro:assets';
+import Icon from '../ui/Icon.astro';
+import type { Project } from '../../lib/content';
+
+interface Props {
+  featured: Project[];
+  more: Project[];
+}
+const { featured, more } = Astro.props;
+
+/** Repeat a list until it has at least `min` items, so the loop always looks full. */
+const fill = <T,>(items: T[], min = 5): T[] => {
+  if (items.length === 0) return [];
+  const out = [...items];
+  while (out.length < min) out.push(...items);
+  return out;
+};
+const featuredSlides = fill(featured);
+const moreSlides = fill(more);
+// Static Step 1: the slide before the first one peeks on the left.
+const featuredOrdered = featuredSlides.length
+  ? [featuredSlides[featuredSlides.length - 1]!, ...featuredSlides.slice(0, -1)]
+  : [];
+---
+
+{
+  featuredSlides.length > 0 && (
+    <section class="showcase" aria-roledescription="carousel" aria-label="Showcase">
+      <div class="showcase__row showcase__row--featured">
+        <div class="showcase__viewport">
+          <div class="showcase__track">
+            {featuredOrdered.map((p, i) => (
+              <div class="showcase__slide" role="group" aria-roledescription="slide">
+                <Image
+                  src={p.data.thumbnail}
+                  alt=""
+                  widths={[330, 660, 940, 1880]}
+                  sizes="(min-width: 1024px) 940px, 330px"
+                  loading={i === 1 ? 'eager' : 'lazy'}
+                  fetchpriority={i === 1 ? 'high' : undefined}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+        <button class="showcase__arrow showcase__arrow--prev" type="button" aria-label="Previous">
+          <Icon name="arrow-left" />
+        </button>
+        <button class="showcase__arrow showcase__arrow--next" type="button" aria-label="Next">
+          <Icon name="arrow-right" />
+        </button>
+      </div>
+
+      {moreSlides.length > 0 && (
+        <div class="showcase__row showcase__row--more">
+          <div class="showcase__viewport">
+            <div class="showcase__track">
+              {moreSlides.map((p) => (
+                <div class="showcase__card">
+                  <Image
+                    src={p.data.thumbnail}
+                    alt=""
+                    widths={[220, 355, 440, 710]}
+                    sizes="(min-width: 1024px) 355px, 220px"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div class="showcase__pagination">
+        <div class="showcase__dots">
+          {featured.map((_, i) => (
+            <button
+              class="showcase__dot"
+              type="button"
+              aria-label={`Go to slide ${i + 1}`}
+              aria-current={i === 0 ? 'true' : undefined}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .showcase {
+    background: var(--bg-secondary);
+    padding: 16px 0 72px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    --slide-w: 330px;
+    --slide-h: 212px;
+    --card-w: 220px;
+    --card-h: 140px;
+    --gap: 8px;
+  }
+  @media (min-width: 1024px) {
+    .showcase {
+      padding: 24px 0 128px;
+      gap: 14px;
+      --slide-w: 940px;
+      --slide-h: 504px;
+      --card-w: 355px;
+      --card-h: 200px;
+      --gap: 14px;
+    }
+  }
+
+  .showcase__row { position: relative; }
+  .showcase__viewport { overflow: hidden; }
+  .showcase__track {
+    display: flex;
+    gap: var(--gap);
+  }
+
+  /* Featured: the second slide is centred, its neighbours peek on both sides. */
+  .showcase__row--featured .showcase__track {
+    margin-left: calc(50% - var(--slide-w) / 2 - var(--slide-w) - var(--gap));
+  }
+  .showcase__slide {
+    flex: none;
+    width: var(--slide-w);
+    height: var(--slide-h);
+  }
+  /* More: first card cut off on the left (−60 mobile / −160 desktop). */
+  .showcase__row--more .showcase__track { margin-left: -60px; }
+  @media (min-width: 1024px) {
+    .showcase__row--more .showcase__track { margin-left: -160px; }
+  }
+  .showcase__card {
+    flex: none;
+    width: var(--card-w);
+    height: var(--card-h);
+  }
+  .showcase__slide :global(img),
+  .showcase__card :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+  }
+
+  /* Arrows */
+  .showcase__arrow {
+    position: absolute;
+    top: 50%;
+    translate: 0 -50%;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    background: var(--surface-overlay);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    color: var(--text-primary);
+    transition: scale 200ms ease;
+  }
+  .showcase__arrow--prev { left: 8px; }
+  .showcase__arrow--next { right: 8px; }
+  @media (min-width: 1024px) {
+    .showcase__arrow { width: 40px; height: 40px; }
+    /* 24px outside the featured slide; never closer than 8px to the screen edge. */
+    .showcase__arrow--prev { left: max(8px, calc(50% - 548px)); }
+    .showcase__arrow--next { right: max(8px, calc(50% - 548px)); }
+  }
+
+  /* Pagination */
+  .showcase__pagination {
+    display: flex;
+    justify-content: center;
+    padding-top: 8px; /* + row gap 8 = 16 */
+  }
+  @media (min-width: 1024px) {
+    .showcase__pagination { padding-top: 4px; } /* + row gap 14 = 18 */
+  }
+  .showcase__dots {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 28px;
+    padding: 0 16px;
+    border-radius: 999px;
+    background: var(--bg-tertiary);
+  }
+  @media (min-width: 1024px) {
+    .showcase__dots { gap: 10px; height: 32px; }
+  }
+  .showcase__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--text-tertiary);
+    opacity: 0.6;
+    transition: background-color 200ms ease, opacity 200ms ease;
+  }
+  .showcase__dot[aria-current='true'] {
+    background: var(--text-primary);
+    opacity: 1;
+  }
+</style>

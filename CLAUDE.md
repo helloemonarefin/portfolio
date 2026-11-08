@@ -17,8 +17,7 @@ If they disagree or something isn't covered: check Figma, then ask Emon. Never i
 
 ## Status
 - Stack: Astro 7.4.7, TypeScript strict, Node 26, plain CSS.
-- Current phase: **3 — CMS (done, awaiting OK)**. Next: Phase 4 — Home, static.
-- Home page `/` is a TEMPORARY content preview until Phase 4.
+- Current phase: **4 — Home, static (done, awaiting OK)**. Next: Phase 5 — About, static.
 - Temporary `/styleguide` page exists (noindex) — remove or hide in Phase 8.
 
 ## Decisions log
@@ -31,6 +30,9 @@ If they disagree or something isn't covered: check Figma, then ask Emon. Never i
 - 2026-11-08 — Keystatic integration loads only in `npm run dev` (needs a server adapter, added in Phase 9). `npm run build` stays fully static.
 - 2026-11-08 — Added `settings.currentRole.summary` (About "Now" one-liner from Figma) so that copy comes from the CMS. Both spec files updated.
 - 2026-11-08 — Seed: 3 projects (Figma placeholder copy), 8 Lens photos (6 wide + 2 square, as in Figma), placeholder images are labelled grey PNGs.
+- 2026-11-08 — Brand assets from Figma: `src/assets/brand/logo-mark.svg`, `portrait.png`. Dotted logo SVGs taken from Figma's Footer component (converted path→circle, identical render, ~5× smaller) instead of generating with sharp.
+- 2026-11-08 — Pricing built per DESIGN_SYSTEM (grey band, white cards); Figma shows the reverse — awaiting Emon's confirmation.
+- 2026-11-08 — Nav has a 1px --border-primary bottom border (from Figma; not in the spec text).
 - Still open: sticky nav (ask in Phase 6); `sharp` install (ask in Phase 4).
 
 ## Dev commands

@@ -1,0 +1,78 @@
+---
+/**
+ * Work section — DESIGN_SYSTEM.md §5.6–5.7 / BUILD_PROMPT.md §6.6. Figma: Work.
+ * Filter chips are static in Phase 4 ("All" active); filtering is wired in Phase 6.
+ */
+import SectionHeader from '../ui/SectionHeader.astro';
+import WorkCard from './WorkCard.astro';
+import { categoryLabels, type Project } from '../../lib/content';
+
+interface Props {
+  projects: Project[];
+}
+const { projects } = Astro.props;
+
+const filters = [{ value: 'all', label: 'All' }, ...Object.entries(categoryLabels).map(([value, label]) => ({ value, label }))];
+---
+
+<section id="work" class="section work" aria-labelledby="work-title">
+  <div class="container section__inner">
+    <SectionHeader title="Real work. Real impact." id="work-title">
+      <div class="filters" role="group" aria-label="Filter projects">
+        {
+          filters.map((f) => (
+            <button class="chip t-label" type="button" data-filter={f.value} aria-pressed={f.value === 'all' ? 'true' : 'false'}>
+              {f.label}
+            </button>
+          ))
+        }
+      </div>
+    </SectionHeader>
+
+    <ul class="work__grid" role="list">
+      {
+        projects.map((p) => (
+          <li class="work__item" data-category={p.data.category}>
+            <WorkCard project={p} />
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .work { background: var(--bg-primary); }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .chip {
+    height: 36px;
+    padding: 0 16px;
+    border-radius: 6px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    white-space: nowrap;
+    transition: background-color 200ms ease, color 200ms ease;
+  }
+  .chip[aria-pressed='true'] {
+    background: var(--button-primary-bg);
+    color: var(--button-primary-text);
+  }
+
+  .work__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    margin: 0;
+  }
+  @media (min-width: 768px) {
+    .work__grid { grid-template-columns: 1fr 1fr; column-gap: 24px; }
+  }
+  @media (min-width: 1024px) {
+    .work__grid { row-gap: 40px; }
+  }
+</style>

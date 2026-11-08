@@ -1,0 +1,231 @@
+---
+/**
+ * Footer — DESIGN_SYSTEM.md §5.11 / BUILD_PROMPT.md §6.10. Figma: Footer (Desktop / Mobile).
+ */
+import Logo from '../ui/Logo.astro';
+import { getSettings } from '../../lib/content';
+import dottedDesktop from '../../assets/brand/dotted-logo-desktop.svg?url';
+import dottedMobile from '../../assets/brand/dotted-logo-mobile.svg?url';
+
+const settings = await getSettings();
+
+// "Get an AI summary" — each opens the assistant with this prompt pre-filled.
+// TODO(Emon): replace the dashed placeholders with the official logos (DESIGN_SYSTEM §13).
+const prompt = encodeURIComponent(
+  'Summarise who Emon Arefin is and what he offers, based on https://emonarefin.com',
+);
+const assistants = [
+  { name: 'ChatGPT', href: `https://chatgpt.com/?q=${prompt}` },
+  { name: 'Gemini', href: `https://gemini.google.com/app?q=${prompt}` },
+  { name: 'Claude', href: `https://claude.ai/new?q=${prompt}` },
+  { name: 'Perplexity', href: `https://www.perplexity.ai/search?q=${prompt}` },
+];
+
+const navigate = [
+  { label: 'Home', href: '/' },
+  { label: 'Work', href: '/#work' },
+  { label: 'About', href: '/about' },
+  { label: 'Pricing', href: '/#pricing' },
+  { label: 'Book a call', href: '/#book' },
+];
+// No destinations are specified for these yet, so they render as plain text.
+const services = ['Website design', 'Framer development', 'Monthly subscription', 'Framer templates'];
+const { socials } = settings;
+const connect = [
+  { label: 'LinkedIn', href: socials.linkedin },
+  { label: 'X / Twitter', href: socials.x },
+  { label: 'Dribbble', href: socials.dribbble },
+  { label: 'Behance', href: socials.behance },
+  { label: 'Resume', href: socials.resumeUrl },
+];
+---
+
+<footer class="footer">
+  <div class="container footer__content">
+    <div class="footer__brand">
+      <div class="footer__identity">
+        <Logo href="/" />
+        <p class="footer__blurb t-body-sm">
+          Framer designer and developer crafting fast, considered websites for startups, studios and creators.
+        </p>
+        <p class="footer__location t-caption">Based in Bangladesh · GMT+6</p>
+      </div>
+
+      <div class="footer__ai">
+        <p class="t-label t-medium">Get an AI summary of Emon</p>
+        <ul class="footer__ai-list" role="list">
+          {
+            assistants.map((a) => (
+              <li>
+                <a
+                  class="footer__ai-btn"
+                  href={a.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Ask ${a.name} for a summary of Emon (opens in a new tab)`}
+                  title={a.name}
+                >
+                  <span class="footer__ai-placeholder" aria-hidden="true" />
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+
+    <nav class="footer__columns" aria-label="Footer">
+      <div class="footer__col">
+        <h2 class="t-label t-medium">Navigate</h2>
+        <ul role="list">
+          {navigate.map((l) => <li><a class="footer__link t-label" href={l.href}>{l.label}</a></li>)}
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h2 class="t-label t-medium">Services</h2>
+        <ul role="list">
+          {services.map((s) => <li><span class="footer__link footer__link--static t-label">{s}</span></li>)}
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h2 class="t-label t-medium">Connect</h2>
+        <ul role="list">
+          {
+            connect.map((c) => (
+              <li>
+                {c.href ? (
+                  <a class="footer__link t-label" href={c.href} target="_blank" rel="noopener noreferrer">
+                    {c.label} ↗<span class="sr-only"> (opens in a new tab)</span>
+                  </a>
+                ) : (
+                  <span class="footer__link footer__link--static t-label">{c.label} ↗</span>
+                )}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+  <div class="container footer__dotted" aria-hidden="true">
+    <picture>
+      <source media="(min-width: 1024px)" srcset={dottedDesktop} width="1376" height="272" />
+      <img src={dottedMobile} width="350" height="70" alt="" loading="lazy" decoding="async" />
+    </picture>
+  </div>
+
+  <div class="container footer__bottom">
+    <p class="t-caption">© 2026 Emon Arefin. All rights reserved.</p>
+    <ul class="footer__legal" role="list">
+      <li><span class="t-label">Privacy</span></li>
+      <li><span class="t-label">Terms</span></li>
+      <li><a class="footer__link t-label" href="#top">Back to top ↑</a></li>
+    </ul>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--border-primary);
+    padding-top: 64px;
+    background: var(--bg-primary);
+  }
+  @media (min-width: 1024px) {
+    .footer { padding-top: 96px; }
+  }
+
+  .footer__content {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    padding-bottom: 48px;
+  }
+  @media (min-width: 1024px) {
+    .footer__content {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+  }
+
+  .footer__brand { display: flex; flex-direction: column; gap: 40px; }
+  .footer__identity { display: flex; flex-direction: column; align-items: flex-start; gap: 20px; }
+  .footer__blurb { max-width: 400px; color: var(--text-secondary); }
+  .footer__location { color: var(--text-tertiary); }
+
+  .footer__ai { display: flex; flex-direction: column; gap: 12px; }
+  .footer__ai-list { display: flex; gap: 8px; margin: 0; }
+  .footer__ai-btn {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    background: var(--bg-secondary);
+    transition: background-color 200ms ease;
+  }
+  .footer__ai-placeholder {
+    width: 18px;
+    height: 18px;
+    border: 1px dashed var(--text-tertiary);
+    border-radius: 4px;
+  }
+
+  .footer__columns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+  }
+  @media (min-width: 1024px) {
+    .footer__columns { flex-wrap: nowrap; gap: 112px; }
+  }
+  .footer__col {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 155px;
+  }
+  @media (min-width: 1024px) {
+    .footer__col { width: auto; }
+  }
+  .footer__col ul { display: flex; flex-direction: column; gap: 16px; margin: 0; }
+  /* flex items: no extra line-height strut, so the gap is exactly 16 */
+  .footer__col li,
+  .footer__legal li { display: flex; }
+  .footer__link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color 150ms ease;
+  }
+  a.footer__link:focus-visible { color: var(--text-primary); }
+
+  .footer__dotted img {
+    width: 100%;
+    height: auto;
+  }
+
+  .footer__bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-top: 20px;
+    padding-bottom: 28px;
+    color: var(--text-secondary);
+  }
+  @media (min-width: 1024px) {
+    .footer__bottom {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+  .footer__legal { display: flex; gap: 24px; margin: 0; }
+
+  @media (hover: hover) and (pointer: fine) {
+    a.footer__link:hover { color: var(--text-primary); }
+    .footer__ai-btn:hover { background: var(--bg-tertiary); }
+  }
+  .footer__ai-btn:focus-visible { background: var(--bg-tertiary); }
+</style>

@@ -1,0 +1,129 @@
+---
+/**
+ * Nav — DESIGN_SYSTEM.md §5.2 / BUILD_PROMPT.md §6.3. Figma: Nav (Desktop / Mobile).
+ * `overlay` = sits absolutely over the Home hero (transparent). On About it sits in the flow.
+ * The mobile menu panel itself is built in Phase 6; for now the button is static.
+ */
+import Logo from '../ui/Logo.astro';
+import Button from '../ui/Button.astro';
+import Icon from '../ui/Icon.astro';
+
+interface Props {
+  worksCount: string;
+  overlay?: boolean;
+}
+const { worksCount, overlay = false } = Astro.props;
+
+const links = [
+  { label: 'Home', href: '/' },
+  { label: 'Works', href: '/#work', count: worksCount },
+  { label: 'About', href: '/about' },
+  { label: 'Pricing', href: '/#pricing' },
+  { label: 'Contact', href: '/#book' },
+];
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+---
+
+<header class:list={['nav', { 'nav--overlay': overlay }]}>
+  <div class="nav__row">
+    <Logo href="/" />
+
+    <nav class="nav__links" aria-label="Main">
+      <ul role="list">
+        {
+          links.map((l) => (
+            <li>
+              <a class="nav__link t-label" href={l.href} aria-current={l.href === path ? 'page' : undefined}>
+                {l.label}
+                {l.count && <span class="nav__count">{l.count}</span>}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="nav__actions">
+      <Button label="Hire Me" size="sm" href="/#book" />
+    </div>
+
+    <button class="nav__menu" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+      <Icon name="menu" />
+    </button>
+  </div>
+</header>
+
+<style>
+  .nav {
+    position: relative;
+    z-index: 4;
+    height: 64px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border-primary);
+    background: var(--bg-primary);
+  }
+  .nav--overlay {
+    position: absolute;
+    inset: 0 0 auto 0;
+    background: transparent;
+  }
+  .nav__row {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav__links,
+  .nav__actions { display: none; }
+
+  .nav__menu {
+    display: inline-grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+  }
+
+  @media (min-width: 1024px) {
+    .nav {
+      height: 85px;
+      padding: 24px 48px;
+    }
+    .nav__row {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr; /* links stay centred */
+      align-items: center;
+    }
+    .nav__menu { display: none; }
+    .nav__links,
+    .nav__actions { display: flex; }
+    .nav__actions { justify-content: flex-end; }
+
+    .nav__links ul {
+      display: flex;
+      gap: 12px;
+      margin: 0;
+    }
+    .nav__link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      height: 32px;
+      padding: 5px 10px;
+      border-radius: 4px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      white-space: nowrap;
+      transition: color 150ms ease;
+    }
+    .nav__count { color: var(--text-tertiary); }
+    .nav__link:focus-visible { color: var(--text-primary); }
+  }
+
+  @media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
+    .nav__link:hover { color: var(--text-primary); }
+  }
+</style>

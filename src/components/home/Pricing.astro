@@ -1,0 +1,180 @@
+---
+/**
+ * Pricing — DESIGN_SYSTEM.md §5.8 / BUILD_PROMPT.md §6.8. Figma: Pricing.
+ * Grey band, two white plan cards (equal height on desktop). Copy from the CMS.
+ */
+import SectionHeader from '../ui/SectionHeader.astro';
+import Button from '../ui/Button.astro';
+
+type Plan = {
+  name: string;
+  description: string;
+  price: string;
+  unit: string;
+  badge: string;
+  features: string[];
+  ctaLabel: string;
+};
+interface Props {
+  plans: Plan[];
+}
+const { plans } = Astro.props;
+---
+
+<section id="pricing" class="section pricing" aria-labelledby="pricing-title">
+  <div class="container section__inner">
+    <SectionHeader title="Simple pricing. No surprises." id="pricing-title" />
+
+    <div class="pricing__body">
+      <div class="pricing__plans">
+        {
+          plans.map((plan) => (
+            <article class="plan" aria-label={plan.name}>
+              <div class="plan__head">
+                <div class="plan__title-row">
+                  <h3 class="plan__name t-h4">{plan.name}</h3>
+                  {plan.badge && <span class="plan__badge t-caption">{plan.badge}</span>}
+                </div>
+                {plan.description && <p class="plan__desc t-body">{plan.description}</p>}
+              </div>
+
+              <p class="plan__price">
+                <span class="t-display">{plan.price}</span>
+                {plan.unit && <span class="plan__unit t-body">{plan.unit}</span>}
+              </p>
+
+              <Button label={plan.ctaLabel} layout="fill" href="#book" />
+
+              <hr class="plan__rule" />
+
+              <div class="plan__features">
+                <p class="plan__included t-caption">What’s included</p>
+                <ul role="list">
+                  {plan.features.map((f) => (
+                    <li class="plan__feature t-body">
+                      <svg class="plan__check" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
+                        <circle cx="10" cy="10" r="10" />
+                        <path d="M6 10.2L8.6 12.8L14 7.4" />
+                      </svg>
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+
+      <p class="pricing__note t-body">
+        <span class="pricing__note-muted">Need something different?</span>
+        <a href="#book">Let’s talk about a custom quote →</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .pricing { background: var(--bg-secondary); }
+
+  .pricing__body {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+  @media (min-width: 1024px) {
+    .pricing__body { gap: 56px; }
+  }
+
+  .pricing__plans {
+    display: grid;
+    gap: 16px;
+  }
+  @media (min-width: 1024px) {
+    .pricing__plans { grid-template-columns: 1fr 1fr; }
+  }
+
+  .plan {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    padding: 24px;
+    border-radius: 20px;
+    background: var(--bg-primary);
+  }
+  @media (min-width: 1024px) {
+    .plan { gap: 32px; padding: 40px; }
+  }
+
+  .plan__head { display: flex; flex-direction: column; gap: 8px; }
+  .plan__title-row {
+    display: flex;
+    flex-direction: column-reverse; /* mobile: badge above the name */
+    align-items: flex-start;
+    gap: 0;
+  }
+  @media (min-width: 1024px) {
+    .plan__title-row {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      min-height: 30px;
+    }
+  }
+  .plan__badge {
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+  .plan__desc { color: var(--text-secondary); }
+
+  .plan__price {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .plan__unit { color: var(--text-secondary); }
+
+  .plan__rule {
+    border: 0;
+    height: 1px;
+    background: var(--border-primary);
+  }
+
+  .plan__features { display: flex; flex-direction: column; gap: 14px; }
+  .plan__features ul { display: flex; flex-direction: column; gap: 14px; margin: 0; }
+  .plan__included { color: var(--text-secondary); }
+  .plan__feature {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .plan__check { flex: none; }
+  .plan__check circle { fill: var(--bg-tertiary); }
+  .plan__check path {
+    fill: none;
+    stroke: var(--text-primary);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .pricing__note {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 6px;
+  }
+  .pricing__note-muted { color: var(--text-secondary); }
+  .pricing__note a {
+    color: var(--text-primary);
+    font-weight: 500;
+    text-decoration: none;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .pricing__note a:hover { text-decoration: underline; }
+  }
+</style>

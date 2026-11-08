@@ -1,0 +1,35 @@
+---
+/**
+ * Section Header — DESIGN_SYSTEM.md §5.5.
+ * Desktop: heading (display) left + optional right slot, bottom-aligned, one row.
+ * Mobile: heading, then the right slot underneath (gap 20). No subheadings.
+ */
+interface Props {
+  title: string;
+  id?: string;
+}
+const { title, id } = Astro.props;
+const hasAside = Astro.slots.has('default');
+---
+
+<div class="section-header">
+  <h2 class="t-display section-header__title" id={id}>{title}</h2>
+  {hasAside && <div class="section-header__aside"><slot /></div>}
+</div>
+
+<style>
+  .section-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  @media (min-width: 1024px) {
+    .section-header {
+      flex-direction: row;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 32px;
+    }
+  }
+</style>

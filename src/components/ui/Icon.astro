@@ -1,23 +1,58 @@
 ---
 /**
- * Stroke icons (Lucide shapes, as used in the Figma components).
- * They draw in `currentColor`, so they take the colour of the surrounding text.
- * Path data and stroke widths are copied exactly from the Figma assets.
+ * Stroke icons (Lucide shapes, exactly as used in the Figma file).
+ * Drawn in `currentColor`, so they take the colour of the surrounding text.
+ * Path data, sizes and stroke widths are copied from the Figma assets.
  */
 const icons = {
-  // Figma "Icon / Chevron" — 16×16, stroke 1.33
-  'chevron-right': {
-    viewBox: '0 0 16 16',
-    size: 16,
-    strokeWidth: 1.33333,
-    d: 'M6 12L10 8L6 4',
-  },
-  // Figma Arrow Button "Arrow" — 17.39×17.39, stroke 1.45
+  // Button chip — 16, stroke 1.33
+  'chevron-right': { size: 16, view: 16, stroke: 1.33333, body: '<path d="M6 12L10 8L6 4"/>' },
+  // Showcase arrows — 16, stroke 1.5
+  'arrow-left': { size: 16, view: 16, stroke: 1.5, body: '<path d="M10 4L6 8L10 12"/>' },
+  'arrow-right': { size: 16, view: 16, stroke: 1.5, body: '<path d="M6 4L10 8L6 12"/>' },
+  // Arrow Button — 17.39, stroke 1.45
   'arrow-up-right': {
-    viewBox: '0 0 17.3913 17.3913',
     size: 17.3913,
-    strokeWidth: 1.44928,
-    d: 'M12.3186 12.3186V5.07227H5.07227M12.3186 5.07227L5.07227 12.3186',
+    view: 17.3913,
+    stroke: 1.44928,
+    body: '<path d="M12.3186 12.3186V5.07227H5.07227M12.3186 5.07227L5.07227 12.3186"/>',
+  },
+  // Nav menu — 18, stroke 1.5
+  menu: { size: 18, view: 18, stroke: 1.5, body: '<path d="M3 6.5H15M3 11.5H15"/>' },
+  // Book a Call meta — 16, stroke 1.3
+  clock: {
+    size: 16,
+    view: 16,
+    stroke: 1.3,
+    body: '<path d="M14.25 8C14.25 11.4518 11.4518 14.25 8 14.25C4.54822 14.25 1.75 11.4518 1.75 8C1.75 4.54822 4.54822 1.75 8 1.75C11.4518 1.75 14.25 4.54822 14.25 8Z"/><path d="M8 4.8V8L10.2 9.4"/>',
+  },
+  'map-pin': {
+    size: 16,
+    view: 16,
+    stroke: 1.3,
+    body: '<path d="M8 14.2C8 14.2 12.6 10.3 12.6 6.6C12.6 4.06 10.54 2 8 2C5.46 2 3.4 4.06 3.4 6.6C3.4 10.3 8 14.2 8 14.2Z"/><path d="M9.7 6.6C9.7 7.53888 8.93888 8.3 8 8.3C7.06112 8.3 6.3 7.53888 6.3 6.6C6.3 5.66112 7.06112 4.9 8 4.9C8.93888 4.9 9.7 5.66112 9.7 6.6Z"/>',
+  },
+  'message-square': {
+    size: 16,
+    view: 16,
+    stroke: 1.3,
+    body: '<path d="M2.5 4.2C2.5 3.26 3.26 2.5 4.2 2.5H11.8C12.74 2.5 13.5 3.26 13.5 4.2V9.6C13.5 10.54 12.74 11.3 11.8 11.3H7L4.2 13.5V11.3C3.26 11.3 2.5 10.54 2.5 9.6V4.2Z"/>',
+  },
+  // Cal.com placeholder — 40, stroke 2
+  calendar: {
+    size: 40,
+    view: 40,
+    stroke: 2,
+    body:
+      '<path d="M11 9H29C31.7614 9 34 11.2386 34 14V29C34 31.7614 31.7614 34 29 34H11C8.23858 34 6 31.7614 6 29V14C6 11.2386 8.23858 9 11 9Z"/><path d="M6 16H34"/><path d="M13 5V11M27 5V11"/>' +
+      '<g fill="currentColor" stroke="none"><circle cx="14" cy="22.5" r="1.6"/><circle cx="20" cy="22.5" r="1.6"/><circle cx="26" cy="22.5" r="1.6"/><circle cx="14" cy="28" r="1.6"/><circle cx="20" cy="28" r="1.6"/></g>',
+  },
+  // Placeholder photo icon — 32
+  image: {
+    size: 32,
+    view: 32,
+    stroke: 1.6,
+    body: '<rect x="4" y="6" width="24" height="20" rx="3"/><circle cx="11.5" cy="12.5" r="2.5"/><path d="M28 21L21 14L8 26"/>',
   },
 } as const;
 
@@ -36,14 +71,13 @@ const icon = icons[name];
   class={className}
   width={icon.size}
   height={icon.size}
-  viewBox={icon.viewBox}
+  viewBox={`0 0 ${icon.view} ${icon.view}`}
   fill="none"
   stroke="currentColor"
-  stroke-width={icon.strokeWidth}
+  stroke-width={icon.stroke}
   stroke-linecap="round"
   stroke-linejoin="round"
   aria-hidden="true"
   focusable="false"
->
-  <path d={icon.d} />
-</svg>
+  set:html={icon.body}
+/>

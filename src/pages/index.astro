@@ -1,86 +1,36 @@
 ---
 /**
- * TEMPORARY home page (Phase 3): a plain preview of the CMS content,
- * so you can check that what you save in /keystatic shows up.
- * Replaced by the real Home page in Phase 4.
+ * Home — DESIGN_SYSTEM.md §8.
+ * Nav · Hero · Showcase · Work · Pricing · Book a Call · Footer.
+ * Phase 4: static layout. Interactivity (Phase 6) and motion (Phase 7) come next.
  */
-import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import { getProjects, getPhotos, getSettings, getPricing, padCount, categoryLabels } from '../lib/content';
+import Nav from '../components/layout/Nav.astro';
+import Footer from '../components/layout/Footer.astro';
+import Hero from '../components/home/Hero.astro';
+import ShowcaseGallery from '../components/home/ShowcaseGallery.astro';
+import WorkSection from '../components/home/WorkSection.astro';
+import Pricing from '../components/home/Pricing.astro';
+import BookCall from '../components/home/BookCall.astro';
+import { getProjects, getSettings, getPricing, padCount } from '../lib/content';
 
 const projects = await getProjects();
-const photos = await getPhotos();
 const settings = await getSettings();
 const pricing = await getPricing();
+const worksCount = padCount(projects.length);
+
+const featured = projects.filter((p) => p.data.showcase === 'featured');
+const more = projects.filter((p) => p.data.showcase === 'more');
 ---
 
-<Base title="Emon Arefin — Product Designer & Photographer" description={settings.siteDescription} noindex>
-  <main class="container preview">
-    <header>
-      <p class="t-caption muted">Temporary content preview · Phase 3</p>
-      <h1 class="t-display">CMS content</h1>
-      <p class="t-body-lg muted">
-        Edit at <a href="/keystatic">/keystatic</a>. Styleguide at <a href="/styleguide">/styleguide</a>.
-      </p>
-    </header>
-
-    <section>
-      <h2 class="t-h2">Projects · {padCount(projects.length)}</h2>
-      <ul class="grid" role="list">
-        {
-          projects.map((p, i) => (
-            <li class="card">
-              <Image src={p.data.thumbnail} alt="" widths={[400, 800]} sizes="(min-width: 1024px) 33vw, 100vw" />
-              <p class="t-body t-medium">{p.data.title}</p>
-              <p class="t-caption muted">
-                Case study · {padCount(i + 1)} / {padCount(projects.length)} · {categoryLabels[p.data.category]} ·
-                showcase: {p.data.showcase} · gallery: {p.data.gallery.length} · #project-{p.id}
-              </p>
-              <p class="t-caption muted">{p.data.tags.join(' | ')}</p>
-            </li>
-          ))
-        }
-      </ul>
-    </section>
-
-    <section>
-      <h2 class="t-h2">Photos · {photos.length}</h2>
-      <ul class="photos" role="list">
-        {
-          photos.map((ph) => (
-            <li class:list={['photo', ph.data.size]}>
-              <Image src={ph.data.image} alt={ph.data.alt} widths={[400, 800]} sizes="25vw" />
-            </li>
-          ))
-        }
-      </ul>
-    </section>
-
-    <section class="two">
-      <div>
-        <h2 class="t-h2">Settings</h2>
-        <pre class="t-caption">{JSON.stringify(settings, null, 2)}</pre>
-      </div>
-      <div>
-        <h2 class="t-h2">Pricing</h2>
-        <pre class="t-caption">{JSON.stringify(pricing, null, 2)}</pre>
-      </div>
-    </section>
+<Base title="Emon Arefin — Product Designer & Photographer" description={settings.siteDescription}>
+  <Nav worksCount={worksCount} overlay />
+  <main>
+    <Hero worksCount={worksCount} />
+    <ShowcaseGallery featured={featured} more={more} />
+    <WorkSection projects={projects} />
+    <Pricing plans={pricing.plans} />
+    <BookCall email={settings.email} calLink={settings.calLink} />
   </main>
+  <Footer />
 </Base>
-
-<style>
-  .preview { padding-block: 72px; display: grid; gap: 56px; }
-  .preview header, .preview section { display: grid; gap: 16px; }
-  .muted { color: var(--text-secondary); }
-  .grid { display: grid; gap: 24px; }
-  @media (min-width: 768px) { .grid { grid-template-columns: repeat(3, 1fr); } }
-  .card { display: grid; gap: 8px; align-content: start; }
-  .card :global(img) { width: 100%; height: auto; }
-  .photos { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-flow: dense; gap: 8px; }
-  .photo.wide { grid-column: span 2; }
-  .photo :global(img) { width: 100%; height: auto; }
-  .two { display: grid; gap: 32px; }
-  @media (min-width: 1024px) { .two { grid-template-columns: 1fr 1fr; } }
-  pre { white-space: pre-wrap; background: var(--bg-secondary); padding: 16px; border-radius: 6px; font-family: var(--font-sans); }
-</style>

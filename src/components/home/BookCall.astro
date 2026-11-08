@@ -1,0 +1,119 @@
+---
+/**
+ * Book a Call — DESIGN_SYSTEM.md §5.9 / BUILD_PROMPT.md §6.9. Figma: Book a Call.
+ * Phase 4 = placeholder box. The Cal.com inline embed is loaded in Phase 6.
+ */
+import SectionHeader from '../ui/SectionHeader.astro';
+import Icon from '../ui/Icon.astro';
+
+interface Props {
+  email: string;
+  calLink: string;
+}
+const { email, calLink } = Astro.props;
+
+const meta = [
+  { icon: 'clock', text: '30 min · Google Meet' },
+  { icon: 'map-pin', text: 'Based in Bangladesh · GMT+6' },
+  { icon: 'message-square', text: 'Replies within 24 hours' },
+] as const;
+---
+
+<section id="book" class="section book" aria-labelledby="book-title">
+  <div class="container section__inner">
+    <SectionHeader title="Let’s build something great." id="book-title">
+      <ul class="book__meta" role="list">
+        {
+          meta.map((m) => (
+            <li class="book__meta-item t-body-sm">
+              <Icon name={m.icon} />
+              {m.text}
+            </li>
+          ))
+        }
+      </ul>
+    </SectionHeader>
+
+    <div class="book__body">
+      <div class="book__embed" data-cal-link={calLink}>
+        <div class="book__placeholder">
+          <Icon name="calendar" />
+          <p class="t-h5">Loading calendar…</p>
+        </div>
+      </div>
+
+      {
+        email && (
+          <p class="book__email t-body">
+            <span class="book__email-muted">Prefer email?</span>
+            <a href={`mailto:${email}`}>{email}</a>
+          </p>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .book { background: var(--bg-primary); }
+
+  .book__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0;
+  }
+  @media (min-width: 1024px) {
+    .book__meta { flex-direction: row; gap: 24px; }
+  }
+  .book__meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+
+  .book__body {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+  @media (min-width: 1024px) {
+    .book__body { gap: 48px; }
+  }
+
+  .book__embed {
+    height: 620px;
+    border-radius: 20px;
+    background: var(--bg-secondary);
+    border: 1px dashed var(--border-secondary);
+    overflow: hidden;
+  }
+  @media (min-width: 1024px) {
+    .book__embed { height: 680px; }
+  }
+  .book__placeholder {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    color: var(--text-tertiary);
+  }
+  .book__placeholder p { color: var(--text-primary); }
+
+  .book__email {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 6px;
+  }
+  .book__email-muted { color: var(--text-secondary); }
+  .book__email a {
+    color: var(--text-primary);
+    font-weight: 500;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+</style>
