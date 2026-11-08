@@ -172,12 +172,12 @@ Each maps to a Figma component of the same name (page "Portfolio Website", right
 - **Primary structure:** `<a class="btn btn--primary">` → `<span class="btn__chip" aria-hidden="true">` (chevron SVG) + `<span class="btn__label">`. Button: `position: relative; display: inline-flex; align-items: center`, radius 6, `--button-primary-bg`.
 - **Chip:** `position: absolute; top: 4px; bottom: 4px; left: 4px; width: 32px` (28 at sm), radius 3, `--button-primary-chip`; flex with `justify-content: flex-end` and `padding-inline: 8px` (6 at sm), so at rest the 16px chevron sits centred in the square chip.
 - **Rule:** in every state the chip keeps exactly **4px to each button edge it touches** — hovered, it is `inset: 4px` (4px top, right, bottom, left).
-  - Padding: `hug` → left 44 (40 at sm), right 32 (30 at sm) so the swept chevron never overlaps the label. `fill` → `width:100%`, left & right 44, label centred.
+  - Padding: `hug` → left 44 (40 at sm), right **16 (14 at sm)**. On hover the label (and count) slide **24px left** while the chip sweeps right, so the chevron gets room (decided 2026-11-08). `fill` → `width:100%`, left & right 44, label centred, no slide.
   - Label `label` token, weight 500, `--button-primary-text`, sits above the chip (`position: relative; z-index: 1`).
 - **Hover / focus-visible (primary):** the chip **sweeps** from 32px to `calc(100% - 8px)` wide (height unchanged), carrying the chevron to the right end; the label doesn't move. `transition: width 450ms cubic-bezier(.22,1,.36,1)`. (If it ever stutters, switch to `scaleX` on a pseudo-element plus a translated chevron.)
 - **Secondary (plain):** `--button-secondary-bg`, 0.5px `--button-secondary-border`, radius 6, padding `0 14`, label `--button-secondary-text`; optional count in `--text-tertiary`, 6px after the label. Hover: background → `--button-secondary-bg-hover`, 200ms.
 - **Secondary-chip:** identical geometry and motion to Primary (same 4px inset rule, hug/fill). Colours: background `--button-secondary-bg`, 1px `--button-secondary-border`, chip `--bg-secondary`, chevron `--text-primary`, label `--button-secondary-text`, count `--text-tertiary` after the label. Figma variant: `Style=Secondary Chip`.
-- **Usage:** Nav "Hire Me" = primary sm hug · Hero "View Projects 08" = **secondary** (plain) md + count (decided 2026-11-08) and "Hire Me" = primary md hug · Pricing "Book a call" = primary md **fill** · Modal "View live site" = primary md **fill** (desktop Split and mobile).
+- **Usage:** Nav "Hire Me" = primary sm hug · Hero "**See works** 08" = **secondary** (plain) md + count and "**Book a call**" = primary md hug (copy decided 2026-11-08) · Pricing "Book a call" = primary md **fill** · Modal "View live site" = primary md **fill** (desktop Split and mobile).
 
 ### 5.1b Arrow Button (`ArrowButton.astro`)
 - 40×40 circle, 1px `--text-primary` border, `overflow: hidden`, two arrow-up-right icons (17px, stroke `--text-primary`) in the same spot. Rest: arrow A centred; arrow B parked at `translate(-18px, 18px)`.
@@ -311,6 +311,15 @@ Stagger step = **70ms**. Whole intro finishes at ~1.5s. Implement with CSS `@key
 **Figma:** the `Hero` component holds only `Start` / `End`. The prototype uses keyframe frames "Hero Intro · Desktop/Mobile · 0.0s … 1.5s" (one per 0.1s, every layer on its own curve) because Smart Animate can't delay individual layers. They are reference only — build from the table above.
 
 ### 6.2 Other motion
+
+**Update 2026-11-08 (Emon):**
+- **All timings & curves are editable** in Keystatic → Settings → **Motion** (Ease preset / custom Bézier, or Spring stiffness·damping·mass; Time; Delay). `src/lib/motion.ts` turns them into `--m-*` CSS variables; springs become a CSS `linear()` curve.
+- **Nav intro (Home):** logo + name first, then each link +0.05s, then "Hire Me" +0.1s after the last link (each drops in from above).
+- **Scroll reveal (whole site):** headings, chips, card thumbnail → title → tags, pricing parts, booking parts, About parts, footer items rise in once, staggered 0.05s by screen position (`[data-reveal]`, `src/scripts/reveal.ts`). Showcase rows reveal as a group.
+- **Text-link roll:** nav links and every footer link text (incl. Services, Privacy, Terms): letters slide up while a copy rises from below, letter by letter (ref. jet.framer.website). `ui/RollText.astro`.
+- **Filter chips:** inactive hover → `--bg-tertiary`.
+- **Smooth scroll:** Lenis on every page (stops while the modal/menu is open; off under reduced motion).
+- **Showcase featured row:** slide width fixed (940 / 330); height follows the thumbnail's own shape (no crop). Keep all thumbnails the same shape.
 | Interaction | Spec |
 |---|---|
 | Gallery advance | every 5s (4s hold + ~1s slide), `cubic-bezier(.645,.045,.355,1)`; drag/swipe; pause on hover/hidden tab/drag, resume 5s after |
