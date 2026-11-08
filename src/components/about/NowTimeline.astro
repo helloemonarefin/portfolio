@@ -17,12 +17,12 @@ const { role, milestones } = Astro.props;
   <div class="container now__inner">
     <div class="now__head">
       <div class="now__role">
-        <p class="now__status t-caption t-medium"><LiveDot tone="green" />Currently</p>
-        <h2 id="now-title" class="now__title t-h1">
+        <p class="now__status t-caption t-medium" data-reveal><LiveDot tone="green" />Currently</p>
+        <h2 id="now-title" class="now__title t-h1" data-reveal>
           {role.title}{role.company && <span class="now__company"> at {role.company}</span>}
         </h2>
       </div>
-      {role.summary && <p class="now__summary t-body-lg">{role.summary}</p>}
+      {role.summary && <p class="now__summary t-body-lg" data-reveal>{role.summary}</p>}
     </div>
 
     {
@@ -31,7 +31,7 @@ const { role, milestones } = Astro.props;
           {milestones.map((m, i) => {
             const isLast = i === milestones.length - 1;
             return (
-              <li class:list={['timeline__item', { 'timeline__item--now': isLast }]}>
+              <li class:list={['timeline__item', { 'timeline__item--now': isLast }]} data-reveal>
                 <span class="timeline__marker" aria-hidden="true">
                   {isLast ? <LiveDot tone="dark" /> : <span class="timeline__dot" />}
                   {!isLast && <span class="timeline__line" />}

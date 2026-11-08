@@ -13,7 +13,7 @@ const hasAside = Astro.slots.has('default');
 ---
 
 <div class="section-header">
-  <h2 class="t-display section-header__title" id={id}>{title}</h2>
+  <h2 class="t-display section-header__title" id={id} data-reveal>{title}</h2>
   {hasAside && <div class="section-header__aside"><slot /></div>}
 </div>
 

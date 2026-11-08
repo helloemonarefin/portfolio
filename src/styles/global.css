@@ -66,6 +66,38 @@ html.is-locked { overflow: hidden; }
   .section__inner { gap: 56px; }
 }
 
+/* ---------- Scroll reveal (src/scripts/reveal.ts) ---------- */
+/* Uses `translate` + an animation, so it never fights with components' own transitions. */
+.reveal-on [data-reveal] { opacity: 0; }
+.reveal-on [data-reveal].is-revealed {
+  opacity: 1;
+  animation: reveal-in var(--m-reveal-time, 0.8s) var(--m-reveal-ease, cubic-bezier(.22, 1, .36, 1)) var(--reveal-delay, 0s) both;
+}
+@keyframes reveal-in {
+  from { opacity: 0; translate: 0 var(--m-reveal-distance, 24px); }
+  to { opacity: 1; translate: 0 0; }
+}
+
+/* ---------- Text link roll (ui/RollText.astro) ---------- */
+/* On hover each letter slides up while a copy rises from below, letter by letter. */
+.roll {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+}
+.roll__row { display: block; white-space: pre; }
+.roll__row--clone { position: absolute; left: 0; top: 100%; }
+.roll__char {
+  display: inline-block;
+  transition: transform var(--m-roll-time, 0.5s) var(--m-roll-ease, cubic-bezier(.22, 1, .36, 1));
+  transition-delay: calc(var(--i, 0) * var(--m-roll-stagger, 0.02s));
+}
+@media (hover: hover) and (pointer: fine) {
+  .roll-trigger:hover .roll__char { transform: translateY(-100%); }
+}
+.roll-trigger:focus-visible .roll__char { transform: translateY(-100%); }
+
 /* ---------- Focus ring (§9) ---------- */
 :focus { outline: none; }
 :focus-visible {

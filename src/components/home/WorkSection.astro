@@ -21,7 +21,7 @@ const filters = [{ value: 'all', label: 'All' }, ...Object.entries(categoryLabel
       <div class="filters" role="group" aria-label="Filter projects">
         {
           filters.map((f) => (
-            <button class="chip t-label" type="button" data-filter={f.value} aria-pressed={f.value === 'all' ? 'true' : 'false'}>
+            <button class="chip t-label" type="button" data-reveal data-filter={f.value} aria-pressed={f.value === 'all' ? 'true' : 'false'}>
               {f.label}
             </button>
           ))
@@ -93,6 +93,11 @@ const filters = [{ value: 'all', label: 'All' }, ...Object.entries(categoryLabel
   .chip[aria-pressed='true'] {
     background: var(--button-primary-bg);
     color: var(--button-primary-text);
+  }
+  /* Hover (inactive chips only): a touch darker grey. */
+  .chip[aria-pressed='false']:focus-visible { background: var(--bg-tertiary); }
+  @media (hover: hover) and (pointer: fine) {
+    .chip[aria-pressed='false']:hover { background: var(--bg-tertiary); }
   }
 
   .work__grid {

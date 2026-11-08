@@ -26,7 +26,7 @@ const meta = [
       <ul class="book__meta" role="list">
         {
           meta.map((m) => (
-            <li class="book__meta-item t-body-sm">
+            <li class="book__meta-item t-body-sm" data-reveal>
               <Icon name={m.icon} />
               {m.text}
             </li>
@@ -38,7 +38,7 @@ const meta = [
     <div class="book__body">
       {
         calLink && (
-          <div class="book__embed" data-cal-link={calLink}>
+          <div class="book__embed" data-cal-link={calLink} data-reveal>
             <div class="book__placeholder" data-cal-placeholder>
               <Icon name="calendar" />
               <p class="t-h5">Loading calendar…</p>
@@ -50,7 +50,7 @@ const meta = [
 
       {
         email && (
-          <p class="book__email t-body">
+          <p class="book__email t-body" data-reveal>
             <span class="book__email-muted">Prefer email?</span>
             <a href={`mailto:${email}`}>{email}</a>
           </p>

@@ -22,7 +22,7 @@ const { photos } = Astro.props;
       photos.length > 0 && (
         <ul class="lens__grid" role="list">
           {photos.map((p) => (
-            <li class:list={['lens__item', `lens__item--${p.data.size}`]}>
+            <li class:list={['lens__item', `lens__item--${p.data.size}`]} data-reveal>
               <Media
                 media={p.data.image}
                 alt={p.data.alt}

@@ -9,6 +9,7 @@
  */
 import Logo from '../ui/Logo.astro';
 import Button from '../ui/Button.astro';
+import RollText from '../ui/RollText.astro';
 
 interface Props {
   worksCount: string;
@@ -26,17 +27,17 @@ const links = [
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 ---
 
-<header class:list={['nav', { 'nav--overlay': overlay }]} data-nav>
+<header class:list={['nav', { 'nav--overlay': overlay, 'nav--intro': overlay }]} data-nav>
   <div class="nav__row">
-    <Logo href="/" />
+    <span class="nav__brand"><Logo href="/" /></span>
 
     <nav class="nav__links" aria-label="Main">
       <ul role="list">
         {
-          links.map((l) => (
-            <li>
-              <a class="nav__link t-label" href={l.href} aria-current={l.href === path ? 'page' : undefined}>
-                {l.label}
+          links.map((l, i) => (
+            <li class="nav__item" style={`--i:${i + 1}`}>
+              <a class="nav__link t-label roll-trigger" href={l.href} aria-current={l.href === path ? 'page' : undefined}>
+                <RollText text={l.label} />
                 {l.count && <span class="nav__count">{l.count}</span>}
               </a>
             </li>
@@ -61,7 +62,7 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
     </button>
   </div>
 
-  <div class="nav__panel" id="mobile-menu" data-menu-panel inert>
+  <div class="nav__panel" id="mobile-menu" data-menu-panel data-lenis-prevent inert>
     <nav aria-label="Mobile">
       <ul class="nav__panel-links" role="list">
         {
@@ -81,6 +82,8 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 </header>
 
 <script>
+  import { lockScroll } from '../../scripts/scroll';
+
   for (const nav of document.querySelectorAll<HTMLElement>('[data-nav]')) {
     // Frosted background once the page has scrolled.
     let ticking = false;
@@ -109,7 +112,7 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
       toggle.setAttribute('aria-expanded', String(open));
       toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
       panel.inert = !open;
-      document.documentElement.classList.toggle('is-locked', open);
+      lockScroll(open);
       if (open) panel.querySelector<HTMLElement>('a')?.focus();
       else if (returnFocus) toggle.focus();
     };
@@ -160,11 +163,24 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
   }
   .nav.is-open { background: var(--bg-primary); }
 
-  /* Home intro (DESIGN_SYSTEM §6.1): the whole bar drops in from above. */
-  .nav--overlay { animation: nav-in 1s cubic-bezier(0, .77, .56, 1) 0.1s both; }
+  /* Home intro: logo first, then each link 0.05s apart, then "Hire Me" 0.1s after the last link.
+     Timings come from Keystatic → Motion → Nav intro. */
+  .nav__brand,
+  .nav__item,
+  .nav__actions,
+  .nav__menu { --nav-delay: var(--m-nav-delay, 0.1s); }
+  .nav__item { --nav-delay: calc(var(--m-nav-delay, 0.1s) + var(--i) * var(--m-nav-stagger, 0.05s)); }
+  .nav__actions,
+  .nav__menu {
+    --nav-delay: calc(var(--m-nav-delay, 0.1s) + 5 * var(--m-nav-stagger, 0.05s) + var(--m-nav-button-gap, 0.1s));
+  }
+  .nav--intro :is(.nav__brand, .nav__item, .nav__actions, .nav__menu) {
+    animation: nav-in var(--m-nav-time, 1s) var(--m-nav-ease, cubic-bezier(0, .77, .56, 1)) var(--nav-delay) both;
+  }
+  .nav__brand { display: inline-flex; }
   @keyframes nav-in {
-    from { opacity: 0; transform: translateY(-150px); }
-    to { opacity: 1; transform: none; }
+    from { opacity: 0; translate: 0 calc(var(--m-nav-distance, 150px) * -1); }
+    to { opacity: 1; translate: 0 0; }
   }
   .nav__row {
     height: 100%;

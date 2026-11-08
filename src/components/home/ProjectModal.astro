@@ -29,7 +29,7 @@ const stats = [
 ].filter((s) => s.value);
 ---
 
-<dialog class="modal" id={id} aria-labelledby={titleId} data-project-modal={project.id}>
+<dialog class="modal" id={id} aria-labelledby={titleId} data-project-modal={project.id} data-lenis-prevent>
   <div class="modal__grabber" aria-hidden="true"></div>
 
   <div class="modal__top">
@@ -128,6 +128,8 @@ const stats = [
 </dialog>
 
 <script>
+  import { lockScroll } from '../../scripts/scroll';
+
   const modals = new Map<string, HTMLDialogElement>();
   document.querySelectorAll<HTMLDialogElement>('dialog[data-project-modal]').forEach((d) => modals.set(d.dataset.projectModal!, d));
 
@@ -153,14 +155,15 @@ const stats = [
       dialog.close();
     };
     dialog.addEventListener('animationend', done, { once: true });
-    window.setTimeout(() => dialog.classList.contains('is-closing') && done(), 400); // safety net
+    const ms = (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--m-modal-time')) || 0.3) * 1000;
+    window.setTimeout(() => dialog.classList.contains('is-closing') && done(), ms + 100); // safety net
   };
 
   const open = (slug: string) => {
     const dialog = modals.get(slug);
     if (!dialog || dialog.open) return;
     dialog.showModal();
-    document.documentElement.classList.add('is-locked');
+    lockScroll(true);
     history.replaceState(null, '', `#project-${slug}`);
     playActive(dialog, true);
   };
@@ -183,7 +186,7 @@ const stats = [
     // After any close: unlock scroll, clear the hash, stop videos.
     // (The browser returns focus to the card that opened the dialog.)
     dialog.addEventListener('close', () => {
-      document.documentElement.classList.remove('is-locked');
+      lockScroll(false);
       if (location.hash === `#${dialog.id}`) history.replaceState(null, '', location.pathname + location.search);
       playActive(dialog, false);
     });
@@ -324,10 +327,10 @@ const stats = [
   .modal__cta-desktop { display: none; }
 
   /* ── Open / close animation ─────────────────────────────────────────── */
-  .modal[open] { animation: modal-sheet-in 300ms cubic-bezier(.22, 1, .36, 1); }
-  .modal[open]::backdrop { animation: modal-fade-in 300ms cubic-bezier(.22, 1, .36, 1); }
-  .modal.is-closing { animation: modal-sheet-out 300ms cubic-bezier(.22, 1, .36, 1) forwards; }
-  .modal.is-closing::backdrop { animation: modal-fade-out 300ms cubic-bezier(.22, 1, .36, 1) forwards; }
+  .modal[open] { animation: modal-sheet-in var(--m-modal-time, 300ms) var(--m-modal-ease, cubic-bezier(.22, 1, .36, 1)); }
+  .modal[open]::backdrop { animation: modal-fade-in var(--m-modal-time, 300ms) var(--m-modal-ease, cubic-bezier(.22, 1, .36, 1)); }
+  .modal.is-closing { animation: modal-sheet-out var(--m-modal-time, 300ms) var(--m-modal-ease, cubic-bezier(.22, 1, .36, 1)) forwards; }
+  .modal.is-closing::backdrop { animation: modal-fade-out var(--m-modal-time, 300ms) var(--m-modal-ease, cubic-bezier(.22, 1, .36, 1)) forwards; }
   @media (min-width: 1024px) {
     .modal[open] { animation-name: modal-pop-in; }
     .modal.is-closing { animation-name: modal-pop-out; }

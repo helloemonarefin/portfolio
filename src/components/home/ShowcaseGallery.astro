@@ -34,11 +34,11 @@ const moreSlides = fill(more);
       data-showcase
       data-unique={featured.length}
     >
-      <div class="showcase__row showcase__row--featured">
+      <div class="showcase__row showcase__row--featured" data-reveal-group>
         <div class="showcase__viewport" data-featured>
           <div class="showcase__track">
             {featuredSlides.map((p, i) => (
-              <div class="showcase__slide" role="group" aria-roledescription="slide">
+              <div class="showcase__slide" role="group" aria-roledescription="slide" data-reveal>
                 <Media
                   media={p.data.thumbnail}
                   widths={[330, 660, 940, 1880]}
@@ -59,11 +59,11 @@ const moreSlides = fill(more);
       </div>
 
       {moreSlides.length > 0 && (
-        <div class="showcase__row showcase__row--more">
+        <div class="showcase__row showcase__row--more" data-reveal-group>
           <div class="showcase__viewport" data-more>
             <div class="showcase__track">
               {moreSlides.map((p) => (
-                <div class="showcase__card">
+                <div class="showcase__card" data-reveal>
                   <Media media={p.data.thumbnail} widths={[220, 355, 440, 710]} sizes="(min-width: 1024px) 355px, 220px" />
                 </div>
               ))}
@@ -201,7 +201,6 @@ const moreSlides = fill(more);
     flex-direction: column;
     gap: 8px;
     --slide-w: 330px;
-    --slide-h: 212px;
     --card-w: 220px;
     --card-h: 140px;
     --gap: 8px;
@@ -212,7 +211,6 @@ const moreSlides = fill(more);
       padding: 12px 0 128px;
       gap: 14px;
       --slide-w: 940px;
-      --slide-h: 504px;
       --card-w: 355px;
       --card-h: 200px;
       --gap: 14px;
@@ -234,7 +232,8 @@ const moreSlides = fill(more);
     flex: none;
     margin-right: var(--gap);
   }
-  .showcase__slide { width: var(--slide-w); height: var(--slide-h); }
+  /* Featured: fixed width, height follows the thumbnail's own shape (no cropping). */
+  .showcase__slide { width: var(--slide-w); }
   .showcase__card { width: var(--card-w); height: var(--card-h); }
 
   /* Before the script runs: centre the first featured slide (no jump on load). */
@@ -246,8 +245,16 @@ const moreSlides = fill(more);
     margin-left: calc(var(--more-offset) * -1);
   }
 
+  .showcase__row--featured .showcase__track { align-items: flex-start; }
   .showcase__slide :global(img),
-  .showcase__slide :global(video),
+  .showcase__slide :global(video) {
+    display: block;
+    width: 100%;
+    height: auto;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
   .showcase__card :global(img),
   .showcase__card :global(video) {
     width: 100%;

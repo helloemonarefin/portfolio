@@ -84,6 +84,7 @@ const tagProps = href
   .btn__count {
     position: relative;
     z-index: 1;
+    transition: translate var(--m-button-time, 450ms) var(--m-button-ease, cubic-bezier(.22, 1, .36, 1));
   }
   .btn__count {
     font-weight: 400;
@@ -103,7 +104,7 @@ const tagProps = href
     align-items: center;
     justify-content: flex-end; /* the chevron rides on the chip's right edge */
     padding-inline: 8px;
-    transition: width 450ms cubic-bezier(.22, 1, .36, 1);
+    transition: width var(--m-button-time, 450ms) var(--m-button-ease, cubic-bezier(.22, 1, .36, 1));
   }
   .btn__chip :global(svg) { flex: none; }
   .btn--sm .btn__chip {
@@ -116,9 +117,9 @@ const tagProps = href
     background: var(--button-primary-bg);
     color: var(--button-primary-text);
     border: 0;
-    padding: 0 32px 0 44px;
+    padding: 0 16px 0 44px; /* hug: small right padding — the label slides left on hover */
   }
-  .btn--primary.btn--sm { padding: 0 30px 0 40px; }
+  .btn--primary.btn--sm { padding: 0 14px 0 40px; }
   .btn--primary.btn--fill { padding-inline: 44px; }
   .btn--primary .btn__chip { background: var(--button-primary-chip); }
 
@@ -129,9 +130,9 @@ const tagProps = href
     background: var(--button-secondary-bg);
     color: var(--button-secondary-text);
     border: 1px solid var(--button-secondary-border);
-    padding: 0 31px 0 43px;
+    padding: 0 15px 0 43px;
   }
-  .btn--secondary-chip.btn--sm { padding: 0 29px 0 39px; }
+  .btn--secondary-chip.btn--sm { padding: 0 13px 0 39px; }
   .btn--secondary-chip.btn--fill { padding-inline: 43px; }
   .btn--secondary-chip .btn__chip {
     top: 3px;
@@ -152,13 +153,17 @@ const tagProps = href
   }
 
   /* ---------- Hover (real pointers only) + keyboard focus ---------- */
+  /* The chip sweeps right carrying the chevron; on hug buttons the label slides 24px left
+     at the same time so the chevron always has room. Full-width buttons keep the label centred. */
   .btn--primary:focus-visible .btn__chip { width: calc(100% - 8px); }
   .btn--secondary-chip:focus-visible .btn__chip { width: calc(100% - 6px); }
+  :is(.btn--primary, .btn--secondary-chip).btn--hug:focus-visible :is(.btn__label, .btn__count) { translate: -24px 0; }
   .btn--secondary:focus-visible { background: var(--button-secondary-bg-hover); }
 
   @media (hover: hover) and (pointer: fine) {
     .btn--primary:hover .btn__chip { width: calc(100% - 8px); }
     .btn--secondary-chip:hover .btn__chip { width: calc(100% - 6px); }
+    :is(.btn--primary, .btn--secondary-chip).btn--hug:hover :is(.btn__label, .btn__count) { translate: -24px 0; }
     .btn--secondary:hover { background: var(--button-secondary-bg-hover); }
   }
 </style>

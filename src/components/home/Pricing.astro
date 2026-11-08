@@ -29,29 +29,29 @@ const { plans } = Astro.props;
       <div class="pricing__plans">
         {
           plans.map((plan) => (
-            <article class="plan" aria-label={plan.name}>
+            <article class="plan" aria-label={plan.name} data-reveal>
               <div class="plan__head">
-                <div class="plan__title-row">
+                <div class="plan__title-row" data-reveal>
                   <h3 class="plan__name t-h4">{plan.name}</h3>
                   {plan.badge && <span class="plan__badge t-caption">{plan.badge}</span>}
                 </div>
-                {plan.description && <p class="plan__desc t-body">{plan.description}</p>}
+                {plan.description && <p class="plan__desc t-body" data-reveal>{plan.description}</p>}
               </div>
 
-              <p class="plan__price">
+              <p class="plan__price" data-reveal>
                 <span class="t-display">{plan.price}</span>
                 {plan.unit && <span class="plan__unit t-body">{plan.unit}</span>}
               </p>
 
-              <Button label={plan.ctaLabel} layout="fill" href="#book" />
+              <div data-reveal><Button label={plan.ctaLabel} layout="fill" href="#book" /></div>
 
               <hr class="plan__rule" />
 
               <div class="plan__features">
-                <p class="plan__included t-caption">What’s included</p>
+                <p class="plan__included t-caption" data-reveal>What’s included</p>
                 <ul role="list">
                   {plan.features.map((f) => (
-                    <li class="plan__feature t-body">
+                    <li class="plan__feature t-body" data-reveal>
                       <svg class="plan__check" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
                         <circle cx="10" cy="10" r="10" />
                         <path d="M6 10.2L8.6 12.8L14 7.4" />
@@ -66,7 +66,7 @@ const { plans } = Astro.props;
         }
       </div>
 
-      <p class="pricing__note t-body">
+      <p class="pricing__note t-body" data-reveal>
         <span class="pricing__note-muted">Need something different?</span>
         <a href="#book">Let’s talk about a custom quote →</a>
       </p>

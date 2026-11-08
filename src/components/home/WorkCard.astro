@@ -2,7 +2,7 @@
 /**
  * Work Card — DESIGN_SYSTEM.md §5.7 / BUILD_PROMPT.md §6.6. Figma: Work Card.
  * The whole card is one <button> that opens the Project Modal (data-open-project).
- * Hover (real pointers) + keyboard focus, 350ms ease-out: the image grows to fill the tile,
+ * Hover (real pointers) + keyboard focus, var(--m-card-time, 350ms) var(--m-card-ease, ease-out): the image grows to fill the tile,
  * a 1px inside outline appears, a frosted overlay fades in and "View Project" + Arrow Button rise 16px.
  */
 import Media from '../ui/Media.astro';
@@ -24,7 +24,7 @@ const { title, tags, thumbnail, category } = project.data;
   aria-haspopup="dialog"
   aria-label={`View project: ${title}`}
 >
-  <span class="work-card__tile">
+  <span class="work-card__tile" data-reveal>
     <span class="work-card__image">
       <Media
         media={thumbnail}
@@ -40,12 +40,12 @@ const { title, tags, thumbnail, category } = project.data;
     </span>
   </span>
   <span class="work-card__meta">
-    <span class="work-card__title t-body t-medium">{title}</span>
+    <span class="work-card__title t-body t-medium" data-reveal>{title}</span>
     {
       tags.length > 0 && (
         <span class="work-card__tags t-caption">
           {tags.map((t) => (
-            <span class="work-card__tag">{t}</span>
+            <span class="work-card__tag" data-reveal>{t}</span>
           ))}
         </span>
       )
@@ -79,7 +79,7 @@ const { title, tags, thumbnail, category } = project.data;
   .work-card__image {
     position: absolute;
     inset: var(--inset-y) var(--inset-x);
-    transition: inset 350ms ease-out;
+    transition: inset var(--m-card-time, 350ms) var(--m-card-ease, ease-out);
   }
 
   /* 1px inside outline (shown on hover) */
@@ -89,7 +89,7 @@ const { title, tags, thumbnail, category } = project.data;
     inset: 0;
     box-shadow: inset 0 0 0 1px var(--border-subtle);
     opacity: 0;
-    transition: opacity 350ms ease-out;
+    transition: opacity var(--m-card-time, 350ms) var(--m-card-ease, ease-out);
     pointer-events: none;
   }
 
@@ -103,14 +103,14 @@ const { title, tags, thumbnail, category } = project.data;
     -webkit-backdrop-filter: blur(18px);
     backdrop-filter: blur(18px);
     opacity: 0;
-    transition: opacity 350ms ease-out;
+    transition: opacity var(--m-card-time, 350ms) var(--m-card-ease, ease-out);
   }
   .work-card__view {
     display: inline-flex;
     align-items: center;
     gap: 16px;
     transform: translateY(16px);
-    transition: transform 350ms ease-out;
+    transition: transform var(--m-card-time, 350ms) var(--m-card-ease, ease-out);
   }
   .work-card__view-label {
     font-size: var(--font-size-h5);

@@ -38,8 +38,8 @@ const { worksCount } = Astro.props;
       <p class="hero__sub t-body-lg">I design digital experiences that connect and solve problems.</p>
     </div>
     <div class="hero__ctas">
-      <span class="hero__cta hero__cta--1"><Button label="View Projects" count={worksCount} variant="secondary" href="#work" /></span>
-      <span class="hero__cta hero__cta--2"><Button label="Hire Me" href="#book" /></span>
+      <span class="hero__cta hero__cta--1"><Button label="See works" count={worksCount} variant="secondary" href="#work" /></span>
+      <span class="hero__cta hero__cta--2"><Button label="Book a call" href="#book" /></span>
     </div>
   </div>
 </section>
@@ -118,17 +118,18 @@ const { worksCount } = Astro.props;
     --ease-text: cubic-bezier(.22, 1, .36, 1);
     --portrait-from: 200px;
   }
-  .hero__arc { animation: hero-arc-mobile 1.2s var(--ease-arc) 0s both; }
-  .hero__portrait { animation: hero-portrait 1.4s var(--ease-arc) 0.1s both; }
-  .hero__pill,
-  .hero__title,
-  .hero__sub,
-  .hero__cta { animation: hero-text 0.7s var(--ease-text) both; }
-  .hero__pill { animation-delay: 0.45s; }
-  .hero__title { animation-delay: 0.52s; }
-  .hero__sub { animation-delay: 0.59s; }
-  .hero__cta--1 { animation-delay: 0.66s; }
-  .hero__cta--2 { animation-delay: 0.73s; }
+  /* Timings come from Keystatic → Motion (fallbacks = DESIGN_SYSTEM §6.1). */
+  .hero__arc {
+    animation: hero-arc-mobile var(--m-hero-arc-time, 1.2s) var(--m-hero-arc-ease, var(--ease-arc)) var(--m-hero-arc-delay, 0s) both;
+  }
+  .hero__portrait {
+    animation: hero-portrait var(--m-hero-portrait-time, 1.4s) var(--m-hero-portrait-ease, var(--ease-arc)) var(--m-hero-portrait-delay, 0.1s) both;
+  }
+  .hero__pill { animation: hero-text var(--m-hero-pill-time, 0.7s) var(--m-hero-pill-ease, var(--ease-text)) var(--m-hero-pill-delay, 0.45s) both; }
+  .hero__title { animation: hero-text var(--m-hero-title-time, 0.7s) var(--m-hero-title-ease, var(--ease-text)) var(--m-hero-title-delay, 0.52s) both; }
+  .hero__sub { animation: hero-text var(--m-hero-sub-time, 0.7s) var(--m-hero-sub-ease, var(--ease-text)) var(--m-hero-sub-delay, 0.59s) both; }
+  .hero__cta--1 { animation: hero-text var(--m-hero-cta1-time, 0.7s) var(--m-hero-cta1-ease, var(--ease-text)) var(--m-hero-cta1-delay, 0.66s) both; }
+  .hero__cta--2 { animation: hero-text var(--m-hero-cta2-time, 0.7s) var(--m-hero-cta2-ease, var(--ease-text)) var(--m-hero-cta2-delay, 0.73s) both; }
   .hero__cta { display: inline-flex; }
 
   @keyframes hero-arc-mobile {

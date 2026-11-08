@@ -3,6 +3,7 @@
  * Footer — DESIGN_SYSTEM.md §5.11 / BUILD_PROMPT.md §6.10. Figma: Footer (Desktop / Mobile).
  */
 import Logo from '../ui/Logo.astro';
+import RollText from '../ui/RollText.astro';
 import { getSettings } from '../../lib/content';
 import dottedDesktop from '../../assets/brand/dotted-logo-desktop.svg?url';
 import dottedMobile from '../../assets/brand/dotted-logo-mobile.svg?url';
@@ -44,19 +45,19 @@ const connect = [
   <div class="container footer__content">
     <div class="footer__brand">
       <div class="footer__identity">
-        <Logo href="/" />
-        <p class="footer__blurb t-body-sm">
+        <span data-reveal><Logo href="/" /></span>
+        <p class="footer__blurb t-body-sm" data-reveal>
           Framer designer and developer crafting fast, considered websites for startups, studios and creators.
         </p>
-        <p class="footer__location t-caption">Based in Bangladesh · GMT+6</p>
+        <p class="footer__location t-caption" data-reveal>Based in Bangladesh · GMT+6</p>
       </div>
 
       <div class="footer__ai">
-        <p class="t-caption t-medium">Get an AI summary of Emon</p>
+        <p class="t-caption t-medium" data-reveal>Get an AI summary of Emon</p>
         <ul class="footer__ai-list" role="list">
           {
             assistants.map((a) => (
-              <li>
+              <li data-reveal>
                 <a
                   class="footer__ai-btn"
                   href={a.href}
@@ -76,29 +77,29 @@ const connect = [
 
     <nav class="footer__columns" aria-label="Footer">
       <div class="footer__col">
-        <h2 class="t-caption t-medium">Navigate</h2>
+        <h2 class="t-caption t-medium" data-reveal>Navigate</h2>
         <ul role="list">
-          {navigate.map((l) => <li><a class="footer__link t-label" href={l.href}>{l.label}</a></li>)}
+          {navigate.map((l) => <li data-reveal><a class="footer__link t-label roll-trigger" href={l.href}><RollText text={l.label} /></a></li>)}
         </ul>
       </div>
       <div class="footer__col">
-        <h2 class="t-caption t-medium">Services</h2>
+        <h2 class="t-caption t-medium" data-reveal>Services</h2>
         <ul role="list">
-          {services.map((s) => <li><span class="footer__link footer__link--static t-label">{s}</span></li>)}
+          {services.map((s) => <li data-reveal><span class="footer__link footer__link--static t-label roll-trigger"><RollText text={s} /></span></li>)}
         </ul>
       </div>
       <div class="footer__col">
-        <h2 class="t-caption t-medium">Connect</h2>
+        <h2 class="t-caption t-medium" data-reveal>Connect</h2>
         <ul role="list">
           {
             connect.map((c) => (
-              <li>
+              <li data-reveal>
                 {c.href ? (
-                  <a class="footer__link t-label" href={c.href} target="_blank" rel="noopener noreferrer">
-                    {c.label} ↗<span class="sr-only"> (opens in a new tab)</span>
+                  <a class="footer__link t-label roll-trigger" href={c.href} target="_blank" rel="noopener noreferrer">
+                    <RollText text={c.label} /> ↗<span class="sr-only"> (opens in a new tab)</span>
                   </a>
                 ) : (
-                  <span class="footer__link footer__link--static t-label">{c.label} ↗</span>
+                  <span class="footer__link footer__link--static t-label roll-trigger"><RollText text={c.label} /> ↗</span>
                 )}
               </li>
             ))
@@ -108,7 +109,7 @@ const connect = [
     </nav>
   </div>
 
-  <div class="container footer__dotted" aria-hidden="true">
+  <div class="container footer__dotted" aria-hidden="true" data-reveal>
     <picture>
       <source media="(min-width: 1024px)" srcset={dottedDesktop} width="1376" height="272" />
       <img src={dottedMobile} width="350" height="70" alt="" loading="lazy" decoding="async" />
@@ -116,11 +117,11 @@ const connect = [
   </div>
 
   <div class="container footer__bottom">
-    <p class="t-caption">© 2026 Emon Arefin. All rights reserved.</p>
+    <p class="t-caption" data-reveal>© 2026 Emon Arefin. All rights reserved.</p>
     <ul class="footer__legal" role="list">
-      <li><span class="t-label">Privacy</span></li>
-      <li><span class="t-label">Terms</span></li>
-      <li><a class="footer__link t-label" href="#top">Back to top ↑</a></li>
+      <li data-reveal><span class="footer__link footer__link--static t-label roll-trigger"><RollText text="Privacy" /></span></li>
+      <li data-reveal><span class="footer__link footer__link--static t-label roll-trigger"><RollText text="Terms" /></span></li>
+      <li data-reveal><a class="footer__link t-label roll-trigger" href="#top"><RollText text="Back to top" /> ↑</a></li>
     </ul>
   </div>
 </footer>

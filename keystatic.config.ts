@@ -50,6 +50,66 @@ const media = (label: string, folder: 'projects' | 'photos', description?: strin
     },
   );
 
+/**
+ * Motion block: Ease (preset or custom Bézier) or Spring, plus time and delay.
+ * Converted to CSS in src/lib/motion.ts.
+ */
+const easing = (defaultBezier: string, defaultPreset = 'custom') =>
+  fields.conditional(
+    fields.select({
+      label: 'Type',
+      options: [
+        { label: 'Ease', value: 'ease' },
+        { label: 'Spring', value: 'spring' },
+      ],
+      defaultValue: 'ease',
+    }),
+    {
+      ease: fields.object({
+        preset: fields.select({
+          label: 'Ease',
+          description: 'Pick a preset, or "Custom" to use the Bézier below.',
+          options: [
+            { label: 'Custom (use Bézier)', value: 'custom' },
+            { label: 'Linear', value: 'linear' },
+            { label: 'Ease', value: 'ease' },
+            { label: 'Ease in', value: 'easeIn' },
+            { label: 'Ease out', value: 'easeOut' },
+            { label: 'Ease in-out', value: 'easeInOut' },
+            { label: 'Expo out', value: 'expoOut' },
+            { label: 'Smooth (0.22, 1, 0.36, 1)', value: 'smooth' },
+          ],
+          defaultValue: defaultPreset,
+        }),
+        bezier: fields.text({
+          label: 'Bezier',
+          description: 'Four numbers, e.g. 0.15, 0.32, 0.1, 0.93 (first and third between 0 and 1). Tip: shape it on cubic-bezier.com and paste.',
+          defaultValue: defaultBezier,
+        }),
+      }),
+      spring: fields.object({
+        stiffness: fields.number({ label: 'Stiffness', defaultValue: 300, step: 10 }),
+        damping: fields.number({ label: 'Damping', defaultValue: 30, step: 1 }),
+        mass: fields.number({ label: 'Mass', defaultValue: 1, step: 0.1 }),
+      }),
+    },
+  );
+
+const anim = (
+  label: string,
+  d: { bezier: string; time: number; delay?: number; preset?: string },
+  extra: Record<string, ReturnType<typeof fields.number>> = {},
+) =>
+  fields.object(
+    {
+      easing: easing(d.bezier, d.preset),
+      time: fields.number({ label: 'Time (s)', description: 'Ignored for Spring (calculated from the spring).', defaultValue: d.time, step: 0.05 }),
+      ...(d.delay !== undefined ? { delay: fields.number({ label: 'Delay (s)', defaultValue: d.delay, step: 0.01 }) } : {}),
+      ...extra,
+    },
+    { label },
+  );
+
 export default config({
   // Files are saved in this project folder. Switches to GitHub storage in Phase 9.
   storage: { kind: 'local' },
@@ -58,7 +118,7 @@ export default config({
     brand: { name: 'Emon Arefin' },
     navigation: {
       Content: ['projects', 'photos'],
-      Settings: ['settings', 'pricing'],
+      Settings: ['settings', 'pricing', 'motion'],
     },
   },
 
@@ -178,6 +238,47 @@ export default config({
   },
 
   singletons: {
+    // ─── Motion: animation timings & curves ─────────────────────────────────
+    motion: singleton({
+      label: 'Motion',
+      path: 'src/content/motion/motion',
+      format: { data: 'yaml' },
+      schema: {
+        heroArc: anim('Hero · Arc', { bezier: '0.15, 0.32, 0.1, 0.93', time: 1.2, delay: 0 }),
+        heroPortrait: anim('Hero · Portrait', { bezier: '0.15, 0.32, 0.1, 0.93', time: 1.4, delay: 0.1 }),
+        heroPill: anim('Hero · Name pill', { bezier: '0.22, 1, 0.36, 1', time: 0.7, delay: 0.45 }),
+        heroTitle: anim('Hero · Heading', { bezier: '0.22, 1, 0.36, 1', time: 0.7, delay: 0.52 }),
+        heroSubtitle: anim('Hero · Subtitle', { bezier: '0.22, 1, 0.36, 1', time: 0.7, delay: 0.59 }),
+        heroSecondaryButton: anim('Hero · "See works" button', { bezier: '0.22, 1, 0.36, 1', time: 0.7, delay: 0.66 }),
+        heroPrimaryButton: anim('Hero · "Book a call" button', { bezier: '0.22, 1, 0.36, 1', time: 0.7, delay: 0.73 }),
+        navIntro: anim(
+          'Nav intro (Home)',
+          { bezier: '0, 0.77, 0.56, 1', time: 1, delay: 0.1 },
+          {
+            distance: fields.number({ label: 'Distance (px)', description: 'How far above each item starts.', defaultValue: 150, step: 1 }),
+            linkStagger: fields.number({ label: 'Link stagger (s)', description: 'Gap between each nav link.', defaultValue: 0.05, step: 0.01 }),
+            buttonGap: fields.number({ label: '"Hire Me" extra delay (s)', description: 'Added after the last link.', defaultValue: 0.1, step: 0.01 }),
+          },
+        ),
+        reveal: anim(
+          'Scroll reveal (whole site)',
+          { bezier: '0.22, 1, 0.36, 1', time: 0.8 },
+          {
+            distance: fields.number({ label: 'Distance (px)', description: 'How far below each element starts.', defaultValue: 24, step: 1 }),
+            stagger: fields.number({ label: 'Stagger (s)', description: 'Gap between elements that appear together.', defaultValue: 0.05, step: 0.01 }),
+          },
+        ),
+        buttonSweep: anim('Button chip sweep', { bezier: '0.22, 1, 0.36, 1', time: 0.45 }),
+        cardHover: anim('Work card hover', { bezier: '0, 0, 0.58, 1', time: 0.35, preset: 'easeOut' }),
+        textRoll: anim(
+          'Text link roll',
+          { bezier: '0.22, 1, 0.36, 1', time: 0.5 },
+          { stagger: fields.number({ label: 'Letter stagger (s)', defaultValue: 0.02, step: 0.005 }) },
+        ),
+        modal: anim('Project modal open / close', { bezier: '0.22, 1, 0.36, 1', time: 0.3 }),
+      },
+    }),
+
     // ─── Site settings ──────────────────────────────────────────────────────
     settings: singleton({
       label: 'Settings',

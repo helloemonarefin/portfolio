@@ -1,0 +1,21 @@
+---
+/**
+ * RollText — the text-link hover roll (reference: jet.framer.website nav links).
+ * Renders the text twice, letter by letter; on hover of the closest `.roll-trigger`
+ * each letter slides up while its copy rises from below (staggered by --m-roll-stagger).
+ * Screen readers get the plain text once.
+ */
+interface Props {
+  text: string;
+}
+const { text } = Astro.props;
+const chars = [...text];
+---
+
+<span class="roll"
+  ><span class="roll__row" aria-hidden="true"
+    >{chars.map((c, i) => <span class="roll__char" style={`--i:${i}`}>{c === ' ' ? ' ' : c}</span>)}</span
+  ><span class="roll__row roll__row--clone" aria-hidden="true"
+    >{chars.map((c, i) => <span class="roll__char" style={`--i:${i}`}>{c === ' ' ? ' ' : c}</span>)}</span
+  ><span class="sr-only">{text}</span></span
+>

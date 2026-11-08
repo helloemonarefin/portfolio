@@ -8,6 +8,7 @@ import { Font } from 'astro:assets';
 import '../styles/tokens.css';
 import '../styles/typography.css';
 import '../styles/global.css';
+import { motionCss } from '../lib/motion';
 
 interface Props {
   title: string;
@@ -17,6 +18,8 @@ interface Props {
 }
 
 const { title, description, noindex = false } = Astro.props;
+// Animation timings & curves from Keystatic → Motion.
+const motionVars = await motionCss();
 ---
 
 <!doctype html>
@@ -29,6 +32,11 @@ const { title, description, noindex = false } = Astro.props;
     {noindex && <meta name="robots" content="noindex, nofollow" />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
+    <!-- Scroll reveals are only armed when motion is allowed (no flash of hidden content otherwise). -->
+    <script is:inline>
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('reveal-on');
+    </script>
+    <style is:inline set:html={motionVars}></style>
     <Font
       cssVariable="--font-inter"
       preload={[
@@ -40,6 +48,11 @@ const { title, description, noindex = false } = Astro.props;
   <body id="top">
     <slot />
     <script>
+      import { initScroll } from '../scripts/scroll';
+      import { initReveal } from '../scripts/reveal';
+      initScroll();
+      initReveal();
+
       // Reduced motion: background videos don't autoplay (DESIGN_SYSTEM §0 rule 5).
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         document.querySelectorAll<HTMLVideoElement>('video[data-autoplay]').forEach((v) => {

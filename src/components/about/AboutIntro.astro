@@ -23,21 +23,21 @@ const facts = [
 <section class="intro" aria-labelledby="about-title">
   <div class="container intro__inner">
     <div class="intro__text">
-      <p class="intro__eyebrow t-body">About me</p>
-      <h1 id="about-title" class="intro__title t-display">
+      <p class="intro__eyebrow t-body" data-reveal>About me</p>
+      <h1 id="about-title" class="intro__title t-display" data-reveal>
         Hi, I’m Emon — a product designer and photographer from Bangladesh.
       </h1>
       {
         bio.length > 0 && (
           <div class="intro__bio t-body-lg">
-            {bio.map((p) => <p>{p}</p>)}
+            {bio.map((p) => <p data-reveal>{p}</p>)}
           </div>
         )
       }
       <dl class="intro__facts">
         {
           facts.map((f) => (
-            <div class="intro__fact">
+            <div class="intro__fact" data-reveal>
               <dt class="t-caption">{f.label}</dt>
               <dd class="t-h3">{f.value}</dd>
             </div>
@@ -46,7 +46,7 @@ const facts = [
       </dl>
     </div>
 
-    <div class="intro__photo" role="img" aria-label="Photo of Emon (placeholder)">
+    <div class="intro__photo" data-reveal role="img" aria-label="Photo of Emon (placeholder)">
       <Icon name="image" />
       <span class="t-caption">Your photo · 4:5</span>
     </div>

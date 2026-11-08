@@ -112,4 +112,46 @@ const pricing = defineCollection({
   }),
 });
 
-export const collections = { projects, photos, settings, pricing };
+// ─── Motion (singleton) — matches `motion` in keystatic.config.ts ───────────
+const easingSchema = z.discriminatedUnion('discriminant', [
+  z.object({
+    discriminant: z.literal('ease'),
+    value: z.object({ preset: z.string().default('custom'), bezier: z.string().default('') }),
+  }),
+  z.object({
+    discriminant: z.literal('spring'),
+    value: z.object({
+      stiffness: z.number().nullish().transform((v) => v ?? 300),
+      damping: z.number().nullish().transform((v) => v ?? 30),
+      mass: z.number().nullish().transform((v) => v ?? 1),
+    }),
+  }),
+]);
+const num = (fallback: number) => z.number().nullish().transform((v) => v ?? fallback);
+const anim = (time: number, delay?: number) =>
+  z.object({
+    easing: easingSchema,
+    time: num(time),
+    ...(delay !== undefined ? { delay: num(delay) } : {}),
+  });
+
+const motion = defineCollection({
+  loader: glob({ pattern: 'motion.yaml', base: './src/content/motion' }),
+  schema: z.object({
+    heroArc: anim(1.2, 0),
+    heroPortrait: anim(1.4, 0.1),
+    heroPill: anim(0.7, 0.45),
+    heroTitle: anim(0.7, 0.52),
+    heroSubtitle: anim(0.7, 0.59),
+    heroSecondaryButton: anim(0.7, 0.66),
+    heroPrimaryButton: anim(0.7, 0.73),
+    navIntro: anim(1, 0.1).extend({ distance: num(150), linkStagger: num(0.05), buttonGap: num(0.1) }),
+    reveal: anim(0.8).extend({ distance: num(24), stagger: num(0.05) }),
+    buttonSweep: anim(0.45),
+    cardHover: anim(0.35),
+    textRoll: anim(0.5).extend({ stagger: num(0.02) }),
+    modal: anim(0.3),
+  }),
+});
+
+export const collections = { projects, photos, settings, pricing, motion };
