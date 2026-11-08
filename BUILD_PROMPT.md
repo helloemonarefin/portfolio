@@ -163,7 +163,7 @@ Props: `variant` (`primary` | `secondary` | `secondary-chip`), `size` (`md` 40px
 - Desktop (≥1024): height 85, padding `24 48`, transparent background, `position: absolute` over the hero, `z-index: 4`. Left: brand (logo mark 32 + "Emon Arefin" in `h5`). Centre: links (`label`, `--text-secondary`; hover `--text-primary` 150ms), "Works" followed by the count in `--text-tertiary`. Right: primary sm "Hire Me".
 - Mobile: height 64, padding `14 20`; brand + 36×36 menu button (radius 6, `--bg-secondary`, two-line icon).
 - **Mobile menu (not designed in Figma; build this and show me):** tapping the menu button opens a white panel under the nav with the links stacked (`h4`, gap 20, padding 20) and a full-width primary "Hire Me" at the bottom. It fades in and moves 8px down over 250ms; the icon morphs to an ×. It closes on link tap, ×, or Esc; focus is trapped while open and body scroll is locked.
-- **Not sticky (decided 2026-11-08):** the nav stays static at the top of the page.
+- **Sticky (decided 2026-11-08):** pinned to the top while scrolling; `--surface-overlay` + 12px backdrop blur once the page has scrolled.
 
 ### 6.4 Hero (`home/Hero.astro`) — layers and intro animation
 

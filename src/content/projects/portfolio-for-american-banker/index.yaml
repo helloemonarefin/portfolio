@@ -4,17 +4,20 @@ tags:
   - Portfolio
   - AI
   - Framer
-summary: Placeholder project summary — the client, the problem, and what you designed and built. Keep it to two or three sentences; details live on the case study page.
+summary: >-
+  Placeholder project summary — the client, the problem, and what you designed
+  and built. Keep it to two or three sentences; details live on the case study
+  page.
 thumbnail:
   discriminant: image
-  value: ../../../assets/projects/portfolio-for-american-banker/thumbnail.png
+  value: ../../../assets/projects/portfolio-for-american-banker/thumbnail/value.png
 gallery:
   - discriminant: image
-    value: ../../../assets/projects/portfolio-for-american-banker/gallery/0.png
+    value: ../../../assets/projects/portfolio-for-american-banker/gallery/0/value.png
   - discriminant: image
-    value: ../../../assets/projects/portfolio-for-american-banker/gallery/1.png
+    value: ../../../assets/projects/portfolio-for-american-banker/gallery/1/value.png
   - discriminant: image
-    value: ../../../assets/projects/portfolio-for-american-banker/gallery/2.png
+    value: ../../../assets/projects/portfolio-for-american-banker/gallery/2/value.png
 liveUrl: https://example.com
 priceRange: $600 – $800
 duration: 7 – 10 days

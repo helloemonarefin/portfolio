@@ -35,7 +35,7 @@ If they disagree or something isn't covered: check Figma, then ask Emon. Never i
 - 2026-11-08 — Nav has a 1px --border-primary bottom border (from Figma; not in the spec text).
 - 2026-11-08 — Footer headings + "Get an AI summary" use `caption` 500 (Figma) instead of `label`; DESIGN_SYSTEM updated.
 - 2026-11-08 — About photo is a labelled placeholder until `src/assets/brand/about-photo.jpg` exists. Live Dot halo animation deferred to Phase 7.
-- 2026-11-08 — Showcase white at all sizes; mobile padding 8/72. Nav is static (never sticky).
+- 2026-11-08 — Showcase white at all sizes; mobile padding 8/72. Nav is sticky (Emon, 2026-11-08): frosted --surface-overlay + 12px blur once scrolled.
 - 2026-11-08 — Media fields (project thumbnail, gallery items, Lens photos) = Image/Video switch (`media()` in keystatic.config.ts ↔ content.config.ts; rendered by `ui/Media.astro`). Videos live in `public/media/…`.
 - 2026-11-08 — Cal.com: `helloemonarefin/30min`, inline month view, light theme, brand #162026, lazy-loaded via IntersectionObserver (BookCall.astro).
 - 2026-11-08 — Embla 8.6.0 (+ Autoplay) for the Showcase. Embla can't take a custom easing curve; `duration: 38` approximates the 1s slide.

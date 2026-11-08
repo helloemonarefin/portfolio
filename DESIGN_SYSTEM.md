@@ -187,7 +187,7 @@ Each maps to a Figma component of the same name (page "Portfolio Website", right
 - Desktop (≥1024): height 85, padding `24 48`, transparent background, `position: absolute` over the hero, `z-index: 4`. Brand (logo mark 32 + "Emon Arefin" `h5`) · links: Home, Works <count>, About, Pricing, Contact (`label`, `--text-secondary`, hover `--text-primary` 150ms; the count in `--text-tertiary`) · Primary sm "Hire Me".
 - Mobile: height 64, padding `14 20`. Brand + 36×36 menu button (radius 6, `--bg-secondary`, two-line icon).
 - **Mobile menu (not designed in Figma — build, then confirm with Emon):** a white panel under the nav with the links stacked (`h4`, gap 20, padding 20) and a full-width primary "Hire Me" at the bottom; fades in and moves 8px down over 250ms; the icon morphs to ×. Closes on link tap, ×, or Esc; focus trapped and body scroll locked while open.
-- **Not sticky (decided 2026-11-08):** the nav stays static at the top of the page and scrolls away with it.
+- **Sticky (decided 2026-11-08):** the nav stays pinned to the top while scrolling. At the very top of Home it is transparent over the hero; once the page scrolls it gets `--surface-overlay` + 12px backdrop blur (1px `--border-primary` bottom border throughout).
 - On the About page the nav appears without the intro animation.
 
 ### 5.3 Hero
@@ -446,7 +446,7 @@ CLAUDE.md, DESIGN_SYSTEM.md (this file), BUILD_PROMPT.md
 - [ ] Official SVGs for ChatGPT, Gemini, Claude, Perplexity, and social icons; logo SVG for the dotted band.
 - [x] Through My Lens empty grid cell — solved with `grid-auto-flow: dense`.
 - [ ] Mobile menu open state (not in Figma — build per §5.2, then confirm).
-- [x] Sticky nav — decided: no, the nav is static.
+- [x] Sticky nav — decided: yes, always sticky with a frosted background once scrolled.
 - [x] Cal.com event link — `helloemonarefin/30min`.
 
 ---
