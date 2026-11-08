@@ -1,0 +1,71 @@
+---
+/**
+ * Through My Lens — DESIGN_SYSTEM.md §5.12 / BUILD_PROMPT.md §6.11. Figma: Through My Lens.
+ * Desktop: 4 columns, gap 16, wide = 2 columns (680×315), square = 1 column (332×315).
+ * Mobile: 2 columns, gap 8, wide = full width (350×220), square = 1 column (171×171).
+ * grid-auto-flow: dense fills any holes.
+ */
+import { Image } from 'astro:assets';
+import SectionHeader from '../ui/SectionHeader.astro';
+import type { Photo } from '../../lib/content';
+
+interface Props {
+  photos: Photo[];
+}
+const { photos } = Astro.props;
+---
+
+<section class="section lens" aria-labelledby="lens-title">
+  <div class="container section__inner">
+    <SectionHeader title="Through my lens." id="lens-title" />
+    {
+      photos.length > 0 && (
+        <ul class="lens__grid" role="list">
+          {photos.map((p) => (
+            <li class:list={['lens__item', `lens__item--${p.data.size}`]}>
+              <Image
+                src={p.data.image}
+                alt={p.data.alt}
+                widths={p.data.size === 'wide' ? [350, 700, 680, 1360] : [171, 342, 332, 664]}
+                sizes={
+                  p.data.size === 'wide'
+                    ? '(min-width: 1024px) 50vw, 100vw'
+                    : '(min-width: 1024px) 25vw, 50vw'
+                }
+              />
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .lens { background: var(--bg-primary); }
+
+  .lens__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-flow: dense;
+    gap: 8px;
+    margin: 0;
+  }
+  .lens__item--wide { grid-column: span 2; aspect-ratio: 350 / 220; }
+  .lens__item--square { aspect-ratio: 1 / 1; }
+
+  @media (min-width: 1024px) {
+    .lens__grid {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    .lens__item--wide { aspect-ratio: 680 / 315.25; }
+    .lens__item--square { aspect-ratio: 332 / 315.25; }
+  }
+
+  .lens__item :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+</style>

@@ -52,7 +52,7 @@ const connect = [
       </div>
 
       <div class="footer__ai">
-        <p class="t-label t-medium">Get an AI summary of Emon</p>
+        <p class="t-caption t-medium">Get an AI summary of Emon</p>
         <ul class="footer__ai-list" role="list">
           {
             assistants.map((a) => (
@@ -76,19 +76,19 @@ const connect = [
 
     <nav class="footer__columns" aria-label="Footer">
       <div class="footer__col">
-        <h2 class="t-label t-medium">Navigate</h2>
+        <h2 class="t-caption t-medium">Navigate</h2>
         <ul role="list">
           {navigate.map((l) => <li><a class="footer__link t-label" href={l.href}>{l.label}</a></li>)}
         </ul>
       </div>
       <div class="footer__col">
-        <h2 class="t-label t-medium">Services</h2>
+        <h2 class="t-caption t-medium">Services</h2>
         <ul role="list">
           {services.map((s) => <li><span class="footer__link footer__link--static t-label">{s}</span></li>)}
         </ul>
       </div>
       <div class="footer__col">
-        <h2 class="t-label t-medium">Connect</h2>
+        <h2 class="t-caption t-medium">Connect</h2>
         <ul role="list">
           {
             connect.map((c) => (

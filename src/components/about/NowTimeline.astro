@@ -1,0 +1,169 @@
+---
+/**
+ * Now (experience) — DESIGN_SYSTEM.md §5.12 / BUILD_PROMPT.md §6.11. Figma: Now.
+ * Grey band: "Currently" pill → "Product Designer at Rubik" → one-line summary → timeline.
+ * Timeline is horizontal on desktop, vertical on mobile; the last milestone gets a dark Live Dot.
+ */
+import LiveDot from '../ui/LiveDot.astro';
+
+interface Props {
+  role: { title: string; company: string; summary: string };
+  milestones: { year: string; title: string }[];
+}
+const { role, milestones } = Astro.props;
+---
+
+<section class="now" aria-labelledby="now-title">
+  <div class="container now__inner">
+    <div class="now__head">
+      <div class="now__role">
+        <p class="now__status t-caption t-medium"><LiveDot tone="green" />Currently</p>
+        <h2 id="now-title" class="now__title t-h1">
+          {role.title}{role.company && <span class="now__company"> at {role.company}</span>}
+        </h2>
+      </div>
+      {role.summary && <p class="now__summary t-body-lg">{role.summary}</p>}
+    </div>
+
+    {
+      milestones.length > 0 && (
+        <ol class="timeline" role="list">
+          {milestones.map((m, i) => {
+            const isLast = i === milestones.length - 1;
+            return (
+              <li class:list={['timeline__item', { 'timeline__item--now': isLast }]}>
+                <span class="timeline__marker" aria-hidden="true">
+                  {isLast ? <LiveDot tone="dark" /> : <span class="timeline__dot" />}
+                  {!isLast && <span class="timeline__line" />}
+                </span>
+                <span class="timeline__label">
+                  <span class="timeline__year t-caption">{m.year}</span>
+                  <span class="timeline__title t-body">{m.title}</span>
+                </span>
+              </li>
+            );
+          })}
+        </ol>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .now {
+    background: var(--bg-secondary);
+    padding: 64px 0;
+  }
+  .now__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .now__head { display: flex; flex-direction: column; gap: 16px; }
+  .now__role { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
+  .now__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px 5px 8px;
+    border-radius: 999px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+  }
+  .now__company { color: var(--text-tertiary); }
+  .now__summary { color: var(--text-secondary); }
+
+  /* ── Timeline: vertical (mobile) ─────────────────────────────── */
+  /* The 24px marker box is pulled left 7.5px so the 9px dot lines up with the page margin. */
+  .timeline {
+    display: flex;
+    flex-direction: column;
+    margin: 0 0 0 -7.5px;
+  }
+  .timeline__item {
+    display: flex;
+    gap: 16px;
+    min-height: 72px;
+  }
+  .timeline__item--now { min-height: 44px; }
+  .timeline__marker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: none;
+    width: 24px;
+  }
+  .timeline__dot {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 24px;
+    height: 24px;
+  }
+  .timeline__dot::before {
+    content: "";
+    width: 9px;
+    height: 9px;
+    border-radius: 999px;
+    border: 1.5px solid var(--text-tertiary);
+  }
+  .timeline__line {
+    flex: 1;
+    width: 1px;
+    background: var(--border-secondary);
+  }
+  .timeline__label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-top: 2px;
+  }
+  .timeline__year { color: var(--text-tertiary); }
+  .timeline__title { color: var(--text-secondary); font-weight: 500; }
+  .timeline__item--now .timeline__year,
+  .timeline__item--now .timeline__title { color: var(--text-primary); font-weight: 500; }
+
+  /* ── Desktop ─────────────────────────────────────────────────── */
+  @media (min-width: 1024px) {
+    .now { padding: 96px 0; }
+    .now__inner { gap: 56px; }
+    .now__head {
+      flex-direction: row;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 32px;
+    }
+    .now__summary { max-width: 520px; }
+
+    /* Horizontal: 4 equal columns, dot + line across, label below. */
+    .timeline {
+      flex-direction: row;
+      margin: 0 -7.5px;
+    }
+    .timeline__item {
+      flex: 1 1 0;
+      min-width: 0;
+      flex-direction: column;
+      gap: 14px;
+      min-height: 0;
+    }
+    .timeline__marker {
+      flex-direction: row;
+      width: 100%;
+    }
+    .timeline__line {
+      flex: 1;
+      width: auto;
+      height: 1px;
+    }
+    .timeline__label {
+      padding: 0 24px 0 7.5px;
+    }
+  }
+
+  /* Mobile: break the line before "at Rubik". */
+  @media (max-width: 1023px) {
+    .now__company { display: block; }
+  }
+</style>

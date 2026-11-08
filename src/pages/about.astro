@@ -1,0 +1,27 @@
+---
+/**
+ * About — DESIGN_SYSTEM.md §8. Nav · About Intro · Now · Through My Lens · Footer.
+ * No intro animation here; the Nav sits in the normal page flow.
+ */
+import Base from '../layouts/Base.astro';
+import Nav from '../components/layout/Nav.astro';
+import Footer from '../components/layout/Footer.astro';
+import AboutIntro from '../components/about/AboutIntro.astro';
+import NowTimeline from '../components/about/NowTimeline.astro';
+import PhotoGrid from '../components/about/PhotoGrid.astro';
+import { getProjects, getPhotos, getSettings, padCount } from '../lib/content';
+
+const projects = await getProjects();
+const photos = await getPhotos();
+const settings = await getSettings();
+---
+
+<Base title="About — Emon Arefin" description={settings.siteDescription}>
+  <Nav worksCount={padCount(projects.length)} />
+  <main>
+    <AboutIntro bio={settings.aboutBio} years={settings.stats.years} projects={settings.stats.projects} />
+    <NowTimeline role={settings.currentRole} milestones={settings.milestones} />
+    <PhotoGrid photos={photos} />
+  </main>
+  <Footer />
+</Base>

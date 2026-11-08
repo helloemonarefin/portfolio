@@ -17,7 +17,7 @@ If they disagree or something isn't covered: check Figma, then ask Emon. Never i
 
 ## Status
 - Stack: Astro 7.4.7, TypeScript strict, Node 26, plain CSS.
-- Current phase: **4 — Home, static (done, awaiting OK)**. Next: Phase 5 — About, static.
+- Current phase: **5 — About, static (done, awaiting OK)**. Next: Phase 6 — Interactivity.
 - Temporary `/styleguide` page exists (noindex) — remove or hide in Phase 8.
 
 ## Decisions log
@@ -33,7 +33,9 @@ If they disagree or something isn't covered: check Figma, then ask Emon. Never i
 - 2026-11-08 — Brand assets from Figma: `src/assets/brand/logo-mark.svg`, `portrait.png`. Dotted logo SVGs taken from Figma's Footer component (converted path→circle, identical render, ~5× smaller) instead of generating with sharp.
 - 2026-11-08 — Emon: Pricing = white band + grey cards (as Figma). Showcase desktop = white, padding 12/128 (Figma update). Footer Services/Privacy/Terms links and AI-button URLs left as-is for now.
 - 2026-11-08 — Nav has a 1px --border-primary bottom border (from Figma; not in the spec text).
-- Still open: sticky nav (ask in Phase 6); `sharp` install (ask in Phase 4).
+- 2026-11-08 — Footer headings + "Get an AI summary" use `caption` 500 (Figma) instead of `label`; DESIGN_SYSTEM updated.
+- 2026-11-08 — About photo is a labelled placeholder until `src/assets/brand/about-photo.jpg` exists. Live Dot halo animation deferred to Phase 7.
+- Still open: Showcase on mobile is still grey in Figma (desktop is white) — asked Emon; sticky nav (ask in Phase 6); `sharp` install (ask in Phase 4).
 
 ## Dev commands
 - `npm run dev` → http://localhost:4321 (stop with Ctrl+C)
