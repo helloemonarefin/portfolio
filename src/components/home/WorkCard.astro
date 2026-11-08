@@ -2,9 +2,11 @@
 /**
  * Work Card — DESIGN_SYSTEM.md §5.7 / BUILD_PROMPT.md §6.6. Figma: Work Card.
  * The whole card is one <button> that opens the Project Modal (data-open-project).
- * Hover overlay + image grow are added in Phase 7.
+ * Hover (real pointers) + keyboard focus, 350ms ease-out: the image grows to fill the tile,
+ * a 1px inside outline appears, a frosted overlay fades in and "View Project" + Arrow Button rise 16px.
  */
 import Media from '../ui/Media.astro';
+import ArrowButton from '../ui/ArrowButton.astro';
 import type { Project } from '../../lib/content';
 
 interface Props {
@@ -29,6 +31,12 @@ const { title, tags, thumbnail, category } = project.data;
         widths={[350, 700, 676, 1352]}
         sizes="(min-width: 1024px) 676px, (min-width: 768px) 50vw, 100vw"
       />
+    </span>
+    <span class="work-card__overlay" aria-hidden="true">
+      <span class="work-card__view">
+        <span class="work-card__view-label">View Project</span>
+        <ArrowButton />
+      </span>
     </span>
   </span>
   <span class="work-card__meta">
@@ -71,6 +79,57 @@ const { title, tags, thumbnail, category } = project.data;
   .work-card__image {
     position: absolute;
     inset: var(--inset-y) var(--inset-x);
+    transition: inset 350ms ease-out;
+  }
+
+  /* 1px inside outline (shown on hover) */
+  .work-card__tile::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    box-shadow: inset 0 0 0 1px var(--border-subtle);
+    opacity: 0;
+    transition: opacity 350ms ease-out;
+    pointer-events: none;
+  }
+
+  /* Frosted overlay with "View Project" — only on devices that can hover. */
+  .work-card__overlay {
+    position: absolute;
+    inset: 0;
+    display: none;
+    place-items: center;
+    background: var(--surface-overlay);
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+    opacity: 0;
+    transition: opacity 350ms ease-out;
+  }
+  .work-card__view {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    transform: translateY(16px);
+    transition: transform 350ms ease-out;
+  }
+  .work-card__view-label {
+    font-size: var(--font-size-h5);
+    line-height: var(--line-height-h5);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    color: var(--text-primary);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .work-card__overlay { display: grid; }
+    .work-card:hover .work-card__image,
+    .work-card:focus-visible .work-card__image { inset: 0; }
+    .work-card:hover .work-card__tile::after,
+    .work-card:focus-visible .work-card__tile::after,
+    .work-card:hover .work-card__overlay,
+    .work-card:focus-visible .work-card__overlay { opacity: 1; }
+    .work-card:hover .work-card__view,
+    .work-card:focus-visible .work-card__view { transform: none; }
   }
   .work-card__image :global(img),
   .work-card__image :global(video) {

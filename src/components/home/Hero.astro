@@ -1,7 +1,8 @@
 ---
 /**
  * Hero — DESIGN_SYSTEM.md §5.3 + §6.1. Figma: Hero (State=End).
- * Phase 4 = static end state. The intro animation is added in Phase 7.
+ * Intro animation (DESIGN_SYSTEM §6.1): pure CSS, starts on first paint, Home only.
+ * Under prefers-reduced-motion the global rule makes everything appear in its end state.
  *
  * Layers (bottom → top): portrait (1) · arc (2) · content (3) · nav (4, in Nav.astro).
  */
@@ -37,8 +38,8 @@ const { worksCount } = Astro.props;
       <p class="hero__sub t-body-lg">I design digital experiences that connect and solve problems.</p>
     </div>
     <div class="hero__ctas">
-      <Button label="View Projects" count={worksCount} variant="secondary" href="#work" />
-      <Button label="Hire Me" href="#book" />
+      <span class="hero__cta hero__cta--1"><Button label="View Projects" count={worksCount} variant="secondary" href="#work" /></span>
+      <span class="hero__cta hero__cta--2"><Button label="Hire Me" href="#book" /></span>
     </div>
   </div>
 </section>
@@ -109,6 +110,47 @@ const { worksCount } = Astro.props;
   .hero__ctas {
     display: flex;
     gap: 12px;
+  }
+
+  /* ── Intro timeline ─────────────────────────────────────────────── */
+  .hero {
+    --ease-arc: cubic-bezier(.15, .32, .1, .93);
+    --ease-text: cubic-bezier(.22, 1, .36, 1);
+    --portrait-from: 200px;
+  }
+  .hero__arc { animation: hero-arc-mobile 1.2s var(--ease-arc) 0s both; }
+  .hero__portrait { animation: hero-portrait 1.4s var(--ease-arc) 0.1s both; }
+  .hero__pill,
+  .hero__title,
+  .hero__sub,
+  .hero__cta { animation: hero-text 0.7s var(--ease-text) both; }
+  .hero__pill { animation-delay: 0.45s; }
+  .hero__title { animation-delay: 0.52s; }
+  .hero__sub { animation-delay: 0.59s; }
+  .hero__cta--1 { animation-delay: 0.66s; }
+  .hero__cta--2 { animation-delay: 0.73s; }
+  .hero__cta { display: inline-flex; }
+
+  @keyframes hero-arc-mobile {
+    from { clip-path: ellipse(4000px 1500px at 50% 1480px); }
+    to { clip-path: ellipse(750px 450px at 50% 674px); }
+  }
+  @keyframes hero-arc-desktop {
+    from { clip-path: ellipse(10000px 3000px at 50% 2980px); }
+    to { clip-path: ellipse(1500px 772px at 50% 1104px); }
+  }
+  @keyframes hero-portrait {
+    from { transform: translateY(var(--portrait-from)); }
+    to { transform: translateY(0); }
+  }
+  @keyframes hero-text {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (min-width: 1024px) {
+    .hero { --portrait-from: 280px; }
+    .hero__arc { animation-name: hero-arc-desktop; }
   }
 
   @media (min-width: 1024px) {

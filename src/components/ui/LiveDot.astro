@@ -1,7 +1,8 @@
 ---
 /**
  * Live Dot — DESIGN_SYSTEM.md §5.13. Figma: Live Dot (Tone = Green | Dark).
- * 24×24 box, 10px core. The pulsing halo (10 → 24px, 45% → 0, 1.4s) is added in Phase 7.
+ * 24×24 box, 10px core + a halo that grows 10 → 24px while fading 45% → 0 over 1.4s, looping.
+ * Static under reduced motion (the global rule stops the loop; the halo ends invisible).
  */
 interface Props {
   tone?: 'green' | 'dark';
@@ -35,5 +36,9 @@ const { tone = 'green', class: className } = Astro.props;
     border-radius: 999px;
     background: var(--dot);
   }
-  .live-dot__halo { opacity: 0; } /* animated in Phase 7 */
+  .live-dot__halo { animation: live-dot-pulse 1.4s ease-out infinite; }
+  @keyframes live-dot-pulse {
+    from { transform: scale(1); opacity: 0.45; }
+    to { transform: scale(2.4); opacity: 0; } /* 10px × 2.4 = 24px */
+  }
 </style>

@@ -17,7 +17,7 @@ If they disagree or something isn't covered: check Figma, then ask Emon. Never i
 
 ## Status
 - Stack: Astro 7.4.7, TypeScript strict, Node 26, plain CSS.
-- Current phase: **6 — Interactivity (done, awaiting OK)**. Next: Phase 7 — Motion.
+- Current phase: **7 — Motion (done, awaiting OK)**. Next: Phase 8 — QA.
 - Temporary `/styleguide` page exists (noindex) — remove or hide in Phase 8.
 
 ## Decisions log
@@ -40,6 +40,7 @@ If they disagree or something isn't covered: check Figma, then ask Emon. Never i
 - 2026-11-08 — Cal.com: `helloemonarefin/30min`, inline month view, light theme, brand #162026, lazy-loaded via IntersectionObserver (BookCall.astro).
 - 2026-11-08 — Embla 8.6.0 (+ Autoplay) for the Showcase. Embla can't take a custom easing curve; `duration: 38` approximates the 1s slide.
 - 2026-11-08 — `npm audit`: 2 moderate (minimatch, via CMS tooling; not shipped to browsers). Not force-fixed.
+- 2026-11-08 — Motion: hero intro is pure CSS keyframes (Hero.astro + `.nav--overlay` nav-in); card hover overlay only on hover-capable pointers + :focus-visible; modal close is animated (`closeAnimated`, Esc via `cancel`); Live Dot halo pulses. Reduced motion → global rule shows end states.
 - Still open: Lens photo count (Emon to decide); sticky nav (ask in Phase 6); `sharp` install (ask in Phase 4).
 
 ## Dev commands

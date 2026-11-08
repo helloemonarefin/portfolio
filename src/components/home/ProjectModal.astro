@@ -5,7 +5,8 @@
  *  - Desktop ≥1024: two columns (gallery | details), centred panel.
  *  - Mobile/tablet: bottom sheet starting 48px from the top, sticky "View live site" bar.
  * Behaviour lives in the <script> below (open from cards or #project-<slug>, close, thumbnails).
- * Open/close animation is added in Phase 7.
+ * Open/close: desktop fades in with an 8px rise; mobile sheet slides up; both 300ms
+ * cubic-bezier(.22,1,.36,1); closing reverses. None under reduced motion.
  */
 import Media from '../ui/Media.astro';
 import Icon from '../ui/Icon.astro';
@@ -140,6 +141,21 @@ const stats = [
     });
   };
 
+  const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /** Play the closing animation, then really close the dialog. */
+  const closeAnimated = (dialog: HTMLDialogElement) => {
+    if (!dialog.open || dialog.classList.contains('is-closing')) return;
+    if (reduceMotion()) return dialog.close();
+    dialog.classList.add('is-closing');
+    const done = () => {
+      dialog.classList.remove('is-closing');
+      dialog.close();
+    };
+    dialog.addEventListener('animationend', done, { once: true });
+    window.setTimeout(() => dialog.classList.contains('is-closing') && done(), 400); // safety net
+  };
+
   const open = (slug: string) => {
     const dialog = modals.get(slug);
     if (!dialog || dialog.open) return;
@@ -151,15 +167,20 @@ const stats = [
 
   modals.forEach((dialog) => {
     // Close button
-    dialog.querySelector('[data-close]')?.addEventListener('click', () => dialog.close());
+    dialog.querySelector('[data-close]')?.addEventListener('click', () => closeAnimated(dialog));
+    // Esc: animate instead of closing instantly
+    dialog.addEventListener('cancel', (e) => {
+      e.preventDefault();
+      closeAnimated(dialog);
+    });
     // Backdrop click (a click on the dialog element itself, outside its box)
     dialog.addEventListener('click', (e) => {
       if (e.target !== dialog) return;
       const r = dialog.getBoundingClientRect();
       const inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
-      if (!inside) dialog.close();
+      if (!inside) closeAnimated(dialog);
     });
-    // Esc is handled natively. After any close: unlock scroll, clear the hash, stop videos.
+    // After any close: unlock scroll, clear the hash, stop videos.
     // (The browser returns focus to the card that opened the dialog.)
     dialog.addEventListener('close', () => {
       document.documentElement.classList.remove('is-locked');
@@ -301,6 +322,22 @@ const stats = [
     background: var(--border-secondary);
   }
   .modal__cta-desktop { display: none; }
+
+  /* ── Open / close animation ─────────────────────────────────────────── */
+  .modal[open] { animation: modal-sheet-in 300ms cubic-bezier(.22, 1, .36, 1); }
+  .modal[open]::backdrop { animation: modal-fade-in 300ms cubic-bezier(.22, 1, .36, 1); }
+  .modal.is-closing { animation: modal-sheet-out 300ms cubic-bezier(.22, 1, .36, 1) forwards; }
+  .modal.is-closing::backdrop { animation: modal-fade-out 300ms cubic-bezier(.22, 1, .36, 1) forwards; }
+  @media (min-width: 1024px) {
+    .modal[open] { animation-name: modal-pop-in; }
+    .modal.is-closing { animation-name: modal-pop-out; }
+  }
+  @keyframes modal-sheet-in { from { transform: translateY(100%); } to { transform: none; } }
+  @keyframes modal-sheet-out { from { transform: none; } to { transform: translateY(100%); } }
+  @keyframes modal-pop-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  @keyframes modal-pop-out { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(8px); } }
+  @keyframes modal-fade-in { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes modal-fade-out { from { opacity: 1; } to { opacity: 0; } }
 
   /* ── Mobile / tablet: bottom sheet ───────────────────────────────────── */
   .modal {
