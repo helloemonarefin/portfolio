@@ -151,8 +151,8 @@ Props: `variant` (`primary` | `secondary` | `secondary-chip`), `size` (`md` 40px
 - **Hover/focus:** chip `width: calc(100% - 8px)`; the chevron rides to the right end. Label doesn't move. `transition: width 450ms cubic-bezier(.22,1,.36,1)`. (Animating `width` on this one small element is fine. If it ever stutters, switch to `transform: scaleX` on a pseudo-element plus a translated chevron.)
 - **Secondary (plain):** background `--button-secondary-bg`, 1px `--button-secondary-border`, padding `0 14`, label `--button-secondary-text`, optional count in `--text-tertiary` with 6px gap. Hover: background `--button-secondary-bg-hover`, 200ms.
 - **Secondary-chip:** identical geometry and motion to Primary; colours: background `--button-secondary-bg`, 1px `--button-secondary-border`, chip `--bg-secondary`, chevron `--text-primary`, label `--button-secondary-text`, count `--text-tertiary` after the label.
-- **Open decision:** the hero "View Projects 08" button is plain Secondary in the design; `secondary-chip` is a candidate. Build both variants, use plain for now, and ask me to compare them in the browser.
-- Usage: Nav "Hire Me" = primary sm hug. Hero = secondary md "View Projects" + count, primary md "Hire Me". Pricing CTAs = primary md **fill** "Book a call". Modal = primary md "View live site" (fill on desktop Split and mobile).
+- **Decided (2026-11-08):** the hero "View Projects 08" button uses `secondary-chip`. The plain Secondary border is 1px.
+- Usage: Nav "Hire Me" = primary sm hug. Hero = secondary-chip md "View Projects" + count, primary md "Hire Me". Pricing CTAs = primary md **fill** "Book a call". Modal = primary md "View live site" (fill on desktop Split and mobile).
 
 ### 6.2 Arrow Button (`ui/ArrowButton.astro`)
 - 40×40 circle, 1px `--text-primary` border, `overflow: hidden`, two arrow-up-right icons (17px) stacked in the same spot.

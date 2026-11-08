@@ -25,7 +25,8 @@ If they disagree or something isn't covered: check Figma, then ask Emon. Never i
 - 2026-11-08 — Git author: name `emonarefin`, email `helloemonarefin@gmail.com`.
 - 2026-11-08 — Inter self-hosted via Astro's built-in fonts API (`fonts` in astro.config.mjs, Fontsource provider), CSS var `--font-inter`.
 - 2026-11-08 — Icons: Lucide paths copied exactly from Figma assets into `ui/Icon.astro`, drawn in `currentColor`.
-- Still open: plain Secondary border 1px (DESIGN_SYSTEM) vs 0.5px (Figma) — using 1px until Emon decides; hero "View Projects" plain Secondary vs `secondary-chip` (compare in Phase 2); sticky nav (ask in Phase 6); `sharp` install (ask in Phase 4).
+- 2026-11-08 — Hero "View Projects" = `secondary-chip`. Plain Secondary border = 1px (Figma shows 0.5px; code wins).
+- Still open: sticky nav (ask in Phase 6); `sharp` install (ask in Phase 4).
 
 ## Dev commands
 - `npm run dev` → http://localhost:4321 (stop with Ctrl+C)
