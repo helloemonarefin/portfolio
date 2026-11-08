@@ -1,0 +1,29 @@
+plans:
+  - name: Full Website
+    description: A complete website, designed in Figma and built in Framer — ready to launch.
+    price: $0,000
+    unit: one-time, starting at
+    badge: ''
+    features:
+      - Custom design, made for your brand
+      - Responsive Framer build
+      - CMS setup for blog or projects
+      - Interactions and animations
+      - On-page SEO and performance basics
+      - Two rounds of revisions
+      - 14 days of post-launch support
+    ctaLabel: Book a call
+  - name: Monthly Subscription
+    description: Ongoing design and development for teams that ship often.
+    price: $0,000
+    unit: / month
+    badge: Pause or cancel anytime
+    features:
+      - Unlimited design and dev requests
+      - One active request at a time
+      - Average 48-hour turnaround
+      - New pages, landing pages and updates
+      - Framer maintenance and fixes
+      - Async updates via Slack or email
+      - Pause or cancel anytime
+    ctaLabel: Book a call

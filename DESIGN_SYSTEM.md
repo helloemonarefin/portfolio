@@ -385,7 +385,7 @@ Managed with **Astro content collections** + **Keystatic** (visual admin at `/ke
 `image` (→ `src/assets/photos/`), `alt` (required), `size` (wide · square), `order`.
 
 ### `settings` (singleton)
-`email`, `calLink` (Cal.com `username/event`), `socials` (linkedin, x, dribbble, behance, resumeUrl), `stats` (years, projects), `currentRole` (title "Product Designer", company "Rubik"), `milestones[]` (`year`, `title`), `aboutBio` (2 paragraphs), `siteDescription` (SEO).
+`email`, `calLink` (Cal.com `username/event`), `socials` (linkedin, x, dribbble, behance, resumeUrl), `stats` (years, projects), `currentRole` (title "Product Designer", company "Rubik", summary — the one-line sub under the About "Now" statement), `milestones[]` (`year`, `title`), `aboutBio` (2 paragraphs), `siteDescription` (SEO).
 
 ### `pricing` (singleton)
 `plans[]` (exactly 2): `name`, `description`, `price`, `unit`, `badge?`, `features[]`, `ctaLabel`. Seed with the Figma copy.

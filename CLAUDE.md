@@ -17,7 +17,8 @@ If they disagree or something isn't covered: check Figma, then ask Emon. Never i
 
 ## Status
 - Stack: Astro 7.4.7, TypeScript strict, Node 26, plain CSS.
-- Current phase: **2 — Foundations (done, awaiting OK)**. Next: Phase 3 — CMS.
+- Current phase: **3 — CMS (done, awaiting OK)**. Next: Phase 4 — Home, static.
+- Home page `/` is a TEMPORARY content preview until Phase 4.
 - Temporary `/styleguide` page exists (noindex) — remove or hide in Phase 8.
 
 ## Decisions log
@@ -26,6 +27,10 @@ If they disagree or something isn't covered: check Figma, then ask Emon. Never i
 - 2026-11-08 — Inter self-hosted via Astro's built-in fonts API (`fonts` in astro.config.mjs, Fontsource provider), CSS var `--font-inter`.
 - 2026-11-08 — Icons: Lucide paths copied exactly from Figma assets into `ui/Icon.astro`, drawn in `currentColor`.
 - 2026-11-08 — Hero "View Projects" = plain `secondary` (Emon changed from secondary-chip). Plain Secondary border = 0.5px, matching Figma. Secondary-chip keeps 1px.
+- 2026-11-08 — Keystatic: entries are `src/content/<collection>/<slug>/index.yaml`; singletons `src/content/settings/settings.yaml`, `src/content/pricing/pricing.yaml`. Images in `src/assets/projects|photos/<slug>/`, stored as relative paths (`../../../assets/...`) so Astro's `image()` optimises them. Category values are lowercase (`agency|saas|portfolio|templates`); labels in `src/lib/content.ts`.
+- 2026-11-08 — Keystatic integration loads only in `npm run dev` (needs a server adapter, added in Phase 9). `npm run build` stays fully static.
+- 2026-11-08 — Added `settings.currentRole.summary` (About "Now" one-liner from Figma) so that copy comes from the CMS. Both spec files updated.
+- 2026-11-08 — Seed: 3 projects (Figma placeholder copy), 8 Lens photos (6 wide + 2 square, as in Figma), placeholder images are labelled grey PNGs.
 - Still open: sticky nav (ask in Phase 6); `sharp` install (ask in Phase 4).
 
 ## Dev commands

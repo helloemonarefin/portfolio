@@ -106,7 +106,7 @@ Image fields must save into `src/assets/projects/<slug>/` so the Astro schema ca
 `image`, `alt` (required), `size` (select: wide | square), `order`.
 
 ### 4.3 `settings` singleton
-`email`, `calLink` (Cal.com `username/event`), `socials` (linkedin, x, dribbble, behance, resumeUrl), `stats` (years, projects), `currentRole` (title "Product Designer", company "Rubik"), `milestones[]` (year, title), `aboutBio` (2 paragraphs), `siteDescription` (for SEO).
+`email`, `calLink` (Cal.com `username/event`), `socials` (linkedin, x, dribbble, behance, resumeUrl), `stats` (years, projects), `currentRole` (title "Product Designer", company "Rubik", summary — the one-line sub under the About "Now" statement), `milestones[]` (year, title), `aboutBio` (2 paragraphs), `siteDescription` (for SEO).
 
 ### 4.4 `pricing` singleton
 `plans[]` (exactly 2): `name`, `description`, `price`, `unit`, `badge` (optional), `features[]`, `ctaLabel`. Seed it with the copy from the Figma Pricing section.

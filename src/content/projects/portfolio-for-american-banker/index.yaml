@@ -1,0 +1,20 @@
+title: Portfolio for American Banker
+category: portfolio
+tags:
+  - Portfolio
+  - AI
+  - Framer
+summary: Placeholder project summary — the client, the problem, and what you designed and built. Keep it to two or three sentences; details live on the case study page.
+thumbnail: ../../../assets/projects/portfolio-for-american-banker/thumbnail.png
+gallery:
+  - ../../../assets/projects/portfolio-for-american-banker/gallery/0.png
+  - ../../../assets/projects/portfolio-for-american-banker/gallery/1.png
+  - ../../../assets/projects/portfolio-for-american-banker/gallery/2.png
+liveUrl: https://example.com
+priceRange: $600 – $800
+duration: 7 – 10 days
+scope: Design + Framer build
+year: 2026
+showcase: featured
+order: 1
+draft: false

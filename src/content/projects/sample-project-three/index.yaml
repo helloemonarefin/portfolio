@@ -1,0 +1,20 @@
+title: Sample Project Three
+category: saas
+tags:
+  - Portfolio
+  - AI
+  - Framer
+summary: Placeholder project summary — the client, the problem, and what you designed and built. Keep it to two or three sentences; details live on the case study page.
+thumbnail: ../../../assets/projects/sample-project-three/thumbnail.png
+gallery:
+  - ../../../assets/projects/sample-project-three/gallery/0.png
+  - ../../../assets/projects/sample-project-three/gallery/1.png
+  - ../../../assets/projects/sample-project-three/gallery/2.png
+liveUrl: https://example.com
+priceRange: $600 – $800
+duration: 7 – 10 days
+scope: Design + Framer build
+year: 2026
+showcase: more
+order: 3
+draft: false
