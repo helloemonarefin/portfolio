@@ -175,9 +175,9 @@ Each maps to a Figma component of the same name (page "Portfolio Website", right
   - Padding: `hug` → left 44 (40 at sm), right 32 (30 at sm) so the swept chevron never overlaps the label. `fill` → `width:100%`, left & right 44, label centred.
   - Label `label` token, weight 500, `--button-primary-text`, sits above the chip (`position: relative; z-index: 1`).
 - **Hover / focus-visible (primary):** the chip **sweeps** from 32px to `calc(100% - 8px)` wide (height unchanged), carrying the chevron to the right end; the label doesn't move. `transition: width 450ms cubic-bezier(.22,1,.36,1)`. (If it ever stutters, switch to `scaleX` on a pseudo-element plus a translated chevron.)
-- **Secondary (plain):** `--button-secondary-bg`, 1px `--button-secondary-border`, radius 6, padding `0 14`, label `--button-secondary-text`; optional count in `--text-tertiary`, 6px after the label. Hover: background → `--button-secondary-bg-hover`, 200ms.
+- **Secondary (plain):** `--button-secondary-bg`, 0.5px `--button-secondary-border`, radius 6, padding `0 14`, label `--button-secondary-text`; optional count in `--text-tertiary`, 6px after the label. Hover: background → `--button-secondary-bg-hover`, 200ms.
 - **Secondary-chip:** identical geometry and motion to Primary (same 4px inset rule, hug/fill). Colours: background `--button-secondary-bg`, 1px `--button-secondary-border`, chip `--bg-secondary`, chevron `--text-primary`, label `--button-secondary-text`, count `--text-tertiary` after the label. Figma variant: `Style=Secondary Chip`.
-- **Usage:** Nav "Hire Me" = primary sm hug · Hero "View Projects 08" = **secondary-chip** md hug (decided 2026-11-08) and "Hire Me" = primary md hug · Pricing "Book a call" = primary md **fill** · Modal "View live site" = primary md **fill** (desktop Split and mobile).
+- **Usage:** Nav "Hire Me" = primary sm hug · Hero "View Projects 08" = **secondary** (plain) md + count (decided 2026-11-08) and "Hire Me" = primary md hug · Pricing "Book a call" = primary md **fill** · Modal "View live site" = primary md **fill** (desktop Split and mobile).
 
 ### 5.1b Arrow Button (`ArrowButton.astro`)
 - 40×40 circle, 1px `--text-primary` border, `overflow: hidden`, two arrow-up-right icons (17px, stroke `--text-primary`) in the same spot. Rest: arrow A centred; arrow B parked at `translate(-18px, 18px)`.
@@ -437,7 +437,7 @@ CLAUDE.md, DESIGN_SYSTEM.md (this file), BUILD_PROMPT.md
 - [x] Hero intro: Version A (arc shrinks from full-bleed) with staggered text.
 - [x] Modal desktop layout: Split.
 - [x] Footer band: dotted logo.
-- [x] Hero "View Projects" button — decided: Secondary Chip. Plain Secondary keeps a 1px border (Figma's 0.5px is superseded).
+- [x] Hero "View Projects" button — decided: plain Secondary with a 0.5px border (as in Figma).
 - [ ] Real project names, summaries, tags, stats, live URLs.
 - [ ] Contact email (hello@emonarefin.com is a placeholder).
 - [ ] Bio copy, portrait photo, milestone years.
