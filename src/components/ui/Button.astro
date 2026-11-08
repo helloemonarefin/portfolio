@@ -1,0 +1,164 @@
+---
+/**
+ * Button — "Chip Sweep". DESIGN_SYSTEM.md §5.1, BUILD_PROMPT.md §6.1.
+ * Figma component: Button (Style × Size × State × Layout).
+ *
+ * variant  primary | secondary | secondary-chip
+ * size     md (40px) | sm (36px)
+ * layout   hug | fill (fill = full width, label centred)
+ * href     renders <a>; otherwise <button>
+ * count    small grey number after the label, e.g. "08" (secondary variants)
+ */
+import Icon from './Icon.astro';
+
+interface Props {
+  label: string;
+  variant?: 'primary' | 'secondary' | 'secondary-chip';
+  size?: 'md' | 'sm';
+  layout?: 'hug' | 'fill';
+  count?: string;
+  href?: string;
+  external?: boolean;
+  type?: 'button' | 'submit';
+  class?: string;
+  [key: string]: unknown;
+}
+
+const {
+  label,
+  variant = 'primary',
+  size = 'md',
+  layout = 'hug',
+  count,
+  href,
+  external = false,
+  type = 'button',
+  class: className,
+  ...rest
+} = Astro.props;
+
+const hasChip = variant === 'primary' || variant === 'secondary-chip';
+const classes = ['btn', `btn--${variant}`, `btn--${size}`, `btn--${layout}`, className];
+const Tag = href ? 'a' : 'button';
+const tagProps = href
+  ? { href, ...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {}) }
+  : { type };
+---
+
+<Tag class:list={classes} {...tagProps} {...rest}>
+  {
+    hasChip && (
+      <span class="btn__chip" aria-hidden="true">
+        <Icon name="chevron-right" />
+      </span>
+    )
+  }
+  <span class="btn__label">{label}</span>
+  {count && <span class="btn__count">{count}</span>}
+</Tag>
+
+<style>
+  .btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 40px;
+    border-radius: 6px;
+    font-family: var(--font-sans);
+    font-size: var(--font-size-label);
+    line-height: var(--line-height-label);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    text-decoration: none;
+    overflow: hidden;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn--sm { height: 36px; }
+  .btn--fill { width: 100%; }
+
+  .btn__label,
+  .btn__count {
+    position: relative;
+    z-index: 1;
+  }
+  .btn__count {
+    font-weight: 400;
+    color: var(--text-tertiary);
+  }
+
+  /* ---------- The chip (primary + secondary-chip) ---------- */
+  /* Rule: the chip keeps exactly 4px to every button edge it touches. */
+  .btn__chip {
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    left: 4px;
+    width: 32px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* the chevron rides on the chip's right edge */
+    padding-inline: 8px;
+    transition: width 450ms cubic-bezier(.22, 1, .36, 1);
+  }
+  .btn__chip :global(svg) { flex: none; }
+  .btn--sm .btn__chip {
+    width: 28px;
+    padding-inline: 6px;
+  }
+
+  /* ---------- Primary ---------- */
+  .btn--primary {
+    background: var(--button-primary-bg);
+    color: var(--button-primary-text);
+    border: 0;
+    padding: 0 32px 0 44px;
+  }
+  .btn--primary.btn--sm { padding: 0 30px 0 40px; }
+  .btn--primary.btn--fill { padding-inline: 44px; }
+  .btn--primary .btn__chip { background: var(--button-primary-chip); }
+
+  /* ---------- Secondary-chip ---------- */
+  /* Same geometry as primary. It has a 1px border, so offsets inside the border
+     are 1px smaller — the chip still sits 4px from the outer edge. */
+  .btn--secondary-chip {
+    background: var(--button-secondary-bg);
+    color: var(--button-secondary-text);
+    border: 1px solid var(--button-secondary-border);
+    padding: 0 31px 0 43px;
+  }
+  .btn--secondary-chip.btn--sm { padding: 0 29px 0 39px; }
+  .btn--secondary-chip.btn--fill { padding-inline: 43px; }
+  .btn--secondary-chip .btn__chip {
+    top: 3px;
+    bottom: 3px;
+    left: 3px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+  }
+
+  /* ---------- Secondary (plain) ---------- */
+  .btn--secondary {
+    gap: 6px;
+    background: var(--button-secondary-bg);
+    color: var(--button-secondary-text);
+    border: 1px solid var(--button-secondary-border);
+    padding: 0 14px;
+    transition: background-color 200ms ease;
+  }
+
+  /* ---------- Hover (real pointers only) + keyboard focus ---------- */
+  .btn--primary:focus-visible .btn__chip { width: calc(100% - 8px); }
+  .btn--secondary-chip:focus-visible .btn__chip { width: calc(100% - 6px); }
+  .btn--secondary:focus-visible { background: var(--button-secondary-bg-hover); }
+
+  @media (hover: hover) and (pointer: fine) {
+    .btn--primary:hover .btn__chip { width: calc(100% - 8px); }
+    .btn--secondary-chip:hover .btn__chip { width: calc(100% - 6px); }
+    .btn--secondary:hover { background: var(--button-secondary-bg-hover); }
+  }
+</style>

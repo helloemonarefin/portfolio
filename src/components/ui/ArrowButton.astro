@@ -1,0 +1,67 @@
+---
+/**
+ * Arrow Button — DESIGN_SYSTEM.md §5.1b, BUILD_PROMPT.md §6.2.
+ * 40×40 circle; on hover it fills dark, arrow A exits top-right and
+ * arrow B enters from bottom-left.
+ *
+ * With `href` it is a link (needs `label`). Without it, it renders a
+ * decorative <span> — e.g. inside a Work Card, which is itself the button.
+ */
+import Icon from './Icon.astro';
+
+interface Props {
+  href?: string;
+  label?: string;
+  class?: string;
+}
+
+const { href, label, class: className } = Astro.props;
+const Tag = href ? 'a' : 'span';
+const tagProps = href ? { href, 'aria-label': label } : { 'aria-hidden': 'true' as const };
+---
+
+<Tag class:list={['arrow-btn', className]} {...tagProps}>
+  <Icon name="arrow-up-right" class="arrow-btn__a" />
+  <Icon name="arrow-up-right" class="arrow-btn__b" />
+</Tag>
+
+<style>
+  .arrow-btn {
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--text-primary);
+    border-radius: 999px;
+    overflow: hidden;
+    color: var(--text-primary);
+    background: transparent;
+    transition:
+      background-color 350ms cubic-bezier(.22, 1, .36, 1),
+      color 350ms cubic-bezier(.22, 1, .36, 1);
+  }
+  /* Both arrows share the same grid cell (stacked). */
+  .arrow-btn :global(svg) {
+    grid-area: 1 / 1;
+    transition: transform 350ms cubic-bezier(.22, 1, .36, 1);
+  }
+  .arrow-btn :global(.arrow-btn__b) { transform: translate(-18px, 18px); }
+
+  .arrow-btn:focus-visible {
+    background: var(--button-primary-bg);
+    color: var(--button-primary-text);
+  }
+  .arrow-btn:focus-visible :global(.arrow-btn__a) { transform: translate(18px, -18px); }
+  .arrow-btn:focus-visible :global(.arrow-btn__b) { transform: translate(0, 0); }
+
+  @media (hover: hover) and (pointer: fine) {
+    .arrow-btn:hover {
+      background: var(--button-primary-bg);
+      color: var(--button-primary-text);
+    }
+    .arrow-btn:hover :global(.arrow-btn__a) { transform: translate(18px, -18px); }
+    .arrow-btn:hover :global(.arrow-btn__b) { transform: translate(0, 0); }
+  }
+</style>

@@ -1,0 +1,49 @@
+---
+/**
+ * Stroke icons (Lucide shapes, as used in the Figma components).
+ * They draw in `currentColor`, so they take the colour of the surrounding text.
+ * Path data and stroke widths are copied exactly from the Figma assets.
+ */
+const icons = {
+  // Figma "Icon / Chevron" — 16×16, stroke 1.33
+  'chevron-right': {
+    viewBox: '0 0 16 16',
+    size: 16,
+    strokeWidth: 1.33333,
+    d: 'M6 12L10 8L6 4',
+  },
+  // Figma Arrow Button "Arrow" — 17.39×17.39, stroke 1.45
+  'arrow-up-right': {
+    viewBox: '0 0 17.3913 17.3913',
+    size: 17.3913,
+    strokeWidth: 1.44928,
+    d: 'M12.3186 12.3186V5.07227H5.07227M12.3186 5.07227L5.07227 12.3186',
+  },
+} as const;
+
+export type IconName = keyof typeof icons;
+
+interface Props {
+  name: IconName;
+  class?: string;
+}
+
+const { name, class: className } = Astro.props;
+const icon = icons[name];
+---
+
+<svg
+  class={className}
+  width={icon.size}
+  height={icon.size}
+  viewBox={icon.viewBox}
+  fill="none"
+  stroke="currentColor"
+  stroke-width={icon.strokeWidth}
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false"
+>
+  <path d={icon.d} />
+</svg>

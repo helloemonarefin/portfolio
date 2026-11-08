@@ -1,0 +1,33 @@
+/*
+ * Colour tokens — DESIGN_SYSTEM.md §2.
+ * Names map 1:1 to the Figma collection "Portfolio / Color" (Light only).
+ * Never hard-code a colour anywhere else: add a token here first.
+ */
+:root {
+  --text-primary: #162026;
+  --text-secondary: #6B767D;
+  --text-tertiary: #9AA0A5;
+  --text-inverse: #FFFFFF;
+
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F5F5F7;
+  --bg-tertiary: #E8E8ED;
+
+  --border-primary: #E3E5E8;
+  --border-secondary: #D5D9DD;
+  --border-subtle: rgba(0, 0, 0, .12);
+
+  --button-primary-bg: #162026;
+  --button-primary-text: #FFFFFF;
+  --button-primary-chip: rgba(255, 255, 255, .16);
+
+  --button-secondary-bg: #FFFFFF;
+  --button-secondary-bg-hover: #F5F5F7;
+  --button-secondary-text: #162026;
+  --button-secondary-border: #E3E5E8;
+
+  --surface-overlay: rgba(255, 255, 255, .90);
+  --surface-scrim: rgba(8, 13, 15, .55);
+
+  --status-live: #34C759;
+}

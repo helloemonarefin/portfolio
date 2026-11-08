@@ -1,0 +1,281 @@
+---
+/**
+ * TEMPORARY styleguide — for checking Phase 2 foundations.
+ * Not linked anywhere, hidden from search engines. Remove or hide in Phase 8.
+ */
+import Base from '../layouts/Base.astro';
+import Button from '../components/ui/Button.astro';
+import ArrowButton from '../components/ui/ArrowButton.astro';
+
+// Token names + their values, for the labels only. Swatches render from the CSS variables.
+const colorGroups = [
+  {
+    name: 'Text',
+    tokens: [
+      ['--text-primary', '#162026'],
+      ['--text-secondary', '#6B767D'],
+      ['--text-tertiary', '#9AA0A5'],
+      ['--text-inverse', '#FFFFFF'],
+    ],
+  },
+  {
+    name: 'Background',
+    tokens: [
+      ['--bg-primary', '#FFFFFF'],
+      ['--bg-secondary', '#F5F5F7'],
+      ['--bg-tertiary', '#E8E8ED'],
+    ],
+  },
+  {
+    name: 'Border',
+    tokens: [
+      ['--border-primary', '#E3E5E8'],
+      ['--border-secondary', '#D5D9DD'],
+      ['--border-subtle', 'rgba(0,0,0,.12)'],
+    ],
+  },
+  {
+    name: 'Button',
+    tokens: [
+      ['--button-primary-bg', '#162026'],
+      ['--button-primary-text', '#FFFFFF'],
+      ['--button-primary-chip', 'rgba(255,255,255,.16)'],
+      ['--button-secondary-bg', '#FFFFFF'],
+      ['--button-secondary-bg-hover', '#F5F5F7'],
+      ['--button-secondary-text', '#162026'],
+      ['--button-secondary-border', '#E3E5E8'],
+    ],
+  },
+  {
+    name: 'Surface & status',
+    tokens: [
+      ['--surface-overlay', 'rgba(255,255,255,.90)'],
+      ['--surface-scrim', 'rgba(8,13,15,.55)'],
+      ['--status-live', '#34C759'],
+    ],
+  },
+] as const;
+
+const typeRoles = [
+  { role: 'display', desktop: '48 / 53', mobile: '32 / 36', weight: '500', sample: 'Product Designer & Photographer' },
+  { role: 'h1', desktop: '40 / 46', mobile: '28 / 34', weight: '500', sample: 'Product Designer at Rubik' },
+  { role: 'h2', desktop: '32 / 38', mobile: '24 / 30', weight: '500', sample: 'Portfolio for American Banker' },
+  { role: 'h3', desktop: '28 / 32', mobile: '22 / 28', weight: '500', sample: '100+' },
+  { role: 'h4', desktop: '22 / 28', mobile: '20 / 26', weight: '500', sample: 'Monthly Subscription' },
+  { role: 'h5', desktop: '20 / 26', mobile: '18 / 24', weight: '500', sample: 'Emon Arefin' },
+  { role: 'body-lg', desktop: '18 / 28', mobile: '16 / 24', weight: '400', sample: 'I design digital experiences that connect and solve problems.' },
+  { role: 'body', desktop: '16 / 24', mobile: '15 / 22', weight: '400 / 500', sample: 'Default body text for card titles and feature lists.' },
+  { role: 'body-sm', desktop: '15 / 22', mobile: '14 / 20', weight: '400', sample: 'Based in Bangladesh · GMT+6' },
+  { role: 'label', desktop: '14 / 20', mobile: '14 / 20', weight: '400 / 500', sample: 'Home  Works  About  Pricing  Contact' },
+  { role: 'caption', desktop: '14 / 20', mobile: '12 / 16', weight: '400', sample: 'Portfolio | AI | Framer' },
+] as const;
+---
+
+<Base title="Styleguide — Emon Arefin" noindex>
+  <main class="container sg">
+    <header class="sg__intro">
+      <p class="t-caption sg__muted">Temporary page · Phase 2</p>
+      <h1 class="t-display">Styleguide</h1>
+      <p class="t-body-lg sg__muted">
+        Hover the buttons with a mouse, or press <kbd>Tab</kbd> to see focus states. Resize the window
+        across 1024px to see the type switch between mobile and desktop sizes.
+      </p>
+    </header>
+
+    <!-- Colours -->
+    <section class="sg__section" aria-labelledby="sg-colors">
+      <h2 id="sg-colors" class="t-h2">Colour tokens</h2>
+      {
+        colorGroups.map((group) => (
+          <div class="sg__group">
+            <h3 class="t-label t-medium sg__muted">{group.name}</h3>
+            <ul class="sg__swatches" role="list">
+              {group.tokens.map(([token, value]) => (
+                <li class="sg__swatch">
+                  <span class="sg__chip">
+                    <span class="sg__fillcolor" style={`background: var(${token})`} />
+                  </span>
+                  <code class="t-caption">{token}</code>
+                  <span class="t-caption sg__muted">{value}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </section>
+
+    <!-- Typography -->
+    <section class="sg__section" aria-labelledby="sg-type">
+      <h2 id="sg-type" class="t-h2">Type roles</h2>
+      <p class="t-body sg__muted">Inter only, weights 400 and 500.</p>
+      <ul class="sg__type" role="list">
+        {
+          typeRoles.map((t) => (
+            <li class="sg__type-row">
+              <div class="sg__type-meta t-caption">
+                <code>.t-{t.role}</code>
+                <span class="sg__muted">
+                  D {t.desktop} · M {t.mobile} · {t.weight}
+                </span>
+              </div>
+              <p class={`t-${t.role}`}>{t.sample}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <!-- Buttons -->
+    <section class="sg__section" aria-labelledby="sg-buttons">
+      <h2 id="sg-buttons" class="t-h2">Buttons</h2>
+
+      <div class="sg__group">
+        <h3 class="t-label t-medium sg__muted">Primary — md / sm (hug)</h3>
+        <div class="sg__row">
+          <Button label="Hire Me" href="#" />
+          <Button label="Hire Me" size="sm" href="#" />
+          <Button label="View live site" href="#" />
+        </div>
+      </div>
+
+      <div class="sg__group">
+        <h3 class="t-label t-medium sg__muted">Primary — fill (pricing / modal)</h3>
+        <div class="sg__fill">
+          <Button label="Book a call" layout="fill" href="#" />
+        </div>
+      </div>
+
+      <div class="sg__group">
+        <h3 class="t-label t-medium sg__muted">Secondary (plain) — md / sm</h3>
+        <div class="sg__row">
+          <Button label="View Projects" count="08" variant="secondary" href="#" />
+          <Button label="View Projects" count="08" variant="secondary" size="sm" href="#" />
+          <Button label="View Projects" variant="secondary" href="#" />
+        </div>
+      </div>
+
+      <div class="sg__group">
+        <h3 class="t-label t-medium sg__muted">Secondary-chip — md / sm / fill</h3>
+        <div class="sg__row">
+          <Button label="View Projects" count="08" variant="secondary-chip" href="#" />
+          <Button label="View Projects" count="08" variant="secondary-chip" size="sm" href="#" />
+        </div>
+        <div class="sg__fill">
+          <Button label="Book a call" variant="secondary-chip" layout="fill" href="#" />
+        </div>
+      </div>
+
+      <div class="sg__group">
+        <h3 class="t-label t-medium sg__muted">Arrow Button</h3>
+        <div class="sg__row">
+          <ArrowButton href="#" label="Example arrow link" />
+        </div>
+      </div>
+    </section>
+
+    <!-- Open decision -->
+    <section class="sg__section" aria-labelledby="sg-decision">
+      <h2 id="sg-decision" class="t-h2">Open decision: hero buttons</h2>
+      <p class="t-body sg__muted">
+        Which "View Projects" button should sit next to "Hire Me" in the hero?
+      </p>
+      <div class="sg__compare">
+        <div class="sg__option">
+          <p class="t-label t-medium">A · Plain secondary (current design)</p>
+          <div class="sg__row">
+            <Button label="View Projects" count="08" variant="secondary" href="#" />
+            <Button label="Hire Me" href="#" />
+          </div>
+        </div>
+        <div class="sg__option">
+          <p class="t-label t-medium">B · Secondary-chip</p>
+          <div class="sg__row">
+            <Button label="View Projects" count="08" variant="secondary-chip" href="#" />
+            <Button label="Hire Me" href="#" />
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</Base>
+
+<style>
+  .sg {
+    padding-block: 72px;
+    display: grid;
+    gap: 72px;
+  }
+  @media (min-width: 1024px) {
+    .sg { padding-block: 128px; gap: 96px; }
+  }
+
+  .sg__intro { display: grid; gap: 12px; max-width: 720px; }
+  .sg__muted { color: var(--text-secondary); }
+  kbd {
+    font: inherit;
+    padding: 0 6px;
+    border: 1px solid var(--border-primary);
+    border-radius: 4px;
+    background: var(--bg-secondary);
+  }
+
+  .sg__section {
+    display: grid;
+    gap: 32px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border-primary);
+  }
+  .sg__group { display: grid; gap: 16px; }
+
+  /* Colour swatches */
+  .sg__swatches {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 16px;
+  }
+  .sg__swatch { display: grid; gap: 4px; }
+  .sg__chip {
+    display: block;
+    height: 72px;
+    border-radius: 6px;
+    border: 1px solid var(--border-primary);
+    /* checkerboard behind translucent tokens */
+    background-image:
+      linear-gradient(45deg, var(--bg-tertiary) 25%, transparent 25%, transparent 75%, var(--bg-tertiary) 75%),
+      linear-gradient(45deg, var(--bg-tertiary) 25%, transparent 25%, transparent 75%, var(--bg-tertiary) 75%);
+    background-size: 12px 12px;
+    background-position: 0 0, 6px 6px;
+    overflow: hidden;
+  }
+  .sg__fillcolor { display: block; height: 100%; }
+  code { font-family: var(--font-sans); }
+
+  /* Type */
+  .sg__type { display: grid; gap: 28px; }
+  .sg__type-row { display: grid; gap: 8px; }
+  .sg__type-meta { display: flex; flex-wrap: wrap; gap: 12px; }
+  @media (min-width: 1024px) {
+    .sg__type-row { grid-template-columns: 260px 1fr; align-items: baseline; gap: 32px; }
+  }
+
+  /* Buttons */
+  .sg__row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+  .sg__fill { max-width: 480px; }
+  .sg__compare {
+    display: grid;
+    gap: 16px;
+  }
+  @media (min-width: 768px) {
+    .sg__compare { grid-template-columns: 1fr 1fr; }
+  }
+  .sg__option {
+    display: grid;
+    gap: 20px;
+    justify-items: center;
+    text-align: center;
+    padding: 40px 24px;
+    border-radius: 20px;
+    background: var(--bg-secondary);
+  }
+</style>

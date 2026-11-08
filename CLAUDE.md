@@ -17,12 +17,15 @@ If they disagree or something isn't covered: check Figma, then ask Emon. Never i
 
 ## Status
 - Stack: Astro 7.4.7, TypeScript strict, Node 26, plain CSS.
-- Current phase: **1 — Scaffold (done, awaiting OK)**. Next: Phase 2 — Foundations.
+- Current phase: **2 — Foundations (done, awaiting OK)**. Next: Phase 3 — CMS.
+- Temporary `/styleguide` page exists (noindex) — remove or hide in Phase 8.
 
 ## Decisions log
 - 2026-11-08 — DESIGN_SYSTEM.md and BUILD_PROMPT.md reconciled by Emon; no open conflicts.
 - 2026-11-08 — Git author: name `emonarefin`, email `helloemonarefin@gmail.com`.
-- Still open: hero "View Projects" plain Secondary vs `secondary-chip` (compare in Phase 2); sticky nav (ask in Phase 6); `sharp` install (ask in Phase 4).
+- 2026-11-08 — Inter self-hosted via Astro's built-in fonts API (`fonts` in astro.config.mjs, Fontsource provider), CSS var `--font-inter`.
+- 2026-11-08 — Icons: Lucide paths copied exactly from Figma assets into `ui/Icon.astro`, drawn in `currentColor`.
+- Still open: plain Secondary border 1px (DESIGN_SYSTEM) vs 0.5px (Figma) — using 1px until Emon decides; hero "View Projects" plain Secondary vs `secondary-chip` (compare in Phase 2); sticky nav (ask in Phase 6); `sharp` install (ask in Phase 4).
 
 ## Dev commands
 - `npm run dev` → http://localhost:4321 (stop with Ctrl+C)
