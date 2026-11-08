@@ -108,7 +108,8 @@ const featuredOrdered = featuredSlides.length
   }
   @media (min-width: 1024px) {
     .showcase {
-      padding: 24px 0 128px;
+      background: var(--bg-primary); /* Figma update 2026-11-08: white on desktop */
+      padding: 12px 0 128px;
       gap: 14px;
       --slide-w: 940px;
       --slide-h: 504px;
@@ -191,12 +192,12 @@ const featuredOrdered = featuredSlides.length
     align-items: center;
     gap: 8px;
     height: 28px;
-    padding: 0 16px;
+    padding: 0 14px;
     border-radius: 999px;
     background: var(--bg-tertiary);
   }
   @media (min-width: 1024px) {
-    .showcase__dots { gap: 10px; height: 32px; }
+    .showcase__dots { gap: 10px; height: 32px; padding: 0 16px; }
   }
   .showcase__dot {
     width: 8px;

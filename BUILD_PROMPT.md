@@ -126,7 +126,7 @@ Image fields must save into `src/assets/projects/<slug>/` so the Astro schema ca
 - **Reduced motion:** under `@media (prefers-reduced-motion: reduce)`, remove every transition and animation and show final states instantly (including the hero intro and gallery autoplay).
 - **Focus ring:** 2px solid `--text-primary`, 2px offset, on every interactive element.
 - **Section anchors:** `#work`, `#pricing`, `#book`. Nav "Works" → `/#work`, "Pricing" → `/#pricing`, "Contact" and every "Hire Me" / "Book a call" → `/#book`, "About" → `/about`, "Home" → `/`. Use `scroll-behavior: smooth` (disabled under reduced motion) with `scroll-margin-top` equal to the nav height.
-- **Section backgrounds alternate** (DESIGN_SYSTEM.md §4): Hero white → Showcase grey → Work white → Pricing grey → Book white → Footer white with a top border.
+- **Section backgrounds** (DESIGN_SYSTEM.md §4, updated 2026-11-08): Hero white (grey arc) → Showcase white on desktop / grey on mobile → Work white → Pricing white with grey cards → Book white → Footer white with a top border.
 - **Section header:** desktop = one row with the heading (`display`) on the left and an optional right slot (filters or meta) aligned to the bottom. Mobile = heading, then the right-slot content underneath, left-aligned, gap 20. **There are no subheadings.**
 
 ---
@@ -205,7 +205,7 @@ Props: `variant` (`primary` | `secondary` | `secondary-chip`), `size` (`md` 40px
 - Two rows of **pure imagery**: no captions or buttons on the slides. Images come from projects with `showcase = featured` (top row) and `showcase = more` (bottom row), using `thumbnail`, `object-fit: cover; object-position: top`, square corners.
 - **Featured row:** slide 940×504 desktop / 330×212 mobile (keep the ratio between sizes), gap 14 / 8, centred, with neighbours peeking on both sides, infinite loop.
 - **More row:** card 355×200 / 220×140, gap 14 / 8, loop, starting offset so the first card is partly cut off at the left (desktop −160px, mobile −60px).
-- Spacing: section padding 24 top / 128 bottom (mobile 16 / 72); 14px between rows (8 mobile); pagination 18px below (16 mobile).
+- Spacing: section padding 12 top / 128 bottom (mobile 16 / 72); 14px between rows (8 mobile); pagination 18px below (16 mobile).
 - **Autoplay:** both rows advance **together**, one item every **5s** (4s hold + ~1s slide), easing as close as Embla allows to `cubic-bezier(.645,.045,.355,1)`. Pause while hovered, while the tab is hidden, and while the user drags; resume 5s after the last interaction.
 - **Drag/swipe** either row left or right; keep the two rows in sync (moving one moves the other to the matching index). If a row has fewer than 5 items, duplicate them so the loop still looks full.
 - **Arrows:** round buttons 40×40 (32×32 mobile), `--surface-overlay` + `backdrop-filter: blur(12px)`, chevron 16px `--text-primary`, vertically centred on the featured row. Desktop: sitting on the peeking slides, `left: calc(50% - 548px)` and `right: calc(50% - 548px)` (24px outside the featured slide's edges). Mobile: 8px from the screen edges. Previous/next move both rows by one. Hover: scale 1.05, 200ms.
@@ -250,7 +250,7 @@ Props: `variant` (`primary` | `secondary` | `secondary-chip`), `size` (`md` 40px
   - `aria-labelledby` points to the title.
 
 ### 6.8 Pricing (`home/Pricing.astro`)
-- Grey band. Header "Simple pricing. No surprises." (left). Two plan cards on `--bg-primary`, 2 columns desktop with gap 16, stacked on mobile; radius 20; padding 40 (24 mobile); internal gap 32 (28 mobile). Both cards are the same height on desktop.
+- White band. Header "Simple pricing. No surprises." (left). Two plan cards on `--bg-secondary`, 2 columns desktop with gap 16, stacked on mobile; radius 20; padding 40 (24 mobile); internal gap 32 (28 mobile). Both cards are the same height on desktop.
 - Card order:
   1. Optional badge pill above the name on mobile, right of the name on desktop ("Pause or cancel anytime", `--bg-secondary`, `caption`).
   2. Plan name `h4`.

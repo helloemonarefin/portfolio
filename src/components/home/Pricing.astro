@@ -1,7 +1,7 @@
 ---
 /**
  * Pricing — DESIGN_SYSTEM.md §5.8 / BUILD_PROMPT.md §6.8. Figma: Pricing.
- * Grey band, two white plan cards (equal height on desktop). Copy from the CMS.
+ * White band, two grey plan cards (equal height on desktop). Copy from the CMS.
  */
 import SectionHeader from '../ui/SectionHeader.astro';
 import Button from '../ui/Button.astro';
@@ -75,7 +75,8 @@ const { plans } = Astro.props;
 </section>
 
 <style>
-  .pricing { background: var(--bg-secondary); }
+  /* Figma: white band, grey cards (confirmed by Emon 2026-11-08). */
+  .pricing { background: var(--bg-primary); }
 
   .pricing__body {
     display: flex;
@@ -100,7 +101,7 @@ const { plans } = Astro.props;
     gap: 28px;
     padding: 24px;
     border-radius: 20px;
-    background: var(--bg-primary);
+    background: var(--bg-secondary);
   }
   @media (min-width: 1024px) {
     .plan { gap: 32px; padding: 40px; }

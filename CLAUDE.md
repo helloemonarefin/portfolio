@@ -31,7 +31,7 @@ If they disagree or something isn't covered: check Figma, then ask Emon. Never i
 - 2026-11-08 — Added `settings.currentRole.summary` (About "Now" one-liner from Figma) so that copy comes from the CMS. Both spec files updated.
 - 2026-11-08 — Seed: 3 projects (Figma placeholder copy), 8 Lens photos (6 wide + 2 square, as in Figma), placeholder images are labelled grey PNGs.
 - 2026-11-08 — Brand assets from Figma: `src/assets/brand/logo-mark.svg`, `portrait.png`. Dotted logo SVGs taken from Figma's Footer component (converted path→circle, identical render, ~5× smaller) instead of generating with sharp.
-- 2026-11-08 — Pricing built per DESIGN_SYSTEM (grey band, white cards); Figma shows the reverse — awaiting Emon's confirmation.
+- 2026-11-08 — Emon: Pricing = white band + grey cards (as Figma). Showcase desktop = white, padding 12/128 (Figma update). Footer Services/Privacy/Terms links and AI-button URLs left as-is for now.
 - 2026-11-08 — Nav has a 1px --border-primary bottom border (from Figma; not in the spec text).
 - Still open: sticky nav (ask in Phase 6); `sharp` install (ask in Phase 4).
 

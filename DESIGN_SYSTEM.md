@@ -147,13 +147,13 @@
 | Section header → content gap | 56 | 32 |
 | Work grid | 2 columns, gap 24 (col) / 40 (row) | 1 column, gap 32 |
 | Pricing plans | 2 columns, gap 16 | stacked, gap 16 |
-| Showcase section padding (top/bottom) | 24 / 128 | 16 / 72 |
+| Showcase section padding (top/bottom) | 12 / 128 | 16 / 72 |
 
 Tablet (768–1023): use mobile spacing with 2‑column grids where they fit; type stays on mobile scale. Above 1440 the content stays centred at max 1376 + 32px side padding.
 
 **Anchors:** sections have ids `#work`, `#pricing`, `#book`; `scroll-behavior: smooth` (off under reduced motion) and `scroll-margin-top` = nav height.
 
-**Section backgrounds alternate** so adjacent sections never share a colour: Hero `--bg-primary` → Showcase `--bg-secondary` → Work `--bg-primary` → Pricing `--bg-secondary` → Book a Call `--bg-primary` → Footer `--bg-primary` with a 1px `--border-primary` top border.
+**Section backgrounds** (updated 2026-11-08 to match Figma): Hero `--bg-primary` (grey arc) → Showcase `--bg-primary` on desktop (`--bg-secondary` on mobile, as in the Figma mobile frame) → Work `--bg-primary` → Pricing `--bg-primary` with `--bg-secondary` plan cards → Book a Call `--bg-primary` → Footer `--bg-primary` with a 1px `--border-primary` top border.
 
 **Spacing scale (px):** 4, 6, 8, 12, 14, 16, 20, 24, 32, 40, 48, 56, 64, 72, 96, 128.
 
@@ -229,8 +229,8 @@ Each maps to a Figma component of the same name (page "Portfolio Website", right
 - The whole card is one `<button>` (accessible name "View project: {title}") that opens the Project Modal (§5.10). On mobile there is no overlay; a tap opens the modal.
 
 ### 5.8 Pricing
-- Grey band. Heading "Simple pricing. No surprises." (left).
-- Two plan cards on `--bg-primary`; 2 columns (gap 16) desktop, stacked mobile; radius 20; padding 40 (24 mobile); internal gap 32 (28 mobile); equal heights on desktop.
+- White band (`--bg-primary`). Heading "Simple pricing. No surprises." (left).
+- Two plan cards on `--bg-secondary`; 2 columns (gap 16) desktop, stacked mobile; radius 20; padding 40 (24 mobile); internal gap 32 (28 mobile); equal heights on desktop.
   - **Full Website** — design + Framer development, one-time, "starting at".
   - **Monthly Subscription** — ongoing design & development, "/ month", badge "Pause or cancel anytime".
 - Card order: badge pill (`--bg-secondary`, `caption`; right of the name on desktop, above it on mobile) · plan name `h4` · description `body` `--text-secondary` · price `display` + unit `body` `--text-secondary`, baseline-aligned · **full-width Primary "Book a call"** (`layout="fill"`, → `#book`) · 1px hairline · "What's included" (`caption`, `--text-secondary`) · features: 20px check icon (circle `--bg-tertiary` + check `--text-primary`) + `body`, gap 14.
