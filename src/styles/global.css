@@ -92,7 +92,7 @@ html.is-locked { overflow: hidden; }
   vertical-align: top;
 }
 .roll__row { display: block; white-space: pre; }
-.roll__row--clone { position: absolute; left: 0; top: 100%; }
+.roll__row--clone { position: absolute; left: 0; top: 100%; color: var(--text-accent); } /* rolls in red */
 .roll__char {
   display: inline-block;
   transition: transform var(--m-roll-time, 0.5s) var(--m-roll-ease, cubic-bezier(.22, 1, .36, 1));

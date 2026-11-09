@@ -162,7 +162,7 @@ const connect = [
     place-items: center;
     width: 36px;
     height: 36px;
-    border-radius: 6px;
+    border-radius: 0; /* sharp edges (2026-11-09) */
     background: var(--bg-secondary);
     transition: background-color 200ms ease;
   }
@@ -170,7 +170,7 @@ const connect = [
     width: 18px;
     height: 18px;
     border: 1px dashed var(--text-tertiary);
-    border-radius: 4px;
+    border-radius: 0;
   }
 
   .footer__columns {

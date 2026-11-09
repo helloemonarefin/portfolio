@@ -21,6 +21,7 @@
   --button-primary-text: #FFFFFF;
   --button-primary-chip: rgba(255, 255, 255, .16);
   --button-primary-bg-hover: #FF280F; /* Figma Button · Primary · Hover (2026-11-09) */
+  --text-accent: #FF280F; /* text-link roll: the copy that rolls in on hover (same red as button hover) */
 
   --button-secondary-bg: #FFFFFF;
   --button-secondary-bg-hover: #F5F5F7;

@@ -117,6 +117,13 @@ const filters = [{ value: 'all', label: 'All' }, ...Object.entries(categoryLabel
   }
   @media (min-width: 1024px) {
     .work__grid { row-gap: 40px; }
+    }
+  /* 3-column variant: 1 column below 810px, 2 columns 810–1600px, 3 columns above 1600px. */
+  .work__grid--3 { grid-template-columns: 1fr; }
+  @media (min-width: 810px) {
+    .work__grid--3 { grid-template-columns: 1fr 1fr; column-gap: 24px; }
+  }
+  @media (min-width: 1601px) {
     .work__grid--3 { grid-template-columns: repeat(3, 1fr); }
   }
 </style>

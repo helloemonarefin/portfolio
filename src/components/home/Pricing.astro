@@ -100,7 +100,7 @@ const { plans } = Astro.props;
     flex-direction: column;
     gap: 28px;
     padding: 24px;
-    border-radius: 20px;
+    border-radius: 0; /* sharp edges — only buttons are rounded (2026-11-09) */
     background: var(--bg-secondary);
   }
   @media (min-width: 1024px) {

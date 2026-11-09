@@ -59,6 +59,7 @@
 | `--button-primary-text` | `#FFFFFF` | Primary button label & chevron |
 | `--button-primary-chip` | `rgba(255,255,255,.16)` | Sweeping chip inside primary button |
 | `--button-primary-bg-hover` | `#FF280F` | Primary **and** plain Secondary hover background (Figma 2026-11-09) |
+| `--text-accent` | `#FF280F` | Text-link roll: the copy that rolls in on hover |
 | `--button-secondary-bg` | `#FFFFFF` | Secondary button |
 | `--button-secondary-bg-hover` | `#F5F5F7` | Secondary hover |
 | `--button-secondary-text` | `#162026` | Secondary label |
@@ -154,13 +155,13 @@ Tablet (768–1023): use mobile spacing with 2‑column grids where they fit; ty
 
 **Anchors:** sections have ids `#work`, `#pricing`, `#book`; `scroll-behavior: smooth` (off under reduced motion) and `scroll-margin-top` = nav height.
 
-**Hero arc on wide screens (2026-11-09):** the resting ellipse's horizontal radius is `max(1500px, 104.17vw)`, so above 1440 the curve keeps the Figma shape instead of dropping to the bottom.
+**Hero arc on wide screens (2026-11-09):** the resting ellipse's horizontal radius is `max(1500px, calc(750px + 52.08vw))` — 1500 at 1440 (Figma) and growing at half the screen's rate above that, so the curve stays round without dropping to the bottom (tuned with Emon).
 
 **Section backgrounds** (updated 2026-11-08 to match Figma): Hero `--bg-primary` (grey arc) → Showcase `--bg-primary` (all sizes) → Work `--bg-primary` → Pricing `--bg-primary` with `--bg-secondary` plan cards → Book a Call `--bg-primary` → Footer `--bg-primary` with a 1px `--border-primary` top border.
 
 **Spacing scale (px):** 4, 6, 8, 12, 14, 16, 20, 24, 32, 40, 48, 56, 64, 72, 96, 128.
 
-**Radius:** buttons & chips **6** · chip inside primary button **3** · pills (eyebrow, badge, status, close) **999** · cards (pricing, Cal embed) **20** · modal **16** (mobile sheet: 20 top corners) · **imagery 0**.
+**Radius (updated 2026-11-09): only buttons are rounded.** Pricing cards, the Cal.com container and the AI-summary buttons are **0** (sharp). Previously: buttons & chips **6** · chip inside primary button **3** · pills (eyebrow, badge, status, close) **999** · cards (pricing, Cal embed) **20** · modal **16** (mobile sheet: 20 top corners) · **imagery 0**.
 
 **Effects:** no drop shadows. Backdrop blur only on the work-card overlay (18px) and the modal scrim (12px).
 
