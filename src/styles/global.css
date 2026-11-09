@@ -41,6 +41,9 @@ body {
 /* Scroll lock while the project modal or mobile menu is open. */
 html.is-locked { overflow: hidden; }
 
+/* The hero is sticky (Hero.astro); every section after it scrolls up over it. */
+.hero ~ * { position: relative; z-index: 1; }
+
 /* ---------- Layout helper ---------- */
 /* Content max 1376 + side padding (20 mobile / 32 desktop), centred above 1440. */
 .container {

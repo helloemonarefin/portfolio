@@ -1,7 +1,8 @@
 title: Top 1
 row: top
 media:
-  discriminant: image
-  value: ../../../assets/showcase/top-1/media/value.png
+  discriminant: video
+  value:
+    file: /media/showcase/top-1/media/value/file.webm
 order: 1
 draft: false

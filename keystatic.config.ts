@@ -130,7 +130,7 @@ export default config({
       Content: ['projects', 'showcase', 'photos'],
       Settings: ['settings', 'pricing'],
       Design: ['designColors', 'designBorders', 'designHero'],
-      Motion: ['motionHero', 'motionNav', 'motionReveal', 'motionButtons', 'motionCards', 'motionTextRoll', 'motionModal'],
+      Motion: ['motionHero', 'motionParallax', 'motionNav', 'motionReveal', 'motionButtons', 'motionCards', 'motionTextRoll', 'motionModal'],
     },
   },
 
@@ -373,6 +373,22 @@ export default config({
         heroSubtitle: anim('Subtitle', { bezier: '0.22, 1, 0.36, 1', time: 0.7, delay: 0.59 }),
         heroSecondaryButton: anim('"See works" button', { bezier: '0.22, 1, 0.36, 1', time: 0.7, delay: 0.66 }),
         heroPrimaryButton: anim('"Book a call" button', { bezier: '0.22, 1, 0.36, 1', time: 0.7, delay: 0.73 }),
+      },
+    }),
+    motionParallax: singleton({
+      label: 'Hero parallax',
+      path: 'src/content/motion/parallax',
+      format: { data: 'yaml' },
+      schema: {
+        heroParallax: fields.object(
+          {
+            contentSpeed: fields.number({ label: 'Arc + text: up speed (% of scroll)', description: 'Live site: 10.85', defaultValue: 10.85, step: 0.05 }),
+            contentScale: fields.number({ label: 'Arc + text: grow (% per 1000px scrolled)', description: 'Live site: 1.6', defaultValue: 1.6, step: 0.1 }),
+            portraitSpeed: fields.number({ label: 'Portrait: down speed (% of scroll)', description: 'Live site: 1.6', defaultValue: 1.6, step: 0.05 }),
+            portraitScale: fields.number({ label: 'Portrait: shrink (% per 1000px scrolled)', description: 'Live site: 3.2', defaultValue: 3.2, step: 0.1 }),
+          },
+          { label: 'Hero parallax (while scrolling past the sticky hero)', layout: [6, 6, 6, 6] },
+        ),
       },
     }),
     motionNav: singleton({

@@ -5,6 +5,12 @@
  * Under prefers-reduced-motion the global rule makes everything appear in its end state.
  *
  * Layers (bottom → top): portrait (1) · arc (2) · content (3) · nav (4, in Nav.astro).
+ *
+ * Scroll parallax (like emonarefin.framer.website): the hero is sticky, so the next sections slide
+ * up over it. While it's in view, the arc + text drift up slowly and grow a touch, and the portrait
+ * drifts down and shrinks a touch, sinking behind the arc. Speeds: Keystatic → Motion → Hero parallax.
+ * A tiny script writes the scroll position into --scroll; the movement itself is CSS (translate/scale,
+ * kept separate from the intro animation's transform). Off under prefers-reduced-motion.
  */
 import { Image } from 'astro:assets';
 import Button from '../ui/Button.astro';
@@ -44,9 +50,36 @@ const { worksCount } = Astro.props;
   </div>
 </section>
 
+<script>
+  const hero = document.querySelector<HTMLElement>('.hero');
+  if (hero && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      // Only while the hero can still be seen (it is pinned; later sections cover it).
+      const limit = hero.offsetHeight + window.innerHeight;
+      hero.style.setProperty('--scroll', String(Math.min(window.scrollY, limit)));
+    };
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(update);
+        }
+      },
+      { passive: true },
+    );
+    update();
+  }
+</script>
+
 <style>
   .hero {
-    position: relative;
+    position: sticky;
+    top: 0;
+    z-index: 0;
+    isolation: isolate; /* its layers never poke above the sections that scroll over it */
     /* Layout values come from Keystatic → Design → Hero layout (fallbacks = Figma). */
     --nav-h: 64px;
     --hero-gap-top: var(--hero-gap-below-nav-m, 40px);
@@ -123,6 +156,17 @@ const { worksCount } = Astro.props;
   .hero__ctas {
     display: flex;
     gap: 12px;
+  }
+
+  /* ── Scroll parallax (values from Keystatic → Motion → Hero parallax) ─────── */
+  .hero__arc,
+  .hero__content {
+    translate: 0 calc(var(--scroll, 0) * var(--m-parallax-content, -0.1085) * 1px);
+    scale: calc(1 + var(--scroll, 0) * var(--m-parallax-content-scale, 0.000016));
+  }
+  .hero__portrait-clip {
+    translate: 0 calc(var(--scroll, 0) * var(--m-parallax-portrait, 0.016) * 1px);
+    scale: calc(1 + var(--scroll, 0) * var(--m-parallax-portrait-scale, -0.000032));
   }
 
   /* ── Intro timeline ─────────────────────────────────────────────── */

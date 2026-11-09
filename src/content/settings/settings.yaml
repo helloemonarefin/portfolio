@@ -1,19 +1,18 @@
-email: hello@emonarefin.com
+email: emon@emonarefin.com
 calLink: helloemonarefin/30min
-siteDescription: Framer designer and developer crafting fast, considered websites for startups, studios and creators.
-socials:
-  linkedin: null
-  x: null
-  dribbble: null
-  behance: null
-  resumeUrl: null
+siteDescription: >-
+  Framer designer and developer crafting fast, considered websites for startups,
+  studios and creators.
+socials: {}
 stats:
   years: 5+
   projects: 100+
 currentRole:
   title: Product Designer
   company: Rubik
-  summary: Designing product experiences with the team at Rubik — and building Framer sites and templates on the side.
+  summary: >-
+    Designing product experiences with the team at Rubik — and building Framer
+    sites and templates on the side.
 milestones:
   - year: 20XX
     title: Started with WordPress
@@ -24,5 +23,10 @@ milestones:
   - year: Now
     title: Product Designer, Rubik
 aboutBio:
-  - Placeholder bio — a short paragraph on how you got into design, what you care about, and the kind of work you love doing. Two to three sentences reads best here.
-  - 'Second paragraph — your approach: simple, considered interfaces, built fast in Framer, and a photographer’s eye for light and detail.'
+  - >-
+    Placeholder bio — a short paragraph on how you got into design, what you
+    care about, and the kind of work you love doing. Two to three sentences
+    reads best here.
+  - >-
+    Second paragraph — your approach: simple, considered interfaces, built fast
+    in Framer, and a photographer’s eye for light and detail.

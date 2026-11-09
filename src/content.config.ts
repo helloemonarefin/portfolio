@@ -140,13 +140,22 @@ const motion = defineCollection({
   loader: glob({ pattern: '*.yaml', base: './src/content/motion' }),
   schema: z.record(
     z.string(),
-    anim(0.5).extend({
-      delay: z.number().nullish(),
-      distance: z.number().nullish(),
-      linkStagger: z.number().nullish(),
-      buttonGap: z.number().nullish(),
-      stagger: z.number().nullish(),
-    }),
+    z.union([
+      anim(0.5).extend({
+        delay: z.number().nullish(),
+        distance: z.number().nullish(),
+        linkStagger: z.number().nullish(),
+        buttonGap: z.number().nullish(),
+        stagger: z.number().nullish(),
+      }),
+      // Hero parallax (no easing — the movement follows the scroll directly)
+      z.object({
+        contentSpeed: num(10.85),
+        contentScale: num(1.6),
+        portraitSpeed: num(1.6),
+        portraitScale: num(3.2),
+      }),
+    ]),
   ),
 });
 

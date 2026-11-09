@@ -316,6 +316,9 @@ Stagger step = **70ms**. Whole intro finishes at ~1.5s. Implement with CSS `@key
 
 **Figma:** the `Hero` component holds only `Start` / `End`. The prototype uses keyframe frames "Hero Intro · Desktop/Mobile · 0.0s … 1.5s" (one per 0.1s, every layer on its own curve) because Smart Animate can't delay individual layers. They are reference only — build from the table above.
 
+### 6.1b Hero scroll parallax (added 2026-11-10, matches emonarefin.framer.website)
+The hero is `position: sticky; top: 0`; every following section (`.hero ~ *`) scrolls up over it. While it's visible: arc + text/buttons move **up at 10.85%** of the scroll and grow **+1.6% per 1000px**; the portrait moves **down at 1.6%** and shrinks **−3.2% per 1000px**, sinking behind the arc. Values editable in Keystatic → Motion → **Hero parallax**. Uses CSS `translate`/`scale` (separate from the intro's `transform`) driven by `--scroll`. Off under reduced motion.
+
 ### 6.2 Other motion
 
 **Update 2026-11-08 (Emon):**

@@ -123,5 +123,17 @@ export async function motionCss(): Promise<string> {
   if (m.textRoll) vars.push(`--m-roll-stagger: ${m.textRoll.stagger ?? 0.02}s;`);
   add('modal', m.modal);
 
+  // Hero parallax: percentages → per-pixel factors (arc/text go up & grow, portrait goes down & shrinks).
+  const p = m.heroParallax;
+  if (p) {
+    const n = (v: unknown, d: number) => (typeof v === 'number' && Number.isFinite(v) ? v : d);
+    vars.push(
+      `--m-parallax-content: ${-n(p.contentSpeed, 10.85) / 100};`,
+      `--m-parallax-content-scale: ${n(p.contentScale, 1.6) / 100000};`,
+      `--m-parallax-portrait: ${n(p.portraitSpeed, 1.6) / 100};`,
+      `--m-parallax-portrait-scale: ${-n(p.portraitScale, 3.2) / 100000};`,
+    );
+  }
+
   return `:root{${vars.join('')}}`;
 }
