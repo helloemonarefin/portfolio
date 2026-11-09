@@ -138,7 +138,7 @@ const { worksCount } = Astro.props;
   }
   @keyframes hero-arc-desktop {
     from { clip-path: ellipse(10000px 3000px at 50% 2980px); }
-    to { clip-path: ellipse(1500px 772px at 50% 1104px); }
+    to { clip-path: ellipse(max(1500px, 104.17vw) 772px at 50% 1104px); }
   }
   @keyframes hero-portrait {
     from { transform: translateY(var(--portrait-from)); }
@@ -165,7 +165,9 @@ const { worksCount } = Astro.props;
       height: 168px;
     }
     .hero__arc {
-      clip-path: ellipse(1500px 772px at 50% 1104px); /* top edge at y = 332 */
+      /* top edge at y = 332. Horizontal radius = 1500px at 1440 (Figma) and grows with wider
+         screens (104.17vw), so the curve keeps the same gentle shape instead of dropping to the bottom. */
+      clip-path: ellipse(max(1500px, 104.17vw) 772px at 50% 1104px);
     }
     .hero__content { max-width: 700px; }
   }

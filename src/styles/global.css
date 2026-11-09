@@ -52,8 +52,11 @@ html.is-locked { overflow: hidden; }
 @media (min-width: 1024px) {
   .container { padding-inline: 32px; }
 }
-/* Full-width variant: no max width, keeps the side padding. */
+/* Full-width variant: no max width; side padding matches the nav (20 mobile / 48 desktop). */
 .container--full { max-width: none; }
+@media (min-width: 1024px) {
+  .container--full { padding-inline: 48px; }
+}
 
 /* ---------- Sections (§4) ---------- */
 /* Padding 72 / 128; section header → content gap 32 / 56. */

@@ -11,10 +11,12 @@ interface Props {
   projects: Project[];
   /** Section id (anchor). The main one is "work". */
   id?: string;
-  /** Let the content run the full page width (only the 20 / 32px side padding remains). */
+  /** Let the content run the full page width (side padding matches the nav: 20 / 48px). */
   fullWidth?: boolean;
+  /** Desktop columns (2 by default). */
+  columns?: 2 | 3;
 }
-const { projects, id = 'work', fullWidth = false } = Astro.props;
+const { projects, id = 'work', fullWidth = false, columns = 2 } = Astro.props;
 
 const filters = [{ value: 'all', label: 'All' }, ...Object.entries(categoryLabels).map(([value, label]) => ({ value, label }))];
 ---
@@ -33,7 +35,7 @@ const filters = [{ value: 'all', label: 'All' }, ...Object.entries(categoryLabel
       </div>
     </SectionHeader>
 
-    <ul class="work__grid" role="list">
+    <ul class:list={['work__grid', { 'work__grid--3': columns === 3 }]} role="list">
       {
         projects.map((p) => (
           <li class="work__item" data-category={p.data.category}>
@@ -115,5 +117,6 @@ const filters = [{ value: 'all', label: 'All' }, ...Object.entries(categoryLabel
   }
   @media (min-width: 1024px) {
     .work__grid { row-gap: 40px; }
+    .work__grid--3 { grid-template-columns: repeat(3, 1fr); }
   }
 </style>

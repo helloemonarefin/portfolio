@@ -32,6 +32,8 @@ const more = projects.filter((p) => p.data.showcase === 'more');
     <WorkSection projects={projects} />
     {/* TEMPORARY comparison (Emon, 2026-11-09): same section at full page width. Remove the one you don't keep. */}
     <WorkSection projects={projects} id="work-full" fullWidth />
+    {/* TEMPORARY comparison: full width + 3 columns. */}
+    <WorkSection projects={projects} id="work-3col" fullWidth columns={3} />
     <Pricing plans={pricing.plans} />
     <BookCall email={settings.email} calLink={settings.calLink} />
   </main>

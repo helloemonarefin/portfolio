@@ -58,6 +58,7 @@
 | `--button-primary-bg` | `#162026` | Primary button, Arrow Button hover fill |
 | `--button-primary-text` | `#FFFFFF` | Primary button label & chevron |
 | `--button-primary-chip` | `rgba(255,255,255,.16)` | Sweeping chip inside primary button |
+| `--button-primary-bg-hover` | `#FF280F` | Primary **and** plain Secondary hover background (Figma 2026-11-09) |
 | `--button-secondary-bg` | `#FFFFFF` | Secondary button |
 | `--button-secondary-bg-hover` | `#F5F5F7` | Secondary hover |
 | `--button-secondary-text` | `#162026` | Secondary label |
@@ -72,7 +73,7 @@
   --text-primary:#162026; --text-secondary:#6B767D; --text-tertiary:#9AA0A5; --text-inverse:#FFFFFF;
   --bg-primary:#FFFFFF; --bg-secondary:#F5F5F7; --bg-tertiary:#E8E8ED;
   --border-primary:#E3E5E8; --border-secondary:#D5D9DD; --border-subtle:rgba(0,0,0,.12);
-  --button-primary-bg:#162026; --button-primary-text:#FFFFFF; --button-primary-chip:rgba(255,255,255,.16);
+  --button-primary-bg:#162026; --button-primary-text:#FFFFFF; --button-primary-chip:rgba(255,255,255,.16); --button-primary-bg-hover:#FF280F;
   --button-secondary-bg:#FFFFFF; --button-secondary-bg-hover:#F5F5F7; --button-secondary-text:#162026; --button-secondary-border:#E3E5E8;
   --surface-overlay:rgba(255,255,255,.90); --surface-scrim:rgba(8,13,15,.55);
   --status-live:#34C759;
@@ -153,6 +154,8 @@ Tablet (768–1023): use mobile spacing with 2‑column grids where they fit; ty
 
 **Anchors:** sections have ids `#work`, `#pricing`, `#book`; `scroll-behavior: smooth` (off under reduced motion) and `scroll-margin-top` = nav height.
 
+**Hero arc on wide screens (2026-11-09):** the resting ellipse's horizontal radius is `max(1500px, 104.17vw)`, so above 1440 the curve keeps the Figma shape instead of dropping to the bottom.
+
 **Section backgrounds** (updated 2026-11-08 to match Figma): Hero `--bg-primary` (grey arc) → Showcase `--bg-primary` (all sizes) → Work `--bg-primary` → Pricing `--bg-primary` with `--bg-secondary` plan cards → Book a Call `--bg-primary` → Footer `--bg-primary` with a 1px `--border-primary` top border.
 
 **Spacing scale (px):** 4, 6, 8, 12, 14, 16, 20, 24, 32, 40, 48, 56, 64, 72, 96, 128.
@@ -174,7 +177,8 @@ Each maps to a Figma component of the same name (page "Portfolio Website", right
 - **Rule:** in every state the chip keeps exactly **4px to each button edge it touches** — hovered, it is `inset: 4px` (4px top, right, bottom, left).
   - Padding: `hug` → left 44 (40 at sm), right **16 (14 at sm)**. On hover the label (and count) slide **24px left** while the chip sweeps right, so the chevron gets room (decided 2026-11-08). `fill` → `width:100%`, left & right 44, label centred, no slide.
   - Label `label` token, weight 500, `--button-primary-text`, sits above the chip (`position: relative; z-index: 1`).
-- **Hover / focus-visible (primary):** the chip **sweeps** from 32px to `calc(100% - 8px)` wide (height unchanged), carrying the chevron to the right end; the label doesn't move. `transition: width 450ms cubic-bezier(.22,1,.36,1)`. (If it ever stutters, switch to `scaleX` on a pseudo-element plus a translated chevron.)
+- **Hover / focus-visible (primary) — UPDATED 2026-11-09 (Figma `Primary · Medium · Hover · Hug`):** background → `--button-primary-bg-hover`; the 32px (28 sm) square chip moves from the left edge to the right edge (4px inset); on hug buttons the label slides left to 12px from the edge (−32px md / −28px sm); fill buttons keep the label centred. Plain **Secondary** hover → same red background and border, white label, count at 72% white. *(Superseded text below kept for history.)*
+- ~~Hover / focus-visible (primary):~~ the chip **sweeps** from 32px to `calc(100% - 8px)` wide (height unchanged), carrying the chevron to the right end; the label doesn't move. `transition: width 450ms cubic-bezier(.22,1,.36,1)`. (If it ever stutters, switch to `scaleX` on a pseudo-element plus a translated chevron.)
 - **Secondary (plain):** `--button-secondary-bg`, 0.5px `--button-secondary-border`, radius 6, padding `0 14`, label `--button-secondary-text`; optional count in `--text-tertiary`, 6px after the label. Hover: background → `--button-secondary-bg-hover`, 200ms.
 - **Secondary-chip:** identical geometry and motion to Primary (same 4px inset rule, hug/fill). Colours: background `--button-secondary-bg`, 1px `--button-secondary-border`, chip `--bg-secondary`, chevron `--text-primary`, label `--button-secondary-text`, count `--text-tertiary` after the label. Figma variant: `Style=Secondary Chip`.
 - **Usage:** Nav "Hire Me" = primary sm hug · Hero "**See works** 08" = **secondary** (plain) md + count and "**Book a call**" = primary md hug (copy decided 2026-11-08) · Pricing "Book a call" = primary md **fill** · Modal "View live site" = primary md **fill** (desktop Split and mobile).

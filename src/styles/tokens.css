@@ -20,6 +20,7 @@
   --button-primary-bg: #162026;
   --button-primary-text: #FFFFFF;
   --button-primary-chip: rgba(255, 255, 255, .16);
+  --button-primary-bg-hover: #FF280F; /* Figma Button · Primary · Hover (2026-11-09) */
 
   --button-secondary-bg: #FFFFFF;
   --button-secondary-bg-hover: #F5F5F7;

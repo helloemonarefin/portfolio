@@ -45,6 +45,9 @@ If they disagree or something isn't covered: check Figma, then ask Emon. Never i
 - Note: after adding a NEW content collection, restart the dev server (`npx astro dev stop` then `npm run dev`).
 - 2026-11-09 — Footer: credit row now 64px (40 mobile) below the dotted logo, 1px --border-primary hairline on top (inside side padding), 24px padding-top.
 - 2026-11-09 — TEMPORARY: a full-width copy of the Work section (`id="work-full"`, `.container--full`) sits under the original in index.astro for Emon to compare. Remove whichever he doesn't keep.
+- 2026-11-09 — Button hover per Figma "Primary · Medium · Hover · Hug": token --button-primary-bg-hover #FF280F; chip moves left→right edge, hug label slides left (−32 md / −28 sm); fill keeps label centred; plain Secondary hover = same red + white text. Secondary-chip keeps the old sweep (unused).
+- 2026-11-09 — Hero arc: horizontal radius max(1500px, 104.17vw) so wide screens keep the Figma curve.
+- 2026-11-09 — TEMPORARY comparison: #work-full (full width, side padding 48 = nav) and #work-3col (full width, 3 columns) under the original Work section in index.astro. `.container--full` = no max width, 20/48px padding.
 - Still open: Lens photo count (Emon to decide); sticky nav (ask in Phase 6); `sharp` install (ask in Phase 4).
 
 ## Dev commands

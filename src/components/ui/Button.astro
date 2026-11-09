@@ -118,10 +118,15 @@ const tagProps = href
     color: var(--button-primary-text);
     border: 0;
     padding: 0 16px 0 44px; /* hug: small right padding — the label slides left on hover */
+    transition: background-color var(--m-button-time, 450ms) var(--m-button-ease, cubic-bezier(.22, 1, .36, 1));
   }
   .btn--primary.btn--sm { padding: 0 14px 0 40px; }
   .btn--primary.btn--fill { padding-inline: 44px; }
-  .btn--primary .btn__chip { background: var(--button-primary-chip); }
+  .btn--primary .btn__chip {
+    background: var(--button-primary-chip);
+    /* Primary: the square chip travels from the left edge to the right edge (Figma 2026-11-09). */
+    transition: left var(--m-button-time, 450ms) var(--m-button-ease, cubic-bezier(.22, 1, .36, 1));
+  }
 
   /* ---------- Secondary-chip ---------- */
   /* Same geometry as primary. It has a 1px border, so offsets inside the border
@@ -149,21 +154,46 @@ const tagProps = href
     color: var(--button-secondary-text);
     border: 0.5px solid var(--button-secondary-border); /* Figma: 0.5px (decided 2026-11-08) */
     padding: 0 14px;
-    transition: background-color 200ms ease;
+    transition:
+      background-color var(--m-button-time, 450ms) var(--m-button-ease, cubic-bezier(.22, 1, .36, 1)),
+      border-color var(--m-button-time, 450ms) var(--m-button-ease, cubic-bezier(.22, 1, .36, 1)),
+      color var(--m-button-time, 450ms) var(--m-button-ease, cubic-bezier(.22, 1, .36, 1));
   }
+  .btn--secondary .btn__count { transition: color var(--m-button-time, 450ms) var(--m-button-ease, cubic-bezier(.22, 1, .36, 1)); }
 
   /* ---------- Hover (real pointers only) + keyboard focus ---------- */
-  /* The chip sweeps right carrying the chevron; on hug buttons the label slides 24px left
-     at the same time so the chevron always has room. Full-width buttons keep the label centred. */
-  .btn--primary:focus-visible .btn__chip { width: calc(100% - 8px); }
+  /* Primary (Figma "Primary · Medium · Hover · Hug", 2026-11-09): background turns
+     --button-primary-bg-hover, the square chip moves to the right edge (4px inset) and, on hug
+     buttons, the label slides left to 12px from the edge. Full-width buttons keep the label centred.
+     Plain secondary turns the same red with white text.
+     Secondary-chip keeps the original sweep (not used on the site at the moment). */
+  .btn--primary:focus-visible { background: var(--button-primary-bg-hover); }
+  .btn--primary:focus-visible .btn__chip { left: calc(100% - 36px); }
+  .btn--primary.btn--sm:focus-visible .btn__chip { left: calc(100% - 32px); }
+  .btn--primary.btn--hug:focus-visible .btn__label { translate: -32px 0; }
+  .btn--primary.btn--hug.btn--sm:focus-visible .btn__label { translate: -28px 0; }
   .btn--secondary-chip:focus-visible .btn__chip { width: calc(100% - 6px); }
-  :is(.btn--primary, .btn--secondary-chip).btn--hug:focus-visible :is(.btn__label, .btn__count) { translate: -24px 0; }
-  .btn--secondary:focus-visible { background: var(--button-secondary-bg-hover); }
+  .btn--secondary-chip.btn--hug:focus-visible :is(.btn__label, .btn__count) { translate: -24px 0; }
+  .btn--secondary:focus-visible {
+    background: var(--button-primary-bg-hover);
+    border-color: var(--button-primary-bg-hover);
+    color: var(--button-primary-text);
+  }
+  .btn--secondary:focus-visible .btn__count { color: var(--button-primary-text); opacity: 0.72; }
 
   @media (hover: hover) and (pointer: fine) {
-    .btn--primary:hover .btn__chip { width: calc(100% - 8px); }
+    .btn--primary:hover { background: var(--button-primary-bg-hover); }
+    .btn--primary:hover .btn__chip { left: calc(100% - 36px); }
+    .btn--primary.btn--sm:hover .btn__chip { left: calc(100% - 32px); }
+    .btn--primary.btn--hug:hover .btn__label { translate: -32px 0; }
+    .btn--primary.btn--hug.btn--sm:hover .btn__label { translate: -28px 0; }
     .btn--secondary-chip:hover .btn__chip { width: calc(100% - 6px); }
-    :is(.btn--primary, .btn--secondary-chip).btn--hug:hover :is(.btn__label, .btn__count) { translate: -24px 0; }
-    .btn--secondary:hover { background: var(--button-secondary-bg-hover); }
+    .btn--secondary-chip.btn--hug:hover :is(.btn__label, .btn__count) { translate: -24px 0; }
+    .btn--secondary:hover {
+      background: var(--button-primary-bg-hover);
+      border-color: var(--button-primary-bg-hover);
+      color: var(--button-primary-text);
+    }
+    .btn--secondary:hover .btn__count { color: var(--button-primary-text); opacity: 0.72; }
   }
 </style>
