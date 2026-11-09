@@ -44,12 +44,11 @@ If they disagree or something isn't covered: check Figma, then ask Emon. Never i
 - 2026-11-08 — Emon's motion feedback round: Lenis smooth scroll (approved), Keystatic "Motion" singleton (src/content/motion/motion.yaml ↔ content.config.ts ↔ src/lib/motion.ts → --m-* vars injected in Base.astro), site-wide scroll reveal, nav intro sequence, text-link roll, button label slide, chip hover, Showcase featured height = image height, hero copy "See works" / "Book a call".
 - Note: after adding a NEW content collection, restart the dev server (`npx astro dev stop` then `npm run dev`).
 - 2026-11-09 — Footer: credit row now 64px (40 mobile) below the dotted logo, 1px --border-primary hairline on top (inside side padding), 24px padding-top.
-- 2026-11-09 — TEMPORARY: a full-width copy of the Work section (`id="work-full"`, `.container--full`) sits under the original in index.astro for Emon to compare. Remove whichever he doesn't keep.
 - 2026-11-09 — Button hover per Figma "Primary · Medium · Hover · Hug": token --button-primary-bg-hover #FF280F; chip moves left→right edge, hug label slides left (−32 md / −28 sm); fill keeps label centred; plain Secondary hover = same red + white text. Secondary-chip keeps the old sweep (unused).
 - 2026-11-09 — Hero arc: horizontal radius max(1500px, 104.17vw) so wide screens keep the Figma curve.
-- 2026-11-09 — TEMPORARY comparison: #work-full (full width, side padding 48 = nav) and #work-3col (full width, 3 columns) under the original Work section in index.astro. `.container--full` = no max width, 20/48px padding.
 - 2026-11-09 — Arc radius softened to max(1500px, calc(750px + 52.08vw)) (midway). Text roll: incoming copy uses --text-accent (#FF280F). #work-3col: 1 col <810, 2 cols 810–1600, 3 cols >1600. Radius 0 on pricing cards, Cal.com container, AI-summary buttons (only buttons rounded).
-- Still open: Lens photo count (Emon to decide); sticky nav (ask in Phase 6); `sharp` install (ask in Phase 4).
+- 2026-11-09 — Emon chose the Work layout: ONE section (#work), full width (`.container--full`, side padding 20/48 = nav), 1 / 2 / 3 columns at <810 / 810–1600 / >1600. Comparison copies removed.
+- Still open: pricing badge pill radius (asked); Lens photo count (Emon to decide); sticky nav (ask in Phase 6); `sharp` install (ask in Phase 4).
 
 ## Dev commands
 - `npm run dev` → http://localhost:4321 (stop with Ctrl+C)

@@ -147,7 +147,7 @@
 | Content width | 1376 (max) | 350 |
 | Section padding (top/bottom) | 128 / 128 | 72 / 72 |
 | Section header → content gap | 56 | 32 |
-| Work grid | 2 columns, gap 24 (col) / 40 (row) | 1 column, gap 32 |
+| Work grid | **Full width** (side padding 48 = nav). 2 columns 810–1600, **3 columns above 1600**; gap 24 (col) / 40 (row) — decided 2026-11-09 | 1 column below 810, gap 32 |
 | Pricing plans | 2 columns, gap 16 | stacked, gap 16 |
 | Showcase section padding (top/bottom) | 12 / 128 | 8 / 72 |
 

@@ -29,11 +29,8 @@ const more = projects.filter((p) => p.data.showcase === 'more');
   <main>
     <Hero worksCount={worksCount} />
     <ShowcaseGallery featured={featured} more={more} />
-    <WorkSection projects={projects} />
-    {/* TEMPORARY comparison (Emon, 2026-11-09): same section at full page width. Remove the one you don't keep. */}
-    <WorkSection projects={projects} id="work-full" fullWidth />
-    {/* TEMPORARY comparison: full width + 3 columns. */}
-    <WorkSection projects={projects} id="work-3col" fullWidth columns={3} />
+    {/* Work: full width (side padding = nav), 1 / 2 / 3 columns at <810 / 810–1600 / >1600 (Emon, 2026-11-09). */}
+    <WorkSection projects={projects} fullWidth columns={3} />
     <Pricing plans={pricing.plans} />
     <BookCall email={settings.email} calLink={settings.calLink} />
   </main>
