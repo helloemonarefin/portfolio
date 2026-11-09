@@ -9,15 +9,19 @@ import { categoryLabels, type Project } from '../../lib/content';
 
 interface Props {
   projects: Project[];
+  /** Section id (anchor). The main one is "work". */
+  id?: string;
+  /** Let the content run the full page width (only the 20 / 32px side padding remains). */
+  fullWidth?: boolean;
 }
-const { projects } = Astro.props;
+const { projects, id = 'work', fullWidth = false } = Astro.props;
 
 const filters = [{ value: 'all', label: 'All' }, ...Object.entries(categoryLabels).map(([value, label]) => ({ value, label }))];
 ---
 
-<section id="work" class="section work" aria-labelledby="work-title">
-  <div class="container section__inner">
-    <SectionHeader title="Real work. Real impact." id="work-title">
+<section id={id} class="section work" aria-labelledby={`${id}-title`} data-work-section>
+  <div class:list={['container', 'section__inner', { 'container--full': fullWidth }]}>
+    <SectionHeader title="Real work. Real impact." id={`${id}-title`}>
       <div class="filters" role="group" aria-label="Filter projects">
         {
           filters.map((f) => (
@@ -43,7 +47,7 @@ const filters = [{ value: 'all', label: 'All' }, ...Object.entries(categoryLabel
 
 <script>
   const FADE = 200;
-  for (const section of document.querySelectorAll<HTMLElement>('#work')) {
+  for (const section of document.querySelectorAll<HTMLElement>('[data-work-section]')) {
     const chips = [...section.querySelectorAll<HTMLButtonElement>('[data-filter]')];
     const items = [...section.querySelectorAll<HTMLElement>('.work__item')];
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

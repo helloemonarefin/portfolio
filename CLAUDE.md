@@ -43,6 +43,8 @@ If they disagree or something isn't covered: check Figma, then ask Emon. Never i
 - 2026-11-08 — Motion: hero intro is pure CSS keyframes (Hero.astro + `.nav--overlay` nav-in); card hover overlay only on hover-capable pointers + :focus-visible; modal close is animated (`closeAnimated`, Esc via `cancel`); Live Dot halo pulses. Reduced motion → global rule shows end states.
 - 2026-11-08 — Emon's motion feedback round: Lenis smooth scroll (approved), Keystatic "Motion" singleton (src/content/motion/motion.yaml ↔ content.config.ts ↔ src/lib/motion.ts → --m-* vars injected in Base.astro), site-wide scroll reveal, nav intro sequence, text-link roll, button label slide, chip hover, Showcase featured height = image height, hero copy "See works" / "Book a call".
 - Note: after adding a NEW content collection, restart the dev server (`npx astro dev stop` then `npm run dev`).
+- 2026-11-09 — Footer: credit row now 64px (40 mobile) below the dotted logo, 1px --border-primary hairline on top (inside side padding), 24px padding-top.
+- 2026-11-09 — TEMPORARY: a full-width copy of the Work section (`id="work-full"`, `.container--full`) sits under the original in index.astro for Emon to compare. Remove whichever he doesn't keep.
 - Still open: Lens photo count (Emon to decide); sticky nav (ask in Phase 6); `sharp` install (ask in Phase 4).
 
 ## Dev commands

@@ -207,20 +207,34 @@ const connect = [
     height: auto;
   }
 
+  /* Credit row: clear gap below the dotted logo, a hairline on top (inside the side padding), then padding. */
   .footer__bottom {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 12px;
-    padding-top: 20px;
+    margin-top: 40px;
+    padding-top: 24px;
     padding-bottom: 28px;
     color: var(--text-secondary);
+  }
+  .footer__bottom::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 20px;
+    right: 20px;
+    height: 1px;
+    background: var(--border-primary);
   }
   @media (min-width: 1024px) {
     .footer__bottom {
       flex-direction: row;
       align-items: center;
       justify-content: space-between;
+      margin-top: 64px;
     }
+    .footer__bottom::before { left: 32px; right: 32px; }
   }
   .footer__legal { display: flex; gap: 24px; margin: 0; }
 

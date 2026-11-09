@@ -30,6 +30,8 @@ const more = projects.filter((p) => p.data.showcase === 'more');
     <Hero worksCount={worksCount} />
     <ShowcaseGallery featured={featured} more={more} />
     <WorkSection projects={projects} />
+    {/* TEMPORARY comparison (Emon, 2026-11-09): same section at full page width. Remove the one you don't keep. */}
+    <WorkSection projects={projects} id="work-full" fullWidth />
     <Pricing plans={pricing.plans} />
     <BookCall email={settings.email} calLink={settings.calLink} />
   </main>
