@@ -6,8 +6,8 @@ text:
   tertiary: '#9AA0A5'
   inverse: '#FFFFFF'
 background:
-  primary: '#FFFFFF'
-  secondary: '#F5F5F7'
+  primary: '#FCFDFF'
+  secondary: '#F2F3F8'
   tertiary: '#E8E8ED'
 border:
   primary: '#E3E5E8'
