@@ -1,7 +1,7 @@
 desktop:
   portraitSize: 220
-  gapBelowNav: 79
-  spaceBelowButtons: 44
+  gapBelowNav: 69
+  spaceBelowButtons: 100
 mobile:
   portraitSize: 120
   gapBelowNav: 40

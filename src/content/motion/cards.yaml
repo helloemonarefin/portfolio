@@ -4,4 +4,4 @@ cardHover:
     value:
       preset: easeOut
       bezier: 0, 0, 0.58, 1
-  time: 0.35
+  time: 0.3

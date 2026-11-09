@@ -40,6 +40,7 @@ const tagProps = href ? { href, 'aria-label': label } : { 'aria-hidden': 'true' 
     background: transparent;
     transition:
       background-color 350ms cubic-bezier(.22, 1, .36, 1),
+      border-color 350ms cubic-bezier(.22, 1, .36, 1),
       color 350ms cubic-bezier(.22, 1, .36, 1);
   }
   /* Both arrows share the same grid cell (stacked). */
@@ -49,19 +50,30 @@ const tagProps = href ? { href, 'aria-label': label } : { 'aria-hidden': 'true' 
   }
   .arrow-btn :global(.arrow-btn__b) { transform: translate(-18px, 18px); }
 
-  .arrow-btn:focus-visible {
-    background: var(--button-primary-bg);
+  /* Active state — triggered by hovering the button itself, keyboard focus, or hovering any
+     parent with the `arrow-trigger` class (e.g. the whole Work card).
+     Fill = brand colour (Keystatic → Design → Colours → Brand / accent), 2026-11-10. */
+  .arrow-btn:focus-visible,
+  :global(.arrow-trigger:focus-visible) .arrow-btn {
+    background: var(--button-primary-bg-hover);
+    border-color: var(--button-primary-bg-hover);
     color: var(--button-primary-text);
   }
-  .arrow-btn:focus-visible :global(.arrow-btn__a) { transform: translate(18px, -18px); }
-  .arrow-btn:focus-visible :global(.arrow-btn__b) { transform: translate(0, 0); }
+  .arrow-btn:focus-visible :global(.arrow-btn__a),
+  :global(.arrow-trigger:focus-visible) .arrow-btn :global(.arrow-btn__a) { transform: translate(18px, -18px); }
+  .arrow-btn:focus-visible :global(.arrow-btn__b),
+  :global(.arrow-trigger:focus-visible) .arrow-btn :global(.arrow-btn__b) { transform: translate(0, 0); }
 
   @media (hover: hover) and (pointer: fine) {
-    .arrow-btn:hover {
-      background: var(--button-primary-bg);
+    .arrow-btn:hover,
+    :global(.arrow-trigger:hover) .arrow-btn {
+      background: var(--button-primary-bg-hover);
+      border-color: var(--button-primary-bg-hover);
       color: var(--button-primary-text);
     }
-    .arrow-btn:hover :global(.arrow-btn__a) { transform: translate(18px, -18px); }
-    .arrow-btn:hover :global(.arrow-btn__b) { transform: translate(0, 0); }
+    .arrow-btn:hover :global(.arrow-btn__a),
+    :global(.arrow-trigger:hover) .arrow-btn :global(.arrow-btn__a) { transform: translate(18px, -18px); }
+    .arrow-btn:hover :global(.arrow-btn__b),
+    :global(.arrow-trigger:hover) .arrow-btn :global(.arrow-btn__b) { transform: translate(0, 0); }
   }
 </style>

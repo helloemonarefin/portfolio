@@ -186,7 +186,8 @@ Each maps to a Figma component of the same name (page "Portfolio Website", right
 
 ### 5.1b Arrow Button (`ArrowButton.astro`)
 - 40×40 circle, 1px `--text-primary` border, `overflow: hidden`, two arrow-up-right icons (17px, stroke `--text-primary`) in the same spot. Rest: arrow A centred; arrow B parked at `translate(-18px, 18px)`.
-- **Hover (of the button itself):** fill → `--button-primary-bg`; arrow A moves to `translate(18px, -18px)` (exits top-right) while arrow B moves to `translate(0,0)`, both in `--button-primary-text`. 350ms `cubic-bezier(.22,1,.36,1)`.
+- **Update 2026-11-10:** hover fill + border = brand colour (`--button-primary-bg-hover`); the effect also plays when the **whole Work card** is hovered (parent class `arrow-trigger`), not only the icon.
+- ~~Hover (of the button itself):~~ fill → `--button-primary-bg`; arrow A moves to `translate(18px, -18px)` (exits top-right) while arrow B moves to `translate(0,0)`, both in `--button-primary-text`. 350ms `cubic-bezier(.22,1,.36,1)`.
 
 ### 5.2 Nav
 - Desktop (≥1024): height 85, padding `24 48`, transparent background, `position: absolute` over the hero, `z-index: 4`. Brand (logo mark 32 + "Emon Arefin" `h5`) · links: Home, Works <count>, About, Pricing, Contact (`label`, `--text-secondary`, hover `--text-primary` 150ms; the count in `--text-tertiary`) · Primary sm "Hire Me".

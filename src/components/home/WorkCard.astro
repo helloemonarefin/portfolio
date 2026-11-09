@@ -4,6 +4,7 @@
  * The whole card is one <button> that opens the Project Modal (data-open-project).
  * Hover (real pointers) + keyboard focus, var(--m-card-time, 350ms) var(--m-card-ease, ease-out): the image grows to fill the tile,
  * a 1px inside outline appears, a frosted overlay fades in and "View Project" + Arrow Button rise 16px.
+ * Hovering anywhere on the card also plays the Arrow Button's own hover (brand fill + arrow swap).
  */
 import Media from '../ui/Media.astro';
 import ArrowButton from '../ui/ArrowButton.astro';
@@ -17,7 +18,7 @@ const { title, tags, thumbnail, category } = project.data;
 ---
 
 <button
-  class="work-card"
+  class="work-card arrow-trigger"
   type="button"
   data-category={category}
   data-open-project={project.id}
