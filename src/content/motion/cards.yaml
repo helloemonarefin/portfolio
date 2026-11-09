@@ -1,0 +1,7 @@
+cardHover:
+  easing:
+    discriminant: ease
+    value:
+      preset: easeOut
+      bezier: 0, 0, 0.58, 1
+  time: 0.35

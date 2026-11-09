@@ -1,0 +1,11 @@
+navIntro:
+  easing:
+    discriminant: ease
+    value:
+      preset: custom
+      bezier: 0, 0.77, 0.56, 1
+  time: 0.6
+  delay: 0.1
+  distance: 24
+  linkStagger: 0.05
+  buttonGap: 0.1

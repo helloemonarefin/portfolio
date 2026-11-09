@@ -147,7 +147,7 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
     z-index: 4;
     height: 64px;
     padding: 14px 20px;
-    border-bottom: 1px solid var(--border-primary);
+    border-bottom: var(--border-width, 1px) solid var(--border-primary);
     background: var(--bg-primary);
     transition: background-color 200ms ease;
   }

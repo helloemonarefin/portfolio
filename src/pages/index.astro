@@ -13,15 +13,15 @@ import WorkSection from '../components/home/WorkSection.astro';
 import Pricing from '../components/home/Pricing.astro';
 import BookCall from '../components/home/BookCall.astro';
 import ProjectModal from '../components/home/ProjectModal.astro';
-import { getProjects, getSettings, getPricing, padCount } from '../lib/content';
+import { getProjects, getSettings, getPricing, getShowcase, padCount } from '../lib/content';
 
 const projects = await getProjects();
 const settings = await getSettings();
 const pricing = await getPricing();
 const worksCount = padCount(projects.length);
 
-const featured = projects.filter((p) => p.data.showcase === 'featured');
-const more = projects.filter((p) => p.data.showcase === 'more');
+// Showcase gallery has its own collection (Keystatic → Showcase gallery): top + bottom rows.
+const { top: featured, bottom: more } = await getShowcase();
 ---
 
 <Base title="Emon Arefin — Product Designer & Photographer" description={settings.siteDescription}>

@@ -1,16 +1,16 @@
 ---
 /**
  * Showcase Gallery — DESIGN_SYSTEM.md §5.4 / BUILD_PROMPT.md §6.5. Figma: Showcase Gallery.
- * Two Embla carousels (featured + more) that advance together every 5s,
- * with drag/swipe, arrows and dots. Images or videos from project thumbnails.
+ * Two Embla carousels (top + bottom rows) that advance together every 5s,
+ * with drag/swipe, arrows and dots. Images, GIFs or videos from Keystatic → Showcase gallery.
  */
 import Media from '../ui/Media.astro';
 import Icon from '../ui/Icon.astro';
-import type { Project } from '../../lib/content';
+import type { ShowcaseItem } from '../../lib/content';
 
 interface Props {
-  featured: Project[];
-  more: Project[];
+  featured: ShowcaseItem[];
+  more: ShowcaseItem[];
 }
 const { featured, more } = Astro.props;
 
@@ -40,7 +40,7 @@ const moreSlides = fill(more);
             {featuredSlides.map((p, i) => (
               <div class="showcase__slide" role="group" aria-roledescription="slide" data-reveal>
                 <Media
-                  media={p.data.thumbnail}
+                  media={p.data.media}
                   widths={[330, 660, 940, 1880]}
                   sizes="(min-width: 1024px) 940px, 330px"
                   loading={i === 0 ? 'eager' : 'lazy'}
@@ -64,7 +64,7 @@ const moreSlides = fill(more);
             <div class="showcase__track">
               {moreSlides.map((p) => (
                 <div class="showcase__card" data-reveal>
-                  <Media media={p.data.thumbnail} widths={[220, 355, 440, 710]} sizes="(min-width: 1024px) 355px, 220px" />
+                  <Media media={p.data.media} widths={[220, 355, 440, 710]} sizes="(min-width: 1024px) 355px, 220px" />
                 </div>
               ))}
             </div>

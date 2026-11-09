@@ -8,7 +8,7 @@
  * which the components use. Springs become a CSS `linear()` curve sampled from real spring physics,
  * and their time is calculated from the spring (the Time field is ignored for springs).
  */
-import { getEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
 
 export type Easing =
   | { discriminant: 'ease'; value: { preset: string; bezier: string } }
@@ -85,9 +85,10 @@ const DEFAULT_EASE = 'cubic-bezier(0.22, 1, 0.36, 1)';
 
 /** Build the :root { --m-… } block from the Motion settings. */
 export async function motionCss(): Promise<string> {
-  const entry = await getEntry('motion', 'motion');
-  if (!entry) return '';
-  const m = entry.data;
+  // Each Motion page is its own file; merge them into one object of blocks.
+  const entries = await getCollection('motion');
+  if (!entries.length) return '';
+  const m = Object.assign({}, ...entries.map((e) => e.data)) as Record<string, any>;
   const vars: string[] = [];
   const add = (name: string, anim: Anim | undefined, fallbackEase = DEFAULT_EASE) => {
     if (!anim) return;
@@ -105,19 +106,21 @@ export async function motionCss(): Promise<string> {
   add('hero-cta2', m.heroPrimaryButton);
 
   add('nav', m.navIntro);
-  vars.push(
-    `--m-nav-distance: ${m.navIntro.distance}px;`,
-    `--m-nav-stagger: ${m.navIntro.linkStagger}s;`,
-    `--m-nav-button-gap: ${m.navIntro.buttonGap}s;`,
-  );
+  if (m.navIntro) {
+    vars.push(
+      `--m-nav-distance: ${m.navIntro.distance ?? 150}px;`,
+      `--m-nav-stagger: ${m.navIntro.linkStagger ?? 0.05}s;`,
+      `--m-nav-button-gap: ${m.navIntro.buttonGap ?? 0.1}s;`,
+    );
+  }
 
   add('reveal', m.reveal);
-  vars.push(`--m-reveal-distance: ${m.reveal.distance}px;`, `--m-reveal-stagger: ${m.reveal.stagger}s;`);
+  if (m.reveal) vars.push(`--m-reveal-distance: ${m.reveal.distance ?? 24}px;`, `--m-reveal-stagger: ${m.reveal.stagger ?? 0.05}s;`);
 
   add('button', m.buttonSweep);
   add('card', m.cardHover);
   add('roll', m.textRoll);
-  vars.push(`--m-roll-stagger: ${m.textRoll.stagger}s;`);
+  if (m.textRoll) vars.push(`--m-roll-stagger: ${m.textRoll.stagger ?? 0.02}s;`);
   add('modal', m.modal);
 
   return `:root{${vars.join('')}}`;

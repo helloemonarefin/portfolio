@@ -391,9 +391,16 @@ Managed with **Astro content collections** + **Keystatic** (visual admin at `/ke
 | `duration` | text | "7 – 10 days" |
 | `scope` | text | "Design + Framer build" |
 | `year` | integer | |
-| `showcase` | select: none · featured · more | which Showcase row |
 | `order` | integer | manual sort, lowest first |
 | `draft` | checkbox | hidden everywhere when ticked |
+
+### `showcase` (collection) — Showcase Gallery (added 2026-11-09)
+Separate from projects: short glimpses of work (a hero, a card, an animation).
+`title` (slug, internal name), `row` (top · bottom), `media` (Image incl. **GIF** — served as-is so it animates — or Video), `order`, `draft` (hidden). Top row = 940/330 wide, height follows the media; bottom row = 355×200 / 220×140, cropped from the top.
+
+### Design & Motion settings (singletons, added 2026-11-09)
+Keystatic sidebar → **Design**: *Colours* (every colour token + Brand/accent → `--button-primary-bg-hover` & `--text-accent`), *Borders* (`--border-width` hairlines/outlines, `--border-width-thin` secondary button), *Hero layout* (portrait size, gap nav → portrait, gap buttons → hero bottom; desktop and phone). → `src/lib/design.ts` → `:root:root{…}` overrides.
+Sidebar → **Motion**: one page per component (Hero intro, Nav intro, Scroll reveal, Buttons, Work card hover, Text link roll, Project modal). Files in `src/content/motion/*.yaml`. Keystatic has no collapsible sections, so the sidebar acts as the index.
 
 ### `photos` (collection) — Through My Lens
 `image` (**media**: Image or Video), `alt` (required), `size` (wide · square), `order`.

@@ -1,0 +1,7 @@
+title: Top 1
+row: top
+media:
+  discriminant: image
+  value: ../../../assets/showcase/top-1/media/value.png
+order: 1
+draft: false

@@ -46,7 +46,6 @@ const projects = defineCollection({
       duration: optionalText,
       scope: optionalText,
       year: z.number().int().nullish(),
-      showcase: z.enum(['none', 'featured', 'more']).default('none'),
       order: z.number().int().nullish().transform((v) => v ?? 0),
       draft: z.boolean().default(false),
     }),
@@ -135,23 +134,39 @@ const anim = (time: number, delay?: number) =>
     ...(delay !== undefined ? { delay: num(delay) } : {}),
   });
 
+// One file per Motion page (hero, nav, reveal, buttons, cards, text-roll, modal).
+// Every block is an animation; extra numbers (distance, stagger…) are optional.
 const motion = defineCollection({
-  loader: glob({ pattern: 'motion.yaml', base: './src/content/motion' }),
-  schema: z.object({
-    heroArc: anim(1.2, 0),
-    heroPortrait: anim(1.4, 0.1),
-    heroPill: anim(0.7, 0.45),
-    heroTitle: anim(0.7, 0.52),
-    heroSubtitle: anim(0.7, 0.59),
-    heroSecondaryButton: anim(0.7, 0.66),
-    heroPrimaryButton: anim(0.7, 0.73),
-    navIntro: anim(1, 0.1).extend({ distance: num(150), linkStagger: num(0.05), buttonGap: num(0.1) }),
-    reveal: anim(0.8).extend({ distance: num(24), stagger: num(0.05) }),
-    buttonSweep: anim(0.45),
-    cardHover: anim(0.35),
-    textRoll: anim(0.5).extend({ stagger: num(0.02) }),
-    modal: anim(0.3),
-  }),
+  loader: glob({ pattern: '*.yaml', base: './src/content/motion' }),
+  schema: z.record(
+    z.string(),
+    anim(0.5).extend({
+      delay: z.number().nullish(),
+      distance: z.number().nullish(),
+      linkStagger: z.number().nullish(),
+      buttonGap: z.number().nullish(),
+      stagger: z.number().nullish(),
+    }),
+  ),
 });
 
-export const collections = { projects, photos, settings, pricing, motion };
+// ─── Design (singletons: colors, borders, hero) — matches keystatic.config.ts ─
+const design = defineCollection({
+  loader: glob({ pattern: '*.yaml', base: './src/content/design' }),
+  schema: z.record(z.string(), z.record(z.string(), z.union([z.string(), z.number()]).nullish())),
+});
+
+// ─── Showcase gallery (collection) — matches `showcase` in keystatic.config.ts ─
+const showcase = defineCollection({
+  loader: glob({ pattern: '*/index.yaml', base: './src/content/showcase', generateId: folderId }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      row: z.enum(['top', 'bottom']).default('top'),
+      media: media(image),
+      order: z.number().int().nullish().transform((v) => v ?? 0),
+      draft: z.boolean().default(false),
+    }),
+});
+
+export const collections = { projects, photos, settings, pricing, motion, design, showcase };

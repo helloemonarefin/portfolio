@@ -1,0 +1,7 @@
+modal:
+  easing:
+    discriminant: ease
+    value:
+      preset: custom
+      bezier: 0.22, 1, 0.36, 1
+  time: 0.3

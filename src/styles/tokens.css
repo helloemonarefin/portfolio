@@ -32,4 +32,8 @@
   --surface-scrim: rgba(8, 13, 15, .55);
 
   --status-live: #34C759;
+
+  /* Border weights (editable in Keystatic → Design → Borders) */
+  --border-width: 1px;       /* hairlines, dividers, card / nav / footer borders */
+  --border-width-thin: 0.5px; /* plain Secondary button outline */
 }

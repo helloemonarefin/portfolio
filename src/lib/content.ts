@@ -19,6 +19,13 @@ export async function getPhotos(): Promise<Photo[]> {
   return all.sort((a, b) => a.data.order - b.data.order);
 }
 
+/** Showcase gallery items (not hidden), split into the top and bottom rows, sorted by `order`. */
+export async function getShowcase() {
+  const all = (await getCollection('showcase', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+  return { top: all.filter((s) => s.data.row === 'top'), bottom: all.filter((s) => s.data.row === 'bottom') };
+}
+export type ShowcaseItem = CollectionEntry<'showcase'>;
+
 export async function getSettings() {
   const entry = await getEntry('settings', 'settings');
   if (!entry) throw new Error('Missing settings — open /keystatic → Settings and save once.');

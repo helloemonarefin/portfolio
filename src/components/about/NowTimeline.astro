@@ -110,7 +110,7 @@ const { role, milestones } = Astro.props;
   }
   .timeline__line {
     flex: 1;
-    width: 1px;
+    width: var(--border-width, 1px);
     background: var(--border-secondary);
   }
   .timeline__label {
@@ -155,7 +155,7 @@ const { role, milestones } = Astro.props;
     .timeline__line {
       flex: 1;
       width: auto;
-      height: 1px;
+      height: var(--border-width, 1px);
     }
     .timeline__label {
       padding: 0 24px 0 7.5px;

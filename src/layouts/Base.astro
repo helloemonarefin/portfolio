@@ -9,6 +9,7 @@ import '../styles/tokens.css';
 import '../styles/typography.css';
 import '../styles/global.css';
 import { motionCss } from '../lib/motion';
+import { designCss } from '../lib/design';
 
 interface Props {
   title: string;
@@ -20,6 +21,8 @@ interface Props {
 const { title, description, noindex = false } = Astro.props;
 // Animation timings & curves from Keystatic → Motion.
 const motionVars = await motionCss();
+// Colours, border weights and hero layout from Keystatic → Design.
+const designVars = await designCss();
 ---
 
 <!doctype html>
@@ -37,6 +40,7 @@ const motionVars = await motionCss();
       if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('reveal-on');
     </script>
     <style is:inline set:html={motionVars}></style>
+    <style is:inline set:html={designVars}></style>
     <Font
       cssVariable="--font-inter"
       preload={[

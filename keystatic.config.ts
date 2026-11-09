@@ -14,13 +14,13 @@ import { config, collection, singleton, fields } from '@keystatic/core';
  *  - Video → saved in public/media/<folder>/<slug>/ (served as-is; MP4 or WebM recommended),
  *            with an optional poster image shown while the video loads.
  */
-const media = (label: string, folder: 'projects' | 'photos', description?: string) =>
+const media = (label: string, folder: 'projects' | 'photos' | 'showcase', description?: string) =>
   fields.conditional(
     fields.select({
       label,
       description,
       options: [
-        { label: 'Image (PNG, JPG, WebP, AVIF)', value: 'image' },
+        { label: 'Image (PNG, JPG, WebP, AVIF, GIF)', value: 'image' },
         { label: 'Video (MP4, WebM, MOV)', value: 'video' },
       ],
       defaultValue: 'image',
@@ -110,6 +110,16 @@ const anim = (
     { label },
   );
 
+/** Colour field: hex (#162026, #FFF, #FFFFFF80) or rgb()/rgba(). Converted to CSS in src/lib/design.ts. */
+const COLOR = /^(#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|rgba?\(\s*[\d.%]+\s*,\s*[\d.%]+\s*,\s*[\d.%]+\s*(,\s*[\d.%]+\s*)?\))$/;
+const color = (label: string, defaultValue: string, description?: string) =>
+  fields.text({
+    label,
+    description: description ?? `Default ${defaultValue}. Hex (#RRGGBB) or rgba(…).`,
+    defaultValue,
+    validation: { isRequired: true, pattern: { regex: COLOR, message: 'Use a hex colour like #162026 or rgba(0,0,0,.12)' } },
+  });
+
 export default config({
   // Files are saved in this project folder. Switches to GitHub storage in Phase 9.
   storage: { kind: 'local' },
@@ -117,8 +127,10 @@ export default config({
   ui: {
     brand: { name: 'Emon Arefin' },
     navigation: {
-      Content: ['projects', 'photos'],
-      Settings: ['settings', 'pricing', 'motion'],
+      Content: ['projects', 'showcase', 'photos'],
+      Settings: ['settings', 'pricing'],
+      Design: ['designColors', 'designBorders', 'designHero'],
+      Motion: ['motionHero', 'motionNav', 'motionReveal', 'motionButtons', 'motionCards', 'motionTextRoll', 'motionModal'],
     },
   },
 
@@ -164,7 +176,7 @@ export default config({
         thumbnail: media(
           'Thumbnail',
           'projects',
-          'Work card + Showcase. Image or video, about 4:3, at least 1400px wide. Cropped from the top.',
+          'Work card image or video, about 4:3, at least 1400px wide. Cropped from the top.',
         ),
         gallery: fields.array(media('Gallery item', 'projects'), {
             label: 'Gallery',
@@ -180,16 +192,6 @@ export default config({
         duration: fields.text({ label: 'Duration', description: 'e.g. "7 – 10 days"' }),
         scope: fields.text({ label: 'Scope', description: 'e.g. "Design + Framer build"' }),
         year: fields.integer({ label: 'Year' }),
-        showcase: fields.select({
-          label: 'Showcase row',
-          description: 'Show this project’s thumbnail in the Showcase Gallery?',
-          options: [
-            { label: 'None', value: 'none' },
-            { label: 'Featured (top row)', value: 'featured' },
-            { label: 'More (bottom row)', value: 'more' },
-          ],
-          defaultValue: 'none',
-        }),
         order: fields.integer({
           label: 'Order',
           description: 'Manual sort — lowest number first.',
@@ -200,6 +202,32 @@ export default config({
           description: 'Tick to hide this project everywhere on the site.',
           defaultValue: false,
         }),
+      },
+    }),
+
+    // ─── Showcase gallery: the two rows under the hero ──────────────────────
+    showcase: collection({
+      label: 'Showcase gallery',
+      slugField: 'title',
+      path: 'src/content/showcase/*/',
+      format: { data: 'yaml' },
+      columns: ['title', 'row', 'order'],
+      schema: {
+        title: fields.slug({
+          name: { label: 'Name', description: 'Only for you (not shown on the site), e.g. "Stillwater hero animation".' },
+        }),
+        row: fields.select({
+          label: 'Row',
+          description: 'Top row = big slides (940px wide, height follows the media). Bottom row = small cards (355 × 200, cropped from the top).',
+          options: [
+            { label: 'Top row', value: 'top' },
+            { label: 'Bottom row', value: 'bottom' },
+          ],
+          defaultValue: 'top',
+        }),
+        media: media('Media', 'showcase', 'A glimpse of your work: a hero, a card, an animation… Image (PNG, JPG, WebP, GIF) or video (MP4, WebM).'),
+        order: fields.integer({ label: 'Order', description: 'Lowest number first.', defaultValue: 0 }),
+        draft: fields.checkbox({ label: 'Hidden', description: 'Tick to hide this item.', defaultValue: false }),
       },
     }),
 
@@ -238,19 +266,120 @@ export default config({
   },
 
   singletons: {
-    // ─── Motion: animation timings & curves ─────────────────────────────────
-    motion: singleton({
-      label: 'Motion',
-      path: 'src/content/motion/motion',
+    // ─── Design (sidebar → Design) ──────────────────────────────────────────
+    designColors: singleton({
+      label: 'Colours',
+      path: 'src/content/design/colors',
       format: { data: 'yaml' },
       schema: {
-        heroArc: anim('Hero · Arc', { bezier: '0.15, 0.32, 0.1, 0.93', time: 1.2, delay: 0 }),
-        heroPortrait: anim('Hero · Portrait', { bezier: '0.15, 0.32, 0.1, 0.93', time: 1.4, delay: 0.1 }),
-        heroPill: anim('Hero · Name pill', { bezier: '0.22, 1, 0.36, 1', time: 0.7, delay: 0.45 }),
-        heroTitle: anim('Hero · Heading', { bezier: '0.22, 1, 0.36, 1', time: 0.7, delay: 0.52 }),
-        heroSubtitle: anim('Hero · Subtitle', { bezier: '0.22, 1, 0.36, 1', time: 0.7, delay: 0.59 }),
-        heroSecondaryButton: anim('Hero · "See works" button', { bezier: '0.22, 1, 0.36, 1', time: 0.7, delay: 0.66 }),
-        heroPrimaryButton: anim('Hero · "Book a call" button', { bezier: '0.22, 1, 0.36, 1', time: 0.7, delay: 0.73 }),
+        brand: fields.object(
+          { accent: color('Brand / accent', '#FF280F', 'Button hover background and the text-link roll colour.') },
+          { label: 'Brand' },
+        ),
+        text: fields.object(
+          {
+            primary: color('Text primary', '#162026'),
+            secondary: color('Text secondary', '#6B767D'),
+            tertiary: color('Text tertiary', '#9AA0A5'),
+            inverse: color('Text inverse', '#FFFFFF'),
+          },
+          { label: 'Text', layout: [6, 6, 6, 6] },
+        ),
+        background: fields.object(
+          {
+            primary: color('Background primary', '#FFFFFF'),
+            secondary: color('Background secondary', '#F5F5F7'),
+            tertiary: color('Background tertiary', '#E8E8ED'),
+          },
+          { label: 'Background', layout: [4, 4, 4] },
+        ),
+        border: fields.object(
+          {
+            primary: color('Border primary', '#E3E5E8'),
+            secondary: color('Border secondary', '#D5D9DD'),
+            subtle: color('Border subtle', 'rgba(0,0,0,.12)'),
+          },
+          { label: 'Border colours', layout: [4, 4, 4] },
+        ),
+        button: fields.object(
+          {
+            primaryBg: color('Primary background', '#162026'),
+            primaryText: color('Primary text', '#FFFFFF'),
+            primaryChip: color('Primary chip', 'rgba(255,255,255,.16)'),
+            secondaryBg: color('Secondary background', '#FFFFFF'),
+            secondaryText: color('Secondary text', '#162026'),
+            secondaryBorder: color('Secondary border', '#E3E5E8'),
+          },
+          { label: 'Buttons', layout: [4, 4, 4, 4, 4, 4] },
+        ),
+        surface: fields.object(
+          {
+            overlay: color('Overlay (card hover, nav, arrows)', 'rgba(255,255,255,.90)'),
+            scrim: color('Scrim (behind the project modal)', 'rgba(8,13,15,.55)'),
+            live: color('Live dot (“Currently”)', '#34C759'),
+          },
+          { label: 'Surfaces & status', layout: [4, 4, 4] },
+        ),
+      },
+    }),
+    designBorders: singleton({
+      label: 'Borders',
+      path: 'src/content/design/borders',
+      format: { data: 'yaml' },
+      schema: {
+        widths: fields.object(
+          {
+            hairline: fields.number({ label: 'Border weight (px)', description: 'Nav & footer lines, dividers, outlines, arrow button.', defaultValue: 1, step: 0.5 }),
+            thin: fields.number({ label: 'Secondary button border (px)', description: '"See works" outline.', defaultValue: 0.5, step: 0.5 }),
+          },
+          { label: 'Border weights', layout: [6, 6] },
+        ),
+      },
+    }),
+    designHero: singleton({
+      label: 'Hero layout',
+      path: 'src/content/design/hero',
+      format: { data: 'yaml' },
+      schema: {
+        desktop: fields.object(
+          {
+            portraitSize: fields.number({ label: 'Portrait size (px)', defaultValue: 168, step: 1 }),
+            gapBelowNav: fields.number({ label: 'Gap: nav → portrait (px)', defaultValue: 79, step: 1 }),
+            spaceBelowButtons: fields.number({ label: 'Gap: buttons → hero bottom (px)', defaultValue: 44, step: 1 }),
+          },
+          { label: 'Desktop (1024px and wider)', layout: [4, 4, 4] },
+        ),
+        mobile: fields.object(
+          {
+            portraitSize: fields.number({ label: 'Portrait size (px)', defaultValue: 120, step: 1 }),
+            gapBelowNav: fields.number({ label: 'Gap: nav → portrait (px)', defaultValue: 40, step: 1 }),
+            spaceBelowButtons: fields.number({ label: 'Gap: buttons → hero bottom (px)', defaultValue: 48, step: 1 }),
+          },
+          { label: 'Phone & tablet', layout: [4, 4, 4] },
+        ),
+      },
+    }),
+
+    // ─── Motion (sidebar → Motion): one page per component ──────────────────
+    motionHero: singleton({
+      label: 'Hero intro',
+      path: 'src/content/motion/hero',
+      format: { data: 'yaml' },
+      schema: {
+        heroArc: anim('Arc', { bezier: '0.15, 0.32, 0.1, 0.93', time: 1.2, delay: 0 }),
+        heroPortrait: anim('Portrait', { bezier: '0.15, 0.32, 0.1, 0.93', time: 1.4, delay: 0.1 }),
+        heroPill: anim('Name pill', { bezier: '0.22, 1, 0.36, 1', time: 0.7, delay: 0.45 }),
+        heroTitle: anim('Heading', { bezier: '0.22, 1, 0.36, 1', time: 0.7, delay: 0.52 }),
+        heroSubtitle: anim('Subtitle', { bezier: '0.22, 1, 0.36, 1', time: 0.7, delay: 0.59 }),
+        heroSecondaryButton: anim('"See works" button', { bezier: '0.22, 1, 0.36, 1', time: 0.7, delay: 0.66 }),
+        heroPrimaryButton: anim('"Book a call" button', { bezier: '0.22, 1, 0.36, 1', time: 0.7, delay: 0.73 }),
+      },
+    }),
+    motionNav: singleton({
+      label: 'Nav intro',
+      path: 'src/content/motion/nav',
+      format: { data: 'yaml' },
+      schema: {
         navIntro: anim(
           'Nav intro (Home)',
           { bezier: '0, 0.77, 0.56, 1', time: 1, delay: 0.1 },
@@ -260,6 +389,13 @@ export default config({
             buttonGap: fields.number({ label: '"Hire Me" extra delay (s)', description: 'Added after the last link.', defaultValue: 0.1, step: 0.01 }),
           },
         ),
+      },
+    }),
+    motionReveal: singleton({
+      label: 'Scroll reveal',
+      path: 'src/content/motion/reveal',
+      format: { data: 'yaml' },
+      schema: {
         reveal: anim(
           'Scroll reveal (whole site)',
           { bezier: '0.22, 1, 0.36, 1', time: 0.8 },
@@ -268,15 +404,37 @@ export default config({
             stagger: fields.number({ label: 'Stagger (s)', description: 'Gap between elements that appear together.', defaultValue: 0.05, step: 0.01 }),
           },
         ),
-        buttonSweep: anim('Button chip sweep', { bezier: '0.22, 1, 0.36, 1', time: 0.45 }),
-        cardHover: anim('Work card hover', { bezier: '0, 0, 0.58, 1', time: 0.35, preset: 'easeOut' }),
+      },
+    }),
+    motionButtons: singleton({
+      label: 'Buttons',
+      path: 'src/content/motion/buttons',
+      format: { data: 'yaml' },
+      schema: { buttonSweep: anim('Button hover (colour + chip move)', { bezier: '0.22, 1, 0.36, 1', time: 0.45 }) },
+    }),
+    motionCards: singleton({
+      label: 'Work card hover',
+      path: 'src/content/motion/cards',
+      format: { data: 'yaml' },
+      schema: { cardHover: anim('Work card hover', { bezier: '0, 0, 0.58, 1', time: 0.35, preset: 'easeOut' }) },
+    }),
+    motionTextRoll: singleton({
+      label: 'Text link roll',
+      path: 'src/content/motion/text-roll',
+      format: { data: 'yaml' },
+      schema: {
         textRoll: anim(
           'Text link roll',
           { bezier: '0.22, 1, 0.36, 1', time: 0.5 },
           { stagger: fields.number({ label: 'Letter stagger (s)', defaultValue: 0.02, step: 0.005 }) },
         ),
-        modal: anim('Project modal open / close', { bezier: '0.22, 1, 0.36, 1', time: 0.3 }),
       },
+    }),
+    motionModal: singleton({
+      label: 'Project modal',
+      path: 'src/content/motion/modal',
+      format: { data: 'yaml' },
+      schema: { modal: anim('Project modal open / close', { bezier: '0.22, 1, 0.36, 1', time: 0.3 }) },
     }),
 
     // ─── Site settings ──────────────────────────────────────────────────────

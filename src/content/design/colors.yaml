@@ -1,0 +1,26 @@
+brand:
+  accent: '#FF280F'
+text:
+  primary: '#162026'
+  secondary: '#6B767D'
+  tertiary: '#9AA0A5'
+  inverse: '#FFFFFF'
+background:
+  primary: '#FFFFFF'
+  secondary: '#F5F5F7'
+  tertiary: '#E8E8ED'
+border:
+  primary: '#E3E5E8'
+  secondary: '#D5D9DD'
+  subtle: rgba(0,0,0,.12)
+button:
+  primaryBg: '#162026'
+  primaryText: '#FFFFFF'
+  primaryChip: rgba(255,255,255,.16)
+  secondaryBg: '#FFFFFF'
+  secondaryText: '#162026'
+  secondaryBorder: '#E3E5E8'
+surface:
+  overlay: rgba(255,255,255,.90)
+  scrim: rgba(8,13,15,.55)
+  live: '#34C759'

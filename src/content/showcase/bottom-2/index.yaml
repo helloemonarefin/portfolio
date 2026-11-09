@@ -1,0 +1,7 @@
+title: Bottom 2
+row: bottom
+media:
+  discriminant: image
+  value: ../../../assets/showcase/bottom-2/media/value.png
+order: 2
+draft: false

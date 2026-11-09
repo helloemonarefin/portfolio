@@ -1,7 +1,7 @@
 ---
 /**
  * Media — renders a CMS media field (Image or Video).
- *  - Image: Astro <Image> (optimised, responsive).
+ *  - Image: Astro <Image> (optimised, responsive). GIFs are served as-is so they keep animating.
  *  - Video: muted, looping, inline autoplay (like a moving image), with an optional
  *    optimised poster. Under reduced motion the video does not autoplay (see global script).
  */
@@ -45,7 +45,18 @@ const type = ext === 'webm' ? 'video/webm' : ext === 'mov' ? 'video/quicktime' :
 ---
 
 {
-  media.discriminant === 'image' ? (
+  media.discriminant === 'image' && media.value.format === 'gif' ? (
+    <img
+      class={className}
+      src={media.value.src}
+      width={media.value.width}
+      height={media.value.height}
+      alt={alt}
+      loading={loading}
+      fetchpriority={fetchpriority}
+      decoding="async"
+    />
+  ) : media.discriminant === 'image' ? (
     <Image
       class={className}
       src={media.value}

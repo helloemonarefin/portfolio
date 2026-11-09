@@ -47,8 +47,15 @@ const { worksCount } = Astro.props;
 <style>
   .hero {
     position: relative;
-    height: 548px;
-    padding-top: 104px;
+    /* Layout values come from Keystatic → Design → Hero layout (fallbacks = Figma). */
+    --nav-h: 64px;
+    --hero-gap-top: var(--hero-gap-below-nav-m, 40px);
+    --hero-portrait: var(--hero-portrait-size-m, 120px);
+    --hero-gap-bottom: var(--hero-space-below-ctas-m, 48px);
+    --arc-rx: 750px;
+    --arc-ry: 450px;
+    padding-top: calc(var(--nav-h) + var(--hero-gap-top));
+    padding-bottom: var(--hero-gap-bottom);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -62,8 +69,8 @@ const { worksCount } = Astro.props;
     position: relative;
     z-index: 1;
     flex: none;
-    width: 120px;
-    height: 120px;
+    width: var(--hero-portrait);
+    height: var(--hero-portrait);
     overflow: hidden;
   }
   .hero__portrait {
@@ -78,7 +85,8 @@ const { worksCount } = Astro.props;
     inset: 0;
     z-index: 2;
     background: var(--bg-secondary);
-    clip-path: ellipse(750px 450px at 50% 674px); /* top edge at y = 224 */
+    /* The arc's top edge always sits exactly under the portrait. */
+    clip-path: ellipse(var(--arc-rx) var(--arc-ry) at 50% calc(var(--nav-h) + var(--hero-gap-top) + var(--hero-portrait) + var(--arc-ry)));
   }
 
   /* 3 — Content */
@@ -116,7 +124,7 @@ const { worksCount } = Astro.props;
   .hero {
     --ease-arc: cubic-bezier(.15, .32, .1, .93);
     --ease-text: cubic-bezier(.22, 1, .36, 1);
-    --portrait-from: 200px;
+    --portrait-from: calc(var(--hero-portrait) * 1.667); /* 200px at 120 / 280px at 168, as in the spec */
   }
   /* Timings come from Keystatic → Motion (fallbacks = DESIGN_SYSTEM §6.1). */
   .hero__arc {
@@ -134,11 +142,11 @@ const { worksCount } = Astro.props;
 
   @keyframes hero-arc-mobile {
     from { clip-path: ellipse(4000px 1500px at 50% 1480px); }
-    to { clip-path: ellipse(750px 450px at 50% 674px); }
+    to { clip-path: ellipse(var(--arc-rx) var(--arc-ry) at 50% calc(var(--nav-h) + var(--hero-gap-top) + var(--hero-portrait) + var(--arc-ry))); }
   }
   @keyframes hero-arc-desktop {
     from { clip-path: ellipse(10000px 3000px at 50% 2980px); }
-    to { clip-path: ellipse(max(1500px, calc(750px + 52.08vw)) 772px at 50% 1104px); }
+    to { clip-path: ellipse(var(--arc-rx) var(--arc-ry) at 50% calc(var(--nav-h) + var(--hero-gap-top) + var(--hero-portrait) + var(--arc-ry))); }
   }
   @keyframes hero-portrait {
     from { transform: translateY(var(--portrait-from)); }
@@ -150,24 +158,25 @@ const { worksCount } = Astro.props;
   }
 
   @media (min-width: 1024px) {
-    .hero { --portrait-from: 280px; }
+    .hero {
+      --nav-h: 85px;
+      --hero-gap-top: var(--hero-gap-below-nav-d, 79px);
+      --hero-portrait: var(--hero-portrait-size-d, 168px);
+      --hero-gap-bottom: var(--hero-space-below-ctas-d, 44px);
+      /* 1500px at 1440 (Figma), growing at half the screen's rate on wider screens. */
+      --arc-rx: max(1500px, calc(750px + 52.08vw));
+      --arc-ry: 772px;
+    }
     .hero__arc { animation-name: hero-arc-desktop; }
   }
 
   @media (min-width: 1024px) {
     .hero {
-      height: 680px;
-      padding-top: 164px;
       gap: 40px;
     }
     .hero__portrait-clip {
-      width: 168px;
-      height: 168px;
     }
     .hero__arc {
-      /* top edge at y = 332. Horizontal radius = 1500px at 1440 (Figma) and grows on wider screens
-         at half the screen's rate (750px + 52.08vw), so the curve stays round but never drops to the bottom. */
-      clip-path: ellipse(max(1500px, calc(750px + 52.08vw)) 772px at 50% 1104px);
     }
     .hero__content { max-width: 700px; }
   }

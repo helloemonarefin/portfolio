@@ -128,7 +128,7 @@ const connect = [
 
 <style>
   .footer {
-    border-top: 1px solid var(--border-primary);
+    border-top: var(--border-width, 1px) solid var(--border-primary);
     padding-top: 64px;
     background: var(--bg-primary);
   }
@@ -169,7 +169,7 @@ const connect = [
   .footer__ai-placeholder {
     width: 18px;
     height: 18px;
-    border: 1px dashed var(--text-tertiary);
+    border: var(--border-width, 1px) dashed var(--text-tertiary);
     border-radius: 0;
   }
 
@@ -224,7 +224,7 @@ const connect = [
     top: 0;
     left: 20px;
     right: 20px;
-    height: 1px;
+    height: var(--border-width, 1px);
     background: var(--border-primary);
   }
   @media (min-width: 1024px) {

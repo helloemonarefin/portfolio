@@ -48,6 +48,7 @@ If they disagree or something isn't covered: check Figma, then ask Emon. Never i
 - 2026-11-09 — Hero arc: horizontal radius max(1500px, 104.17vw) so wide screens keep the Figma curve.
 - 2026-11-09 — Arc radius softened to max(1500px, calc(750px + 52.08vw)) (midway). Text roll: incoming copy uses --text-accent (#FF280F). #work-3col: 1 col <810, 2 cols 810–1600, 3 cols >1600. Radius 0 on pricing cards, Cal.com container, AI-summary buttons (only buttons rounded).
 - 2026-11-09 — Emon chose the Work layout: ONE section (#work), full width (`.container--full`, side padding 20/48 = nav), 1 / 2 / 3 columns at <810 / 810–1600 / >1600. Comparison copies removed.
+- 2026-11-09 — CMS round: Design pages (Colours / Borders / Hero layout → src/lib/design.ts, `:root:root` overrides; all 1px borders now `var(--border-width)`, secondary 0.5 → `--border-width-thin`; hero spacing driven by --hero-* vars, arc follows portrait). Motion split into one singleton per component (src/content/motion/*.yaml, merged in motion.ts). New `showcase` collection (top/bottom rows) replaces projects.showcase. GIF images served unoptimised so they animate.
 - Still open: pricing badge pill radius (asked); Lens photo count (Emon to decide); sticky nav (ask in Phase 6); `sharp` install (ask in Phase 4).
 
 ## Dev commands
