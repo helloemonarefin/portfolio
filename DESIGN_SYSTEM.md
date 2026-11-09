@@ -398,6 +398,9 @@ Managed with **Astro content collections** + **Keystatic** (visual admin at `/ke
 | `order` | integer | manual sort, lowest first |
 | `draft` | checkbox | hidden everywhere when ticked |
 
+### Showcase behaviour update (2026-11-10)
+Autoplay does **not** pause on hover or scroll — only while dragging (resumes on release) and while the tab is hidden. Arrow/dot clicks restart the hold. Cursor: `grab` over both rows, `grabbing` while dragging. **Bottom row**: fixed width (355 / 220), height follows each image/video (no crop); the row takes the tallest card's height.
+
 ### `showcase` (collection) — Showcase Gallery (added 2026-11-09)
 Separate from projects: short glimpses of work (a hero, a card, an animation).
 `title` (slug, internal name), `row` (top · bottom), `media` (Image incl. **GIF** — served as-is so it animates — or Video), `order`, `draft` (hidden). Top row = 940/330 wide, height follows the media; bottom row = 355×200 / 220×140, cropped from the top.

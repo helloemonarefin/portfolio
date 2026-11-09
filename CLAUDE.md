@@ -53,6 +53,7 @@ If they disagree or something isn't covered: check Figma, then ask Emon. Never i
 - 2026-11-10 — Arrow Button: hover fill/border = brand (--button-primary-bg-hover); plays when any `.arrow-trigger` parent is hovered/focused (Work card). Hero arc/portrait overlap report from Emon: not reproducible in Chrome (arc top = portrait bottom at any size) — waiting for browser + screenshot.
 - 2026-11-10 — Hero scroll parallax copied from the live Framer site (measured): sticky hero, arc+content up 10.85% & +1.6%/1000px scale, portrait down 1.6% & −3.2%/1000px. Keystatic → Motion → Hero parallax (src/content/motion/parallax.yaml). `.hero ~ * { position: relative; z-index: 1 }` in global.css.
 - 2026-11-10 — Dev-only Vite plugin `cleanStaleContentAssets` in astro.config.mjs: works around an Astro bug where `.astro/content-assets.mjs` keeps imports of images that Keystatic deleted (switching Image → Video caused ImageNotFound until restart). On unlink in src/assets/ it removes imports whose file is gone and full-reloads.
+- 2026-11-10 — Showcase: autoplay pauses only during drag (native pointer events) + hidden tab; no hover pause. Grab/grabbing cursor. Bottom row cards hug their media height (no fixed 200/140, no crop).
 - Still open: pricing badge pill radius (asked); Lens photo count (Emon to decide); sticky nav (ask in Phase 6); `sharp` install (ask in Phase 4).
 
 ## Dev commands

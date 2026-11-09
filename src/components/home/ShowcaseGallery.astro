@@ -96,7 +96,6 @@ const moreSlides = fill(more);
   import Autoplay from 'embla-carousel-autoplay';
 
   const HOLD = 4000; // 4s hold + ~1s slide ≈ one item every 5s
-  const RESUME_AFTER = 5000; // resume autoplay 5s after the last interaction
 
   for (const root of document.querySelectorAll<HTMLElement>('[data-showcase]')) {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -171,24 +170,31 @@ const moreSlides = fill(more);
     root.querySelector('[data-prev]')?.addEventListener('click', () => { featured.scrollPrev(); interacted(); });
     root.querySelector('[data-next]')?.addEventListener('click', () => { featured.scrollNext(); interacted(); });
 
-    // ── Pause while hovered, dragged or hidden; resume 5s after the last interaction ──
-    let resumeTimer: number | undefined;
-    let hovering = false;
-    const pause = () => { window.clearTimeout(resumeTimer); autoplay.stop(); };
-    const scheduleResume = () => {
-      window.clearTimeout(resumeTimer);
-      if (reduceMotion || hovering || document.hidden) return;
-      resumeTimer = window.setTimeout(() => autoplay.play(), RESUME_AFTER);
-    };
-    function interacted() { pause(); scheduleResume(); }
+    // ── Autoplay keeps running while hovered or scrolled (Emon, 2026-11-10).
+    //    It pauses only while someone is dragging, and restarts as soon as they let go.
+    //    Arrow / dot clicks restart the 4s hold so the next move doesn't come too soon.
+    //    It also pauses while the browser tab is hidden. ──
+    const resume = () => { if (!reduceMotion && !document.hidden) autoplay.play(); };
+    function interacted() { if (!reduceMotion) autoplay.reset(); }
 
-    root.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') { hovering = true; pause(); } });
-    root.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') { hovering = false; scheduleResume(); } });
-    for (const api of [featured, more]) {
-      api?.on('pointerDown', pause);
-      api?.on('pointerUp', scheduleResume);
+    // Native pointer events (reliable for mouse, touch and pen).
+    for (const viewport of [featuredEl, moreEl]) {
+      if (!viewport) continue;
+      viewport.addEventListener('pointerdown', (e) => {
+        if (e.button !== 0) return;
+        autoplay.stop();
+        viewport.classList.add('is-dragging');
+        const end = () => {
+          viewport.classList.remove('is-dragging');
+          resume();
+          window.removeEventListener('pointerup', end);
+          window.removeEventListener('pointercancel', end);
+        };
+        window.addEventListener('pointerup', end);
+        window.addEventListener('pointercancel', end);
+      });
     }
-    document.addEventListener('visibilitychange', () => (document.hidden ? pause() : scheduleResume()));
+    document.addEventListener('visibilitychange', () => (document.hidden ? autoplay.stop() : resume()));
   }
 </script>
 
@@ -202,7 +208,6 @@ const moreSlides = fill(more);
     gap: 8px;
     --slide-w: 330px;
     --card-w: 220px;
-    --card-h: 140px;
     --gap: 8px;
     --more-offset: 60px;
   }
@@ -212,7 +217,6 @@ const moreSlides = fill(more);
       gap: 14px;
       --slide-w: 940px;
       --card-w: 355px;
-      --card-h: 200px;
       --gap: 14px;
       --more-offset: 160px;
     }
@@ -220,6 +224,9 @@ const moreSlides = fill(more);
 
   .showcase__row { position: relative; }
   .showcase__viewport { overflow: hidden; }
+  /* Drag cursor: open hand on hover, closed hand while dragging. */
+  .showcase__viewport { cursor: grab; }
+  .showcase__viewport.is-dragging,
   .showcase__viewport:active { cursor: grabbing; }
   .showcase__track {
     display: flex;
@@ -234,7 +241,8 @@ const moreSlides = fill(more);
   }
   /* Featured: fixed width, height follows the thumbnail's own shape (no cropping). */
   .showcase__slide { width: var(--slide-w); }
-  .showcase__card { width: var(--card-w); height: var(--card-h); }
+  /* Bottom row: fixed width, height follows each image / video (no cropping). */
+  .showcase__card { width: var(--card-w); }
 
   /* Before the script runs: centre the first featured slide (no jump on load). */
   .showcase:not(.is-ready) .showcase__row--featured .showcase__track {
@@ -245,22 +253,14 @@ const moreSlides = fill(more);
     margin-left: calc(var(--more-offset) * -1);
   }
 
-  .showcase__row--featured .showcase__track { align-items: flex-start; }
+  .showcase__track { align-items: flex-start; }
   .showcase__slide :global(img),
-  .showcase__slide :global(video) {
+  .showcase__slide :global(video),
+  .showcase__card :global(img),
+  .showcase__card :global(video) {
     display: block;
     width: 100%;
     height: auto;
-    pointer-events: none;
-    user-select: none;
-    -webkit-user-drag: none;
-  }
-  .showcase__card :global(img),
-  .showcase__card :global(video) {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: top;
     pointer-events: none;
     user-select: none;
     -webkit-user-drag: none;

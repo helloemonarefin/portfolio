@@ -1,0 +1,8 @@
+title: top 4
+row: top
+media:
+  discriminant: video
+  value:
+    file: /media/showcase/top-4/media/value/file.webm
+order: 0
+draft: false
