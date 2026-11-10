@@ -6,11 +6,8 @@ import { defineConfig, fontProviders } from 'astro/config';
 import react from '@astrojs/react';
 import markdoc from '@astrojs/markdoc';
 import keystatic from '@keystatic/astro';
-
-// Keystatic's admin (/keystatic) needs a server. Until we add a hosting adapter
-// in Phase 9, it only runs with `npm run dev` on your computer; `npm run build`
-// produces a fully static site without it.
-const isDev = process.argv.includes('dev');
+import netlify from '@astrojs/netlify';
+import sitemap from '@astrojs/sitemap';
 
 /**
  * Dev-only fix for an Astro bug: Astro keeps a generated list of every image used by your content
@@ -82,8 +79,18 @@ export default defineConfig({
     },
   ],
 
+  // Netlify: every page is still pre-built as static HTML. Only the Keystatic admin (/keystatic and its
+  // /api/keystatic routes) runs on demand as a Netlify Function, so you can edit content on the live site.
+  adapter: netlify(),
+
   // React + Markdoc are only used by the Keystatic admin, never on public pages.
-  integrations: [react(), markdoc(), ...(isDev ? [keystatic()] : [])],
+  // Sitemap (/sitemap-index.xml) for search engines; the private /styleguide is left out.
+  integrations: [
+    react(),
+    markdoc(),
+    keystatic(),
+    sitemap({ filter: (page) => !page.includes('/styleguide') }),
+  ],
 
   vite: {
     plugins: [cleanStaleContentAssets()],

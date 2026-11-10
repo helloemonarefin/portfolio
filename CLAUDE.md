@@ -17,7 +17,7 @@ If they disagree or something isn't covered: check Figma, then ask Emon. Never i
 
 ## Status
 - Stack: Astro 7.4.7, TypeScript strict, Node 26, plain CSS.
-- Current phase: **8 — QA (done, awaiting OK)**. Next: Phase 9 — Deploy (only with Emon's explicit go-ahead).
+- Current phase: **9 — Deploy (in progress, Emon's go-ahead 2026-11-10)**. Host: Netlify. Repo: github.com/helloemonarefin/portfolio (private).
 - `/styleguide` kept as a private reference page (noindex, not linked) — Emon, 2026-11-10.
 
 ## Decisions log
@@ -28,6 +28,7 @@ If they disagree or something isn't covered: check Figma, then ask Emon. Never i
 - 2026-11-08 — Hero "View Projects" = plain `secondary` (Emon changed from secondary-chip). Plain Secondary border = 0.5px, matching Figma. Secondary-chip keeps 1px.
 - 2026-11-08 — Keystatic: entries are `src/content/<collection>/<slug>/index.yaml`; singletons `src/content/settings/settings.yaml`, `src/content/pricing/pricing.yaml`. Images in `src/assets/projects|photos/<slug>/`, stored as relative paths (`../../../assets/...`) so Astro's `image()` optimises them. Category values are lowercase (`agency|saas|portfolio|templates`); labels in `src/lib/content.ts`.
 - 2026-11-08 — Keystatic integration loads only in `npm run dev` (needs a server adapter, added in Phase 9). `npm run build` stays fully static.
+- 2026-11-10 — Phase 9: `@astrojs/netlify` adapter (pages still prerendered; only /keystatic + /api/keystatic are a Netlify Function), `@astrojs/sitemap` (excludes /styleguide), public/robots.txt, netlify.toml (NODE_VERSION 24). Keystatic storage: local in dev, GitHub (`helloemonarefin/portfolio`) in production.
 - 2026-11-08 — Added `settings.currentRole.summary` (About "Now" one-liner from Figma) so that copy comes from the CMS. Both spec files updated.
 - 2026-11-08 — Seed: 3 projects (Figma placeholder copy), 8 Lens photos (6 wide + 2 square, as in Figma), placeholder images are labelled grey PNGs.
 - 2026-11-08 — Brand assets from Figma: `src/assets/brand/logo-mark.svg`, `portrait.png`. Dotted logo SVGs taken from Figma's Footer component (converted path→circle, identical render, ~5× smaller) instead of generating with sharp.

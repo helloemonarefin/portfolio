@@ -121,8 +121,11 @@ const color = (label: string, defaultValue: string, description?: string) =>
   });
 
 export default config({
-  // Files are saved in this project folder. Switches to GitHub storage in Phase 9.
-  storage: { kind: 'local' },
+  // On your computer (npm run dev): edits are saved straight into this project folder.
+  // On the live site: edits are saved as commits to GitHub, and Netlify rebuilds the site automatically.
+  storage: import.meta.env.DEV
+    ? { kind: 'local' }
+    : { kind: 'github', repo: { owner: 'helloemonarefin', name: 'portfolio' } },
 
   ui: {
     brand: { name: 'Emon Arefin' },
