@@ -4,12 +4,14 @@
  * Sticky (decided 2026-11-08): stays pinned to the top while scrolling. Once the page scrolls,
  * it gets --surface-overlay + 12px backdrop blur. `overlay` = on Home it starts transparent
  * over the hero (it overlaps the hero instead of pushing it down).
- * Mobile menu (not in Figma): white panel under the nav, links stacked (h4, gap 20, padding 20),
- * full-width "Hire Me" at the bottom; fades in + moves 8px down over 250ms; icon morphs to ×.
+ * Mobile menu (not in Figma): white panel under the nav, links stacked (h5 = 18px, gap 20, padding 20),
+ * then the same "Book a call" button as desktop (full width) right under the links; social links at the
+ * bottom (Keystatic → Settings → Socials). Fades in + moves 8px down over 250ms; icon morphs to ×.
  */
 import Logo from '../ui/Logo.astro';
 import Button from '../ui/Button.astro';
 import RollText from '../ui/RollText.astro';
+import { getSettings } from '../../lib/content';
 
 interface Props {
   worksCount: string;
@@ -23,6 +25,13 @@ const links = [
   { label: 'About', href: '/about' },
   { label: 'Pricing', href: '/#pricing' },
   { label: 'Contact', href: '/#book' },
+];
+const { socials } = await getSettings();
+const socialLinks = [
+  { label: 'LinkedIn', href: socials.linkedin },
+  { label: 'X / Twitter', href: socials.x },
+  { label: 'Dribbble', href: socials.dribbble },
+  { label: 'Behance', href: socials.behance },
 ];
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 ---
@@ -68,7 +77,7 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
         {
           links.map((l) => (
             <li>
-              <a class="nav__panel-link t-h4" href={l.href} aria-current={l.href === path ? 'page' : undefined}>
+              <a class="nav__panel-link t-h5" href={l.href} aria-current={l.href === path ? 'page' : undefined}>
                 {l.label}
                 {l.count && <span class="nav__count">{l.count}</span>}
               </a>
@@ -76,8 +85,25 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
           ))
         }
       </ul>
+      <div class="nav__panel-cta">
+        <Button label="Book a call" layout="fill" href="/#book" />
+      </div>
     </nav>
-    <Button label="Hire Me" layout="fill" href="/#book" />
+    <ul class="nav__socials" role="list" aria-label="Social links">
+      {
+        socialLinks.map((l) => (
+          <li>
+            {l.href ? (
+              <a class="nav__social t-label roll-trigger" href={l.href} target="_blank" rel="noopener noreferrer">
+                <RollText text={l.label} /> ↗<span class="sr-only"> (opens in a new tab)</span>
+              </a>
+            ) : (
+              <span class="nav__social t-label">{l.label} ↗</span>
+            )}
+          </li>
+        ))
+      }
+    </ul>
   </div>
 </header>
 
@@ -163,7 +189,7 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
   }
   .nav.is-open { background: var(--bg-primary); }
 
-  /* Home intro: logo first, then each link 0.05s apart, then "Hire Me" 0.1s after the last link.
+  /* Home intro: logo first, then each link 0.05s apart, then "Book a call" 0.1s after the last link.
      Timings come from Keystatic → Motion → Nav intro. */
   .nav__brand,
   .nav__item,
@@ -259,6 +285,18 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
     text-decoration: none;
   }
   .nav__panel-link .nav__count { font-size: var(--font-size-label); }
+  .nav__panel-cta { margin-top: 28px; } /* links → button */
+  .nav__socials {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 20px;
+    margin: 0;
+    padding: 20px 0 0;
+    list-style: none;
+    border-top: var(--border-width, 1px) solid var(--border-primary);
+  }
+  .nav__social { color: var(--text-secondary); text-decoration: none; }
+  a.nav__social { color: var(--text-primary); }
 
   @media (min-width: 1024px) {
     .nav {
