@@ -114,6 +114,9 @@ const stats = [
       }
     </div>
 
+    {/* Spacer pushes the details (and the button) to the bottom of the column on desktop. */}
+    <div class="modal__spacer"></div>
+
     {
       stats.length > 0 && (
         <dl class="modal__stats">
@@ -126,8 +129,6 @@ const stats = [
         </dl>
       )
     }
-
-    <div class="modal__spacer"></div>
 
     {
       live && (
@@ -592,9 +593,5 @@ const stats = [
     }
     .modal__spacer { display: block; flex: 1; }
     .modal__cta-desktop { display: block; }
-    /* No live-site button: the details (price / duration / scope) drop to the bottom of the column,
-       and their top border moves with them (always 20px above the first row). */
-    .modal--no-bar .modal__spacer { display: none; }
-    .modal--no-bar .modal__stats { margin-top: auto; }
   }
 </style>
