@@ -1,7 +1,8 @@
 title: Bottom 3
 row: bottom
 media:
-  discriminant: image
-  value: ../../../assets/showcase/bottom-3/media/value.png
+  discriminant: video
+  value:
+    file: /media/showcase/bottom-3/media/value/file.webm
 order: 3
 draft: false

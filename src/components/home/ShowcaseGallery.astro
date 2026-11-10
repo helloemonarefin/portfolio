@@ -1,8 +1,10 @@
 ---
 /**
  * Showcase Gallery — DESIGN_SYSTEM.md §5.4 / BUILD_PROMPT.md §6.5. Figma: Showcase Gallery.
- * Two Embla carousels (top + bottom rows) that advance together every 5s,
- * with drag/swipe, arrows and dots. Images, GIFs or videos from Keystatic → Showcase gallery.
+ * Two Embla carousels (top + bottom rows). Both rows behave the same: infinite loop, autoplay one item
+ * every 5s, drag/swipe, pause only while dragged. The bottom row's cards are half a top slide wide, so two
+ * bottom cards line up under each top slide (3 columns on top, 6 below — Emon, 2026-11-10).
+ * Arrows move both rows; dots follow the top row. Images, GIFs or videos from Keystatic → Showcase gallery.
  */
 import Media from '../ui/Media.astro';
 import Icon from '../ui/Icon.astro';
@@ -22,7 +24,9 @@ const fill = <T,>(items: T[], min = 5): T[] => {
   return out;
 };
 const featuredSlides = fill(featured);
-const moreSlides = fill(more);
+// Narrow cards: repeat to at least 12 so the loop always has more cards than fit on screen
+// (Embla quietly turns looping off when there aren't enough).
+const moreSlides = fill(more, 12);
 ---
 
 {
@@ -64,7 +68,7 @@ const moreSlides = fill(more);
             <div class="showcase__track">
               {moreSlides.map((p) => (
                 <div class="showcase__card" data-reveal>
-                  <Media media={p.data.media} widths={[220, 355, 440, 710]} sizes="(min-width: 1024px) 355px, 220px" />
+                  <Media media={p.data.media} widths={[161, 322, 463, 926]} sizes="(min-width: 1024px) 463px, 161px" />
                 </div>
               ))}
             </div>
@@ -105,49 +109,41 @@ const moreSlides = fill(more);
 
     root.classList.add('is-ready');
 
-    const autoplay = Autoplay({
+    const autoplayOptions = {
       delay: HOLD,
       playOnInit: !reduceMotion,
       stopOnInteraction: false,
       stopOnMouseEnter: false,
       stopOnFocusIn: false,
-    });
+    };
+    const autoplayTop = Autoplay(autoplayOptions);
+    const autoplayBottom = Autoplay(autoplayOptions);
 
     const featured = EmblaCarousel(
       featuredEl,
       { loop: true, align: 'center', duration: 38, skipSnaps: false },
-      [autoplay],
+      [autoplayTop],
     );
-    const more = moreEl ? EmblaCarousel(moreEl, { loop: true, align: 'start', duration: 38 }) : null;
 
-    // ── Keep both rows in sync (moving one moves the other the same number of steps) ──
-    let syncing = false;
-    const lastIndex = new WeakMap<EmblaCarouselType, number>();
-    const stepDelta = (api: EmblaCarouselType) => {
-      const n = api.scrollSnapList().length;
-      const prev = lastIndex.get(api) ?? 0;
-      const next = api.selectedScrollSnap();
-      lastIndex.set(api, next);
-      let d = (next - prev + n) % n;
-      if (d > n / 2) d -= n;
-      return d;
+    // Bottom row: same behaviour as the top row. Its cards are aligned so that two of them sit
+    // exactly under one top slide (left edge of a card = left edge of the centred top slide).
+    const bottomAlign = (viewSize: number) => {
+      const card = moreEl?.querySelector<HTMLElement>('.showcase__card');
+      if (!card) return 0;
+      const w = card.getBoundingClientRect().width;
+      const gap = parseFloat(getComputedStyle(card).marginRight) || 0;
+      return viewSize / 2 - w - gap / 2;
     };
-    const follow = (source: EmblaCarouselType, target: EmblaCarouselType | null) => {
-      const d = stepDelta(source);
-      if (!target || syncing || d === 0) return;
-      syncing = true;
-      const n = target.scrollSnapList().length;
-      const to = (((target.selectedScrollSnap() + d) % n) + n) % n;
-      target.scrollTo(to);
-      lastIndex.set(target, to);
-      syncing = false;
-    };
-    lastIndex.set(featured, 0);
-    if (more) lastIndex.set(more, 0);
-    featured.on('select', () => follow(featured, more));
-    more?.on('select', () => follow(more, featured));
+    const more = moreEl
+      ? EmblaCarousel(moreEl, { loop: true, align: bottomAlign, duration: 38, skipSnaps: false }, [autoplayBottom])
+      : null;
 
-    // ── Dots ──
+    const rows: [EmblaCarouselType | null, ReturnType<typeof Autoplay>, HTMLElement | null][] = [
+      [featured, autoplayTop, featuredEl],
+      [more, autoplayBottom, moreEl],
+    ];
+
+    // ── Dots (top row) ──
     const dots = [...root.querySelectorAll<HTMLButtonElement>('[data-dot]')];
     const updateDots = () => {
       const active = featured.selectedScrollSnap() % unique;
@@ -166,27 +162,26 @@ const moreSlides = fill(more);
       }),
     );
 
-    // ── Arrows ──
-    root.querySelector('[data-prev]')?.addEventListener('click', () => { featured.scrollPrev(); interacted(); });
-    root.querySelector('[data-next]')?.addEventListener('click', () => { featured.scrollNext(); interacted(); });
+    // ── Arrows move both rows one step ──
+    root.querySelector('[data-prev]')?.addEventListener('click', () => { featured.scrollPrev(); more?.scrollPrev(); interacted(); });
+    root.querySelector('[data-next]')?.addEventListener('click', () => { featured.scrollNext(); more?.scrollNext(); interacted(); });
 
     // ── Autoplay keeps running while hovered or scrolled (Emon, 2026-11-10).
-    //    It pauses only while someone is dragging, and restarts as soon as they let go.
-    //    Arrow / dot clicks restart the 4s hold so the next move doesn't come too soon.
-    //    It also pauses while the browser tab is hidden. ──
-    const resume = () => { if (!reduceMotion && !document.hidden) autoplay.play(); };
-    function interacted() { if (!reduceMotion) autoplay.reset(); }
+    //    A row pauses only while it is being dragged and restarts as soon as it's let go.
+    //    Arrow / dot clicks restart the 4s hold. Both pause while the browser tab is hidden. ──
+    const canPlay = () => !reduceMotion && !document.hidden;
+    function interacted() { if (!reduceMotion) { autoplayTop.reset(); autoplayBottom.reset(); } }
 
     // Native pointer events (reliable for mouse, touch and pen).
-    for (const viewport of [featuredEl, moreEl]) {
-      if (!viewport) continue;
+    for (const [api, autoplay, viewport] of rows) {
+      if (!api || !viewport) continue;
       viewport.addEventListener('pointerdown', (e) => {
         if (e.button !== 0) return;
         autoplay.stop();
         viewport.classList.add('is-dragging');
         const end = () => {
           viewport.classList.remove('is-dragging');
-          resume();
+          if (canPlay()) autoplay.play();
           window.removeEventListener('pointerup', end);
           window.removeEventListener('pointercancel', end);
         };
@@ -194,7 +189,9 @@ const moreSlides = fill(more);
         window.addEventListener('pointercancel', end);
       });
     }
-    document.addEventListener('visibilitychange', () => (document.hidden ? autoplay.stop() : resume()));
+    document.addEventListener('visibilitychange', () => {
+      for (const [, autoplay] of rows) document.hidden ? autoplay.stop() : canPlay() && autoplay.play();
+    });
   }
 </script>
 
@@ -207,18 +204,14 @@ const moreSlides = fill(more);
     flex-direction: column;
     gap: 8px;
     --slide-w: 330px;
-    --card-w: 220px;
     --gap: 8px;
-    --more-offset: 60px;
   }
   @media (min-width: 1024px) {
     .showcase {
       padding: 12px 0 128px;
       gap: 14px;
       --slide-w: 940px;
-      --card-w: 355px;
       --gap: 14px;
-      --more-offset: 160px;
     }
   }
 
@@ -241,16 +234,14 @@ const moreSlides = fill(more);
   }
   /* Featured: fixed width, height follows the thumbnail's own shape (no cropping). */
   .showcase__slide { width: var(--slide-w); }
+  /* Bottom row card = half a top slide (two cards under each slide): 6 columns where the top has 3. */
+  .showcase { --card-w: calc((var(--slide-w) - var(--gap)) / 2); }
   /* Bottom row: fixed width, height follows each image / video (no cropping). */
   .showcase__card { width: var(--card-w); }
 
-  /* Before the script runs: centre the first featured slide (no jump on load). */
-  .showcase:not(.is-ready) .showcase__row--featured .showcase__track {
+  /* Before the script runs: both rows start under the centred top slide (no jump on load). */
+  .showcase:not(.is-ready) .showcase__track {
     margin-left: calc(50% - var(--slide-w) / 2);
-  }
-  /* More row: first card cut off on the left (−60 mobile / −160 desktop). */
-  .showcase__row--more .showcase__viewport {
-    margin-left: calc(var(--more-offset) * -1);
   }
 
   .showcase__track { align-items: flex-start; }

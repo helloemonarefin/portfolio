@@ -398,6 +398,9 @@ Managed with **Astro content collections** + **Keystatic** (visual admin at `/ke
 | `order` | integer | manual sort, lowest first |
 | `draft` | checkbox | hidden everywhere when ticked |
 
+### Showcase bottom row = same behaviour as the top row (2026-11-10)
+Own Embla carousel: infinite loop, autoplay one item every 5s, drag, pause only while dragged. Card width = half a top slide (`(slide − gap) / 2` → 463 / 161), aligned so two cards sit under each top slide: **3 columns on top, 6 below**. Items repeat to ≥12 so the loop never switches off. Arrows move both rows; dots follow the top row.
+
 ### Showcase behaviour update (2026-11-10)
 Autoplay does **not** pause on hover or scroll — only while dragging (resumes on release) and while the tab is hidden. Arrow/dot clicks restart the hold. Cursor: `grab` over both rows, `grabbing` while dragging. **Bottom row**: fixed width (355 / 220), height follows each image/video (no crop); the row takes the tallest card's height.
 

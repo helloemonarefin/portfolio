@@ -1,0 +1,8 @@
+title: Bottom 5
+row: bottom
+media:
+  discriminant: video
+  value:
+    file: /media/showcase/bottom-5/media/value/file.webm
+order: 5
+draft: false
