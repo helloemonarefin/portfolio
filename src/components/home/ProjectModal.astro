@@ -177,14 +177,9 @@ const stats = [
       });
     };
 
-    /** Keep the active thumbnail inside the visible part of the strip. */
-    const follow = (i: number) => {
-      if (!strip) return;
-      const first = strip.selectedScrollSnap();
-      const last = strip.scrollSnapList().length - 1;
-      if (i < first) strip.scrollTo(i);
-      else if (i > first + VISIBLE_THUMBS - 1) strip.scrollTo(Math.min(i - VISIBLE_THUMBS + 1, last));
-    };
+    /** The selected thumbnail always sits at the left end of the strip (Emon, 2026-11-10).
+     *  The strip loops, so after the last item the first one follows — never an empty gap. */
+    const follow = (i: number) => strip?.scrollTo(i);
 
     const show = (i: number) => {
       current = ((i % n) + n) % n; // endless: after the last comes the first
@@ -213,7 +208,7 @@ const stats = [
       if (viewport && !strip) {
         strip = EmblaCarousel(viewport, {
           align: 'start',
-          containScroll: 'trimSnaps',
+          loop: true,
           dragFree: false,
           active: n > VISIBLE_THUMBS, // fewer than 6 → nothing to scroll or drag
         });
@@ -350,11 +345,12 @@ const stats = [
   }
 
   /* Gallery */
-  .modal__gallery { grid-area: gallery; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  /* One shape for the main image AND the thumbnails (Figma 664 × 457 ≈ 3:2). */
+  .modal__gallery { --gallery-ratio: 664 / 457; grid-area: gallery; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
   .modal__main {
     position: relative;
     display: grid;
-    aspect-ratio: 350 / 241;
+    aspect-ratio: var(--gallery-ratio);
     background: var(--bg-tertiary);
     overflow: hidden;
   }
@@ -398,11 +394,10 @@ const stats = [
     position: relative;
     flex: 0 0 calc((100% - 4 * 8px) / 5);
     margin-right: 8px; /* gap as margin: the strip carousel measures margins */
-    height: 48px;
+    aspect-ratio: var(--gallery-ratio); /* same shape as the main image */
     background: var(--bg-tertiary);
     overflow: hidden;
   }
-  .modal__thumb:last-child { margin-right: 0; }
   .modal__thumb[aria-pressed='true']::after {
     content: "";
     position: absolute;
@@ -559,13 +554,9 @@ const stats = [
     }
     .modal__grabber,
     .modal__bar { display: none; }
-    .modal__gallery { margin: 0; align-self: start; }
-    /* Same shape as Figma (664 × 457), but never taller than the screen allows. */
-    .modal__main {
-      aspect-ratio: 664 / 457;
-      max-height: calc(100dvh - 64px - 48px - 8px - 84px);
-    }
-    .modal__thumb { height: 84px; }
+    /* Never taller than the screen: main image (W / ratio) + 8 + one thumbnail row ((W − 32) / 5 / ratio)
+       must fit in 100dvh − 112. Solving for the width W gives this cap (1.2108 = (664/457) / 1.2). */
+    .modal__gallery { margin: 0; align-self: start; width: 100%; max-width: calc((100dvh - 120px) * 1.2108 + 5px); }
     .modal__strip-arrow { width: 36px; height: 36px; }
     .modal__strip-arrow--prev { left: 12px; }
     .modal__strip-arrow--next { right: 12px; }
