@@ -198,6 +198,11 @@ export default config({
           },
           { label: 'Live site button', description: 'The button at the bottom of the project pop-up. Hidden if "Show" is off or there is no link.' },
         ),
+        showPriceRange: fields.checkbox({
+          label: 'Show price range',
+          description: 'Off: the price range is hidden in this project\'s pop-up (the value is kept).',
+          defaultValue: true,
+        }),
         priceRange: fields.text({ label: 'Price range', description: 'e.g. "$600 – $800"' }),
         duration: fields.text({ label: 'Duration', description: 'e.g. "7 – 10 days"' }),
         scope: fields.text({ label: 'Scope', description: 'e.g. "Design + Framer build"' }),

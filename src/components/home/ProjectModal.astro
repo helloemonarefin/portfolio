@@ -20,13 +20,14 @@ interface Props {
   total: number;
 }
 const { project, index, total } = Astro.props;
-const { title, summary, thumbnail, gallery, liveSite, priceRange, duration, scope, tags } = project.data;
+const { title, summary, thumbnail, gallery, liveSite, showPriceRange, priceRange, duration, scope, tags } = project.data;
 const items = [thumbnail, ...gallery];
 const live = liveSite.show && liveSite.url ? liveSite : null;
 const id = `project-${project.id}`;
 const titleId = `${id}-title`;
 const stats = [
-  { label: 'Price range', value: priceRange },
+  // Missing value (stale dev cache after a schema change) = shown.
+  { label: 'Price range', value: showPriceRange !== false ? priceRange : null },
   { label: 'Duration', value: duration },
   { label: 'Scope', value: scope },
 ].filter((s) => s.value);
@@ -579,5 +580,9 @@ const stats = [
     }
     .modal__spacer { display: block; flex: 1; }
     .modal__cta-desktop { display: block; }
+    /* No live-site button: the details (price / duration / scope) drop to the bottom of the column,
+       and their top border moves with them (always 20px above the first row). */
+    .modal--no-bar .modal__spacer { display: none; }
+    .modal--no-bar .modal__stats { margin-top: auto; }
   }
 </style>

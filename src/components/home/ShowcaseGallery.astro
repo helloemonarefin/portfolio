@@ -4,7 +4,7 @@
  * Two Embla carousels (top + bottom rows). Both rows behave the same: infinite loop, autoplay one item
  * every 5s, drag/swipe, pause only while dragged. The bottom row's cards are half a top slide wide, so two
  * bottom cards line up under each top slide (3 columns on top, 6 below — Emon, 2026-11-10).
- * Arrows move both rows; dots follow the top row. Images, GIFs or videos from Keystatic → Showcase gallery.
+ * Arrows and dots move both rows (a dot moves the bottom row as many steps as the top row moves). Images, GIFs or videos from Keystatic → Showcase gallery.
  */
 import Media from '../ui/Media.astro';
 import Icon from '../ui/Icon.astro';
@@ -158,6 +158,11 @@ const moreSlides = fill(more, 12);
         let best = i;
         for (let k = i; k < n; k += unique) if (Math.abs(k - cur) < Math.abs(best - cur)) best = k;
         featured.scrollTo(best);
+        // Move the bottom row the same number of steps (same direction), like the arrows do.
+        if (more && best !== cur) {
+          const m = more.scrollSnapList().length;
+          more.scrollTo((((more.selectedScrollSnap() + best - cur) % m) + m) % m);
+        }
         interacted();
       }),
     );

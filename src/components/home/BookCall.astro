@@ -145,6 +145,8 @@ const meta = [
     color: var(--text-secondary);
     white-space: nowrap;
   }
+  /* Icons keep their size; only breakpoints may change it (they used to get squeezed to 0 around 1230px). */
+  .book__meta-item :global(svg) { flex: none; }
 
   .book__body {
     display: flex;
@@ -162,6 +164,11 @@ const meta = [
     background: var(--bg-secondary);
     border: var(--border-width, 1px) dashed var(--border-secondary);
     overflow: hidden;
+    /* Calendar sits in the middle of the box, both ways. */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
   @media (min-width: 1024px) {
     .book__embed { min-height: 680px; }
@@ -178,7 +185,7 @@ const meta = [
     color: var(--text-tertiary);
   }
   .book__placeholder p { color: var(--text-primary); }
-  .book__cal { position: relative; }
+  .book__cal { position: relative; width: 100%; }
   .book__embed.is-loaded { border-style: solid; border-color: transparent; }
   .book__embed.is-loaded .book__placeholder { opacity: 0; pointer-events: none; }
 

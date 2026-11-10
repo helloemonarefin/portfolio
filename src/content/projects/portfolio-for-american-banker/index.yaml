@@ -19,10 +19,11 @@ gallery:
   - discriminant: image
     value: ../../../assets/projects/portfolio-for-american-banker/gallery/2/value.png
 liveSite:
-  show: true
+  show: false
   label: View live site
   url: https://example.com
   newTab: true
+showPriceRange: true
 priceRange: $600 – $800
 duration: 7 – 10 days
 scope: Design + Framer build
