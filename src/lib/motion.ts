@@ -122,6 +122,9 @@ export async function motionCss(): Promise<string> {
   add('roll', m.textRoll);
   if (m.textRoll) vars.push(`--m-roll-stagger: ${m.textRoll.stagger ?? 0.02}s;`);
   add('modal', m.modal);
+  add('menu', m.menuPanel);
+  add('menu-item', m.menuItems);
+  if (m.menuItems) vars.push(`--m-menu-item-distance: ${m.menuItems.distance ?? 12}px;`, `--m-menu-item-stagger: ${m.menuItems.stagger ?? 0.05}s;`);
 
   // Hero parallax: percentages → per-pixel factors (arc/text go up & grow, portrait goes down & shrinks).
   const p = m.heroParallax;

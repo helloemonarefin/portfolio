@@ -2,7 +2,9 @@
 /**
  * Footer — DESIGN_SYSTEM.md §5.11 / BUILD_PROMPT.md §6.10. Figma: Footer (Desktop / Mobile).
  */
+import { Image } from 'astro:assets';
 import Logo from '../ui/Logo.astro';
+import Icon from '../ui/Icon.astro';
 import RollText from '../ui/RollText.astro';
 import { getSettings } from '../../lib/content';
 import dottedDesktop from '../../assets/brand/dotted-logo-desktop.svg?url';
@@ -10,17 +12,9 @@ import dottedMobile from '../../assets/brand/dotted-logo-mobile.svg?url';
 
 const settings = await getSettings();
 
-// "Get an AI summary" — each opens the assistant with this prompt pre-filled.
-// TODO(Emon): replace the dashed placeholders with the official logos (DESIGN_SYSTEM §13).
-const prompt = encodeURIComponent(
-  'Summarise who Emon Arefin is and what he offers, based on https://emonarefin.com',
-);
-const assistants = [
-  { name: 'ChatGPT', href: `https://chatgpt.com/?q=${prompt}` },
-  { name: 'Gemini', href: `https://gemini.google.com/app?q=${prompt}` },
-  { name: 'Claude', href: `https://claude.ai/new?q=${prompt}` },
-  { name: 'Perplexity', href: `https://www.perplexity.ai/search?q=${prompt}` },
-];
+// "Get an AI summary" buttons — Keystatic → Settings → AI summary buttons (icon + link each).
+// Items without a link are skipped; items without an icon show a dashed placeholder.
+const assistants = settings.aiSummary.filter((a) => a.url);
 
 const navigate = [
   { label: 'Home', href: '/' },
@@ -60,13 +54,17 @@ const connect = [
               <li data-reveal>
                 <a
                   class="footer__ai-btn"
-                  href={a.href}
+                  href={a.url}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`Ask ${a.name} for a summary of Emon (opens in a new tab)`}
                   title={a.name}
                 >
-                  <span class="footer__ai-placeholder" aria-hidden="true" />
+                  {a.icon ? (
+                    <Image class="footer__ai-icon" src={a.icon} alt="" width={40} height={40} />
+                  ) : (
+                    <span class="footer__ai-placeholder" aria-hidden="true" />
+                  )}
                 </a>
               </li>
             ))
@@ -89,17 +87,17 @@ const connect = [
         </ul>
       </div>
       <div class="footer__col">
-        <h2 class="t-caption t-medium" data-reveal>Connect</h2>
+        <h2 class="t-caption t-medium" data-reveal>Social</h2>
         <ul role="list">
           {
             connect.map((c) => (
               <li data-reveal>
                 {c.href ? (
                   <a class="footer__link t-label roll-trigger" href={c.href} target="_blank" rel="noopener noreferrer">
-                    <RollText text={c.label} /> ↗<span class="sr-only"> (opens in a new tab)</span>
+                    <RollText text={c.label} /><Icon name="arrow-up-right-sm" /><span class="sr-only"> (opens in a new tab)</span>
                   </a>
                 ) : (
-                  <span class="footer__link footer__link--static t-label roll-trigger"><RollText text={c.label} /> ↗</span>
+                  <span class="footer__link footer__link--static t-label roll-trigger"><RollText text={c.label} /><Icon name="arrow-up-right-sm" /></span>
                 )}
               </li>
             ))
@@ -166,6 +164,7 @@ const connect = [
     background: var(--bg-secondary);
     transition: background-color 200ms ease;
   }
+  .footer__ai-icon { width: 20px; height: 20px; object-fit: contain; }
   .footer__ai-placeholder {
     width: 18px;
     height: 18px;
@@ -201,6 +200,9 @@ const connect = [
     transition: color 150ms ease;
   }
   a.footer__link:focus-visible { color: var(--text-primary); }
+  /* Social column: label + 16px ↗ icon, 4px apart (same as the mobile menu). */
+  .footer__link:has(> :global(svg)) { display: inline-flex; align-items: center; gap: 4px; }
+  .footer__link > :global(svg) { flex: none; }
 
   .footer__dotted img {
     width: 100%;

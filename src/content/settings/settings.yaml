@@ -30,3 +30,12 @@ aboutBio:
   - >-
     Second paragraph — your approach: simple, considered interfaces, built fast
     in Framer, and a photographer’s eye for light and detail.
+aiSummary:
+  - name: ChatGPT
+    url: https://chatgpt.com/?q=Summarise%20who%20Emon%20Arefin%20is%20and%20what%20he%20offers%2C%20based%20on%20https%3A%2F%2Femonarefin.com
+  - name: Gemini
+    url: https://gemini.google.com/app?q=Summarise%20who%20Emon%20Arefin%20is%20and%20what%20he%20offers%2C%20based%20on%20https%3A%2F%2Femonarefin.com
+  - name: Claude
+    url: https://claude.ai/new?q=Summarise%20who%20Emon%20Arefin%20is%20and%20what%20he%20offers%2C%20based%20on%20https%3A%2F%2Femonarefin.com
+  - name: Perplexity
+    url: https://www.perplexity.ai/search?q=Summarise%20who%20Emon%20Arefin%20is%20and%20what%20he%20offers%2C%20based%20on%20https%3A%2F%2Femonarefin.com

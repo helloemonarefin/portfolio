@@ -130,7 +130,7 @@ export default config({
       Content: ['projects', 'showcase', 'photos'],
       Settings: ['settings', 'pricing'],
       Design: ['designColors', 'designBorders', 'designHero'],
-      Motion: ['motionHero', 'motionParallax', 'motionNav', 'motionReveal', 'motionButtons', 'motionCards', 'motionTextRoll', 'motionModal'],
+      Motion: ['motionHero', 'motionParallax', 'motionNav', 'motionReveal', 'motionButtons', 'motionCards', 'motionTextRoll', 'motionModal', 'motionMenu'],
     },
   },
 
@@ -463,6 +463,23 @@ export default config({
       schema: { modal: anim('Project modal open / close', { bezier: '0.22, 1, 0.36, 1', time: 0.3 }) },
     }),
 
+    motionMenu: singleton({
+      label: 'Mobile menu',
+      path: 'src/content/motion/menu',
+      format: { data: 'yaml' },
+      schema: {
+        menuPanel: anim('Menu panel (slides down)', { bezier: '0.22, 1, 0.36, 1', time: 0.6 }),
+        menuItems: anim(
+          'Menu items (links from the left; button, social links and © line from below)',
+          { bezier: '0.22, 1, 0.36, 1', time: 0.5, delay: 0.15 },
+          {
+            distance: fields.number({ label: 'Distance (px)', description: 'How far each item travels.', defaultValue: 12, step: 1 }),
+            stagger: fields.number({ label: 'Stagger (s)', description: 'Gap between each item.', defaultValue: 0.05, step: 0.01 }),
+          },
+        ),
+      },
+    }),
+
     // ─── Site settings ──────────────────────────────────────────────────────
     settings: singleton({
       label: 'Settings',
@@ -487,7 +504,24 @@ export default config({
             behance: fields.url({ label: 'Behance' }),
             resumeUrl: fields.url({ label: 'Resume' }),
           },
-          { label: 'Social links' },
+          { label: 'Social links', description: 'Used in the footer "Social" column and the mobile menu. Empty ones show as plain text.' },
+        ),
+        aiSummary: fields.array(
+          fields.object({
+            name: fields.text({ label: 'Name', description: 'e.g. "ChatGPT" — read out by screen readers and shown on hover.' }),
+            icon: fields.image({
+              label: 'Icon (PNG, WebP or SVG)',
+              description: 'Square works best; shown at 20 × 20 inside the 36px button.',
+              directory: 'src/assets/brand/ai',
+              publicPath: '../../assets/brand/ai/',
+            }),
+            url: fields.url({ label: 'Link', description: 'Opens in a new tab, e.g. https://chatgpt.com/?q=…' }),
+          }),
+          {
+            label: 'AI summary buttons (footer)',
+            description: 'The "Get an AI summary of Emon" buttons in the footer.',
+            itemLabel: (props) => props.fields.name.value || 'AI assistant',
+          },
         ),
         stats: fields.object(
           {

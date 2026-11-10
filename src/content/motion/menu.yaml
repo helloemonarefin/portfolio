@@ -1,0 +1,17 @@
+menuPanel:
+  easing:
+    discriminant: ease
+    value:
+      preset: custom
+      bezier: 0.22, 1, 0.36, 1
+  time: 0.6
+menuItems:
+  easing:
+    discriminant: ease
+    value:
+      preset: custom
+      bezier: 0.22, 1, 0.36, 1
+  time: 0.5
+  delay: 0.15
+  distance: 12
+  stagger: 0.05

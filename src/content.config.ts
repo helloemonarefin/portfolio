@@ -73,7 +73,7 @@ const photos = defineCollection({
 // ─── Settings (singleton) ───────────────────────────────────────────────────
 const settings = defineCollection({
   loader: glob({ pattern: 'settings.yaml', base: './src/content/settings' }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     email: optionalText,
     calLink: optionalText,
     siteDescription: optionalText,
@@ -95,6 +95,9 @@ const settings = defineCollection({
     }),
     milestones: z.array(z.object({ year: optionalText, title: optionalText })).default([]),
     aboutBio: z.array(z.string()).max(2).default([]),
+    aiSummary: z
+      .array(z.object({ name: optionalText, icon: image().nullish(), url: optionalUrl }))
+      .default([]),
   }),
 });
 

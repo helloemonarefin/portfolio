@@ -76,8 +76,8 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
     <nav aria-label="Mobile">
       <ul class="nav__panel-links" role="list">
         {
-          links.map((l) => (
-            <li>
+          links.map((l, i) => (
+            <li class="nav__anim" style={`--i:${i}`}>
               <a class="nav__panel-link" href={l.href} aria-current={l.href === path ? 'page' : undefined}>
                 {l.label}
                 {l.count && <span class="nav__count">{l.count}</span>}
@@ -86,15 +86,15 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
           ))
         }
       </ul>
-      <div class="nav__panel-cta">
+      <div class="nav__panel-cta nav__anim nav__anim--up" style={`--i:${links.length}`}>
         <Button label="Book a call" layout="fill" href="/#book" />
       </div>
     </nav>
     <div class="nav__panel-foot">
       <ul class="nav__socials" role="list" aria-label="Social links">
         {
-          socialLinks.map((l) => (
-            <li class="nav__social-item">
+          socialLinks.map((l, j) => (
+            <li class="nav__social-item nav__anim nav__anim--up" style={`--i:${links.length + 1 + j}`}>
               {l.href ? (
                 <a class="nav__social t-label" href={l.href} target="_blank" rel="noopener noreferrer">
                   <span>{l.label}</span><Icon name="arrow-up-right-sm" /><span class="sr-only"> (opens in a new tab)</span>
@@ -108,7 +108,7 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
           ))
         }
       </ul>
-      <p class="nav__copyright t-caption">© 2026 Emon Arefin. All rights reserved.</p>
+      <p class="nav__copyright t-caption nav__anim nav__anim--up" style={`--i:${links.length + 1 + socialLinks.length}`}>© 2026 Emon Arefin. All rights reserved.</p>
     </div>
   </div>
 </header>
@@ -266,16 +266,36 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
     gap: 20px;
     padding: 20px 20px calc(20px + env(safe-area-inset-bottom));
     background: var(--bg-primary);
-    opacity: 0;
+    /* Opens by unrolling from the top (Keystatic → Motion → Mobile menu; default 0.6s); closes in half the time. */
+    --menu-close: calc(var(--m-menu-time, 0.6s) * 0.5);
+    clip-path: inset(0 0 100% 0);
     visibility: hidden;
-    translate: 0 -8px;
-    transition: opacity 250ms ease, translate 250ms cubic-bezier(.22, 1, .36, 1), visibility 0s linear 250ms;
+    transition:
+      clip-path var(--menu-close) var(--m-menu-ease, cubic-bezier(.22, 1, .36, 1)),
+      visibility 0s linear var(--menu-close);
   }
   .is-open .nav__panel {
-    opacity: 1;
+    clip-path: inset(0 0 0 0);
     visibility: visible;
+    transition:
+      clip-path var(--m-menu-time, 0.6s) var(--m-menu-ease, cubic-bezier(.22, 1, .36, 1)),
+      visibility 0s;
+  }
+  /* Items: links slide in from the left, the button / social links / © line rise from below — 12px,
+     opacity 0 → 1, one after another (--i = position). Closing: all fade out together, quickly. */
+  .nav__anim {
+    opacity: 0;
+    translate: calc(var(--m-menu-item-distance, 12px) * -1) 0;
+    transition: opacity var(--menu-close) ease, translate var(--menu-close) ease;
+  }
+  .nav__anim--up { translate: 0 var(--m-menu-item-distance, 12px); }
+  .is-open .nav__anim {
+    opacity: 1;
     translate: 0 0;
-    transition: opacity 250ms ease, translate 250ms cubic-bezier(.22, 1, .36, 1), visibility 0s;
+    --d: calc(var(--m-menu-item-delay, 0.15s) + var(--i, 0) * var(--m-menu-item-stagger, 0.05s));
+    transition:
+      opacity var(--m-menu-item-time, 0.5s) var(--m-menu-item-ease, cubic-bezier(.22, 1, .36, 1)) var(--d),
+      translate var(--m-menu-item-time, 0.5s) var(--m-menu-item-ease, cubic-bezier(.22, 1, .36, 1)) var(--d);
   }
   .nav__panel-links {
     display: flex;
