@@ -18,7 +18,10 @@ gallery:
     value: ../../../assets/projects/portfolio-for-american-banker/gallery/1/value.png
   - discriminant: image
     value: ../../../assets/projects/portfolio-for-american-banker/gallery/2/value.png
-liveUrl: https://example.com
+liveSite:
+  show: true
+  label: View live site
+  url: https://example.com
 priceRange: $600 – $800
 duration: 7 – 10 days
 scope: Design + Framer build

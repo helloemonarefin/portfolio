@@ -251,13 +251,13 @@ Each maps to a Figma component of the same name (page "Portfolio Website", right
 ### 5.10 Project Modal (light)
 - Native **`<dialog>`** with `showModal()`; **one dialog per project**, rendered at build time, images `loading="lazy"`. `aria-labelledby` → the title.
 - **Backdrop** (`::backdrop`): `--surface-scrim` + `backdrop-filter: blur(12px)`; clicking it closes.
-- **Desktop ≥1024 — Split:** panel `--bg-primary`, radius 16, padding 24, `width: min(1120px, 100vw - 64px)`, `max-height: calc(100dvh - 64px)`, centred, two columns with gap 32 (~597 tall at 1440).
-  - Left: main image 664×457 (keep ratio) → row of up to 5 thumbnails (84px tall, gap 8, `object-fit: cover`); the active one has a 1.5px `--text-primary` inside outline; clicking a thumbnail cross-fades the main image (200ms).
-  - Right panel (full height; scrolls on its own if it overflows): top bar ("Case study · 01 / 08" `label` `--text-secondary` + 36px round close button, `--bg-secondary`, × icon `--text-primary`) → title `h2` → summary `body-lg` `--text-secondary` → stats as three label/value rows (Price range, Duration, Scope; label `caption` `--text-secondary` left, value `h5` right; gap 16; 1px `--border-primary` top border with 24px above) → flexible spacer → tags (dividers `--border-secondary`) → **full-width** Primary "View live site" (opens `liveUrl` in a new tab, `rel="noopener"`).
-- **Mobile/tablet <1024 — bottom sheet:** full width, starts 48px from the top of the viewport, radius 20 on the top corners, `--bg-primary`, scrolls internally. Order: 36×4 grabber (`--border-secondary`) → top bar → main image → thumbnails (48px tall, gap 8) → title → summary → stats (2-column wrap; Scope full width) → tags.
+- **Desktop ≥1024 — Split** (Figma updated 2026-11-10): panel `--bg-primary`, **radius 0**, padding 24, `width: min(max(900px, 80vw), 1600px, 100vw - 64px)`, `max-height: calc(100dvh - 64px)`, centred; columns `minmax(0,1fr) clamp(376px, 30%, 460px)`, gap 32.
+  - Gallery = the project **thumbnail first**, then the CMS `gallery` items (max 10 in total). The main image cross-fades (300ms) to the next item **every 3s in an endless loop** (stops under reduced motion / when closed; restarts its 3s wait after any click). Thumbnail strip shows 5 at a time (84px tall desktop / 48px mobile, gap 8, `object-fit: cover`, active = 1.5px `--text-primary` inside outline); with more than 5 it is **draggable** (Embla) and follows the active item; round prev/next **arrows** (32/36px, `--surface-overlay` + 12px blur) sit over the strip ends and step the main image. Clicking a thumbnail shows it.
+  - Right panel (scrolls on its own if it overflows): top bar ("Case study · 01 / 08" `caption` `--text-secondary` + 36px round close button) → body, gap 20: title (`h2` style, desktop 28/38) → summary `body-lg` `--text-secondary` → **tag chips** (`caption` `--text-secondary` on `--bg-secondary`, padding 4/8, gap 10, square) → stats (1px `--border-primary` top border, 20px above; rows gap 12; label `caption` left, value 14px medium, line-height 26, right) → flexible spacer → **full-width** Primary live-site button (`liveSite`: show / label / url from Keystatic; hidden if off or no link; new tab).
+- **Mobile/tablet <1024 — bottom sheet:** full width, starts 48px from the top, **radius 0** (Figma), `--bg-primary`, scrolls internally. Order: grabber → top bar → main image → thumbnail strip → title → summary → tag chips → stats (2-column wrap, values 14/20 medium; Scope full width).
 - **Sticky action bar** (`Modal Action Bar` component) at the bottom of the sheet — `position: sticky; bottom: 0` inside the sheet's scroll container, always visible while scrolling:
   - a 32px **fade** (`--bg-primary` from 0% → 100% opacity, top → bottom) that hints content continues underneath;
-  - a solid `--bg-primary` body, padding `4px 20px calc(24px + env(safe-area-inset-bottom)) 20px`, holding a **full-width** Primary "View live site".
+  - a solid `--bg-primary` body, padding `4px 20px calc(24px + env(safe-area-inset-bottom)) 20px`, holding the **full-width** Primary live-site button.
   - Give the sheet content ~100px bottom padding so the last item can scroll clear of the bar.
 - **Open / close:** desktop fades in 300ms with an 8px rise; mobile slides up from `translateY(100%)` to 0 over 300ms; both `cubic-bezier(.22,1,.36,1)`; closing reverses. None under reduced motion.
 - **Behaviour:** closes on the close button, Esc or a backdrop click. Focus goes to the close button on open and back to the card that opened it on close. Lock body scroll while open. URL hash `#project-<slug>` on open; loading the page with that hash opens the modal; on close remove the hash with `history.replaceState`.
@@ -389,8 +389,8 @@ Managed with **Astro content collections** + **Keystatic** (visual admin at `/ke
 | `tags` | array of text (max 3) | e.g. Portfolio, AI, Framer |
 | `summary` | multiline text | 2–3 sentences, modal body |
 | `thumbnail` | **media**: Image or Video switch (see below) | Work card + Showcase (≈ 4:3, ≥1400px wide, cropped from the top) |
-| `gallery` | array of **media** (1–5) | modal main media + thumbnails; first shown first |
-| `liveUrl` | url | "View live site", new tab |
+| `gallery` | array of media (0–9) | modal gallery after the thumbnail (thumbnail is always first; max 10 total) |
+| `liveSite` | object: `show` (checkbox, default on) · `label` (default "View live site") · `url` | modal live-site button; new tab |
 | `priceRange` | text | "$600 – $800" |
 | `duration` | text | "7 – 10 days" |
 | `scope` | text | "Design + Framer build" |

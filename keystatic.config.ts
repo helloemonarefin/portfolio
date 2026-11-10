@@ -181,13 +181,18 @@ export default config({
         gallery: fields.array(media('Gallery item', 'projects'), {
             label: 'Gallery',
             itemLabel: (props) => (props.discriminant === 'video' ? 'Video' : 'Image'),
-            description: '1–5 images or videos for the modal. The first one is shown first.',
-            validation: { length: { min: 1, max: 5 } },
+            description:
+              'Extra images or videos for the project pop-up (up to 9). The thumbnail above is always shown first, so the pop-up shows up to 10 in total.',
+            validation: { length: { min: 0, max: 9 } },
           }),
-        liveUrl: fields.url({
-          label: 'Live site URL',
-          description: '"View live site" button — opens in a new tab.',
-        }),
+        liveSite: fields.object(
+          {
+            show: fields.checkbox({ label: 'Show the button', defaultValue: true }),
+            label: fields.text({ label: 'Button label', defaultValue: 'View live site' }),
+            url: fields.url({ label: 'Link', description: 'Opens in a new tab.' }),
+          },
+          { label: 'Live site button', description: 'The button at the bottom of the project pop-up. Hidden if "Show" is off or there is no link.' },
+        ),
         priceRange: fields.text({ label: 'Price range', description: 'e.g. "$600 – $800"' }),
         duration: fields.text({ label: 'Duration', description: 'e.g. "7 – 10 days"' }),
         scope: fields.text({ label: 'Scope', description: 'e.g. "Design + Framer build"' }),

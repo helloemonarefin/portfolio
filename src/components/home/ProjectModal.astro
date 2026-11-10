@@ -1,12 +1,13 @@
 ---
 /**
- * Project Modal — DESIGN_SYSTEM.md §5.10 / BUILD_PROMPT.md §6.7. Figma: Project Modal (Desktop Split / Mobile).
+ * Project Modal — DESIGN_SYSTEM.md §5.10 / BUILD_PROMPT.md §6.7. Figma: Project Modal (Desktop / Mobile), updated 2026-11-10.
  * One native <dialog> per project, rendered at build time.
- *  - Desktop ≥1024: two columns (gallery | details), centred panel.
- *  - Mobile/tablet: bottom sheet starting 48px from the top, sticky "View live site" bar.
- * Behaviour lives in the <script> below (open from cards or #project-<slug>, close, thumbnails).
- * Open/close: desktop fades in with an 8px rise; mobile sheet slides up; both 300ms
- * cubic-bezier(.22,1,.36,1); closing reverses. None under reduced motion.
+ *  - Desktop ≥1024: two columns (gallery | details), centred panel, 80% of the screen wide (min 900, max 1600).
+ *  - Mobile/tablet: bottom sheet starting 48px from the top, sticky live-site bar.
+ * Gallery: the project thumbnail first, then the CMS gallery items (up to 10 in total). The main image
+ * advances every 3s in an endless loop; the thumbnail strip shows 5 at a time, can be dragged when there
+ * are more, and has prev / next arrows. Live-site button: show / label / link from Keystatic.
+ * Open/close: desktop fades in with an 8px rise; mobile sheet slides up; closing reverses. None under reduced motion.
  */
 import Media from '../ui/Media.astro';
 import Icon from '../ui/Icon.astro';
@@ -19,7 +20,9 @@ interface Props {
   total: number;
 }
 const { project, index, total } = Astro.props;
-const { title, summary, gallery, liveUrl, priceRange, duration, scope, tags } = project.data;
+const { title, summary, thumbnail, gallery, liveSite, priceRange, duration, scope, tags } = project.data;
+const items = [thumbnail, ...gallery];
+const live = liveSite.show && liveSite.url ? liveSite : null;
 const id = `project-${project.id}`;
 const titleId = `${id}-title`;
 const stats = [
@@ -29,26 +32,32 @@ const stats = [
 ].filter((s) => s.value);
 ---
 
-<dialog class="modal" id={id} aria-labelledby={titleId} data-project-modal={project.id} data-lenis-prevent>
+<dialog
+  class:list={['modal', { 'modal--no-bar': !live }]}
+  id={id}
+  aria-labelledby={titleId}
+  data-project-modal={project.id}
+  data-lenis-prevent
+>
   <div class="modal__grabber" aria-hidden="true"></div>
 
   <div class="modal__top">
-    <p class="modal__counter t-label">Case study · {padCount(index)} / {padCount(total)}</p>
+    <p class="modal__counter t-caption">Case study · {padCount(index)} / {padCount(total)}</p>
     <button class="modal__close" type="button" aria-label="Close" data-close autofocus>
       <Icon name="close" />
     </button>
   </div>
 
-  <div class="modal__gallery">
+  <div class="modal__gallery" data-gallery>
     <div class="modal__main">
       {
-        gallery.map((m, i) => (
+        items.map((m, i) => (
           <div class="modal__slide" data-slide={i} aria-hidden={i === 0 ? undefined : 'true'} data-active={i === 0 ? '' : undefined}>
             <Media
               media={m}
               alt={i === 0 ? `${title} — preview` : ''}
-              widths={[350, 700, 664, 1328]}
-              sizes="(min-width: 1024px) 664px, 100vw"
+              widths={[350, 700, 1100, 1600, 2200]}
+              sizes="(min-width: 1024px) min(1100px, 60vw), 100vw"
               autoplay={false}
             />
           </div>
@@ -56,19 +65,29 @@ const stats = [
       }
     </div>
     {
-      gallery.length > 1 && (
-        <div class="modal__thumbs" role="group" aria-label="Gallery">
-          {gallery.map((m, i) => (
-            <button
-              class="modal__thumb"
-              type="button"
-              data-thumb={i}
-              aria-label={`Show item ${i + 1} of ${gallery.length}`}
-              aria-pressed={i === 0 ? 'true' : 'false'}
-            >
-              <Media media={m} widths={[120, 240]} sizes="120px" autoplay={false} />
-            </button>
-          ))}
+      items.length > 1 && (
+        <div class="modal__strip">
+          <div class="modal__thumbs-viewport" data-thumbs>
+            <div class="modal__thumbs" role="group" aria-label="Gallery">
+              {items.map((m, i) => (
+                <button
+                  class="modal__thumb"
+                  type="button"
+                  data-thumb={i}
+                  aria-label={`Show item ${i + 1} of ${items.length}`}
+                  aria-pressed={i === 0 ? 'true' : 'false'}
+                >
+                  <Media media={m} widths={[120, 240, 400]} sizes="(min-width: 1024px) 200px, 70px" autoplay={false} />
+                </button>
+              ))}
+            </div>
+          </div>
+          <button class="modal__strip-arrow modal__strip-arrow--prev" type="button" aria-label="Previous image" data-gprev>
+            <Icon name="arrow-left" />
+          </button>
+          <button class="modal__strip-arrow modal__strip-arrow--next" type="button" aria-label="Next image" data-gnext>
+            <Icon name="arrow-right" />
+          </button>
         </div>
       )
     }
@@ -76,8 +95,17 @@ const stats = [
 
   <div class="modal__body">
     <div class="modal__info">
-      <h2 id={titleId} class="t-h2">{title}</h2>
+      <h2 id={titleId} class="modal__title t-h2">{title}</h2>
       <p class="modal__summary t-body-lg">{summary}</p>
+      {
+        tags.length > 0 && (
+          <ul class="modal__tags" role="list" aria-label="Tags">
+            {tags.map((t) => (
+              <li class="modal__tag t-caption">{t}</li>
+            ))}
+          </ul>
+        )
+      }
     </div>
 
     {
@@ -86,7 +114,7 @@ const stats = [
           {stats.map((s) => (
             <div class:list={['modal__stat', { 'modal__stat--wide': s.label === 'Scope' }]}>
               <dt class="t-caption">{s.label}</dt>
-              <dd class="t-h5">{s.value}</dd>
+              <dd class="modal__stat-value">{s.value}</dd>
             </div>
           ))}
         </dl>
@@ -95,32 +123,21 @@ const stats = [
 
     <div class="modal__spacer"></div>
 
-    <div class="modal__footer">
-      {
-        tags.length > 0 && (
-          <p class="modal__tags t-caption">
-            {tags.map((t) => (
-              <span class="modal__tag">{t}</span>
-            ))}
-          </p>
-        )
-      }
-      {
-        liveUrl && (
-          <div class="modal__cta-desktop">
-            <Button label="View live site" layout="fill" href={liveUrl} external />
-          </div>
-        )
-      }
-    </div>
+    {
+      live && (
+        <div class="modal__cta-desktop">
+          <Button label={live.label} layout="fill" href={live.url} external />
+        </div>
+      )
+    }
   </div>
 
   {
-    liveUrl && (
+    live && (
       <div class="modal__bar">
         <div class="modal__bar-fade" aria-hidden="true"></div>
         <div class="modal__bar-body">
-          <Button label="View live site" layout="fill" href={liveUrl} external />
+          <Button label={live.label} layout="fill" href={live.url} external />
         </div>
       </div>
     )
@@ -128,22 +145,114 @@ const stats = [
 </dialog>
 
 <script>
+  import EmblaCarousel, { type EmblaCarouselType } from 'embla-carousel';
   import { lockScroll } from '../../scripts/scroll';
+
+  const SLIDE_EVERY = 3000; // main image advances every 3s (Emon, 2026-11-10)
+  const VISIBLE_THUMBS = 5; // the strip shows 5; more → drag / arrows
+
+  const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /** Gallery controller for one modal: main image cross-fade + thumbnail strip + 3s endless slideshow. */
+  type Gallery = { start: () => void; stop: () => void; show: (i: number) => void };
+  const galleries = new Map<HTMLDialogElement, Gallery>();
+
+  function createGallery(dialog: HTMLDialogElement): Gallery {
+    const slides = [...dialog.querySelectorAll<HTMLElement>('[data-slide]')];
+    const thumbs = [...dialog.querySelectorAll<HTMLButtonElement>('[data-thumb]')];
+    const viewport = dialog.querySelector<HTMLElement>('[data-thumbs]');
+    const n = slides.length;
+    let current = 0;
+    let timer: number | undefined;
+    let strip: EmblaCarouselType | null = null;
+    let dragging = false;
+
+    const playVideos = () => {
+      const reduce = reduceMotion();
+      slides.forEach((slide) => {
+        const video = slide.querySelector('video');
+        if (!video) return;
+        if (dialog.open && slide.hasAttribute('data-active') && !reduce) video.play().catch(() => {});
+        else video.pause();
+      });
+    };
+
+    /** Keep the active thumbnail inside the visible part of the strip. */
+    const follow = (i: number) => {
+      if (!strip) return;
+      const first = strip.selectedScrollSnap();
+      const last = strip.scrollSnapList().length - 1;
+      if (i < first) strip.scrollTo(i);
+      else if (i > first + VISIBLE_THUMBS - 1) strip.scrollTo(Math.min(i - VISIBLE_THUMBS + 1, last));
+    };
+
+    const show = (i: number) => {
+      current = ((i % n) + n) % n; // endless: after the last comes the first
+      slides.forEach((s, k) => {
+        s.toggleAttribute('data-active', k === current);
+        if (k === current) s.removeAttribute('aria-hidden');
+        else s.setAttribute('aria-hidden', 'true');
+      });
+      thumbs.forEach((t, k) => t.setAttribute('aria-pressed', String(k === current)));
+      follow(current);
+      playVideos();
+    };
+
+    const stop = () => window.clearTimeout(timer);
+    const schedule = () => {
+      stop();
+      if (n < 2 || reduceMotion() || !dialog.open) return;
+      timer = window.setTimeout(() => {
+        if (!dragging && !document.hidden) show(current + 1);
+        schedule();
+      }, SLIDE_EVERY);
+    };
+
+    const start = () => {
+      // The strip is measured when the dialog is visible (first open creates it, later opens re-measure).
+      if (viewport && !strip) {
+        strip = EmblaCarousel(viewport, {
+          align: 'start',
+          containScroll: 'trimSnaps',
+          dragFree: false,
+          active: n > VISIBLE_THUMBS, // fewer than 6 → nothing to scroll or drag
+        });
+      } else strip?.reInit();
+      show(0);
+      schedule();
+    };
+
+    // Clicking a thumbnail (Embla ignores the click if it was the end of a drag).
+    thumbs.forEach((thumb, i) =>
+      thumb.addEventListener('click', () => {
+        show(i);
+        schedule(); // restart the 3s wait
+      }),
+    );
+    dialog.querySelector('[data-gprev]')?.addEventListener('click', () => { show(current - 1); schedule(); });
+    dialog.querySelector('[data-gnext]')?.addEventListener('click', () => { show(current + 1); schedule(); });
+
+    // Pause while the strip is being dragged.
+    viewport?.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return;
+      dragging = true;
+      viewport.classList.add('is-dragging');
+      const end = () => {
+        dragging = false;
+        viewport.classList.remove('is-dragging');
+        schedule();
+        window.removeEventListener('pointerup', end);
+        window.removeEventListener('pointercancel', end);
+      };
+      window.addEventListener('pointerup', end);
+      window.addEventListener('pointercancel', end);
+    });
+
+    return { start, stop: () => { stop(); playVideos(); }, show };
+  }
 
   const modals = new Map<string, HTMLDialogElement>();
   document.querySelectorAll<HTMLDialogElement>('dialog[data-project-modal]').forEach((d) => modals.set(d.dataset.projectModal!, d));
-
-  const playActive = (dialog: HTMLDialogElement, play: boolean) => {
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    dialog.querySelectorAll<HTMLElement>('[data-slide]').forEach((slide) => {
-      const video = slide.querySelector('video');
-      if (!video) return;
-      if (play && slide.hasAttribute('data-active') && !reduce) video.play().catch(() => {});
-      else video.pause();
-    });
-  };
-
-  const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /** Play the closing animation, then really close the dialog. */
   const closeAnimated = (dialog: HTMLDialogElement) => {
@@ -165,10 +274,11 @@ const stats = [
     dialog.showModal();
     lockScroll(true);
     history.replaceState(null, '', `#project-${slug}`);
-    playActive(dialog, true);
+    galleries.get(dialog)?.start();
   };
 
   modals.forEach((dialog) => {
+    galleries.set(dialog, createGallery(dialog));
     // Close button
     dialog.querySelector('[data-close]')?.addEventListener('click', () => closeAnimated(dialog));
     // Esc: animate instead of closing instantly
@@ -183,28 +293,13 @@ const stats = [
       const inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
       if (!inside) closeAnimated(dialog);
     });
-    // After any close: unlock scroll, clear the hash, stop videos.
+    // After any close: unlock scroll, clear the hash, stop the slideshow and videos.
     // (The browser returns focus to the card that opened the dialog.)
     dialog.addEventListener('close', () => {
       lockScroll(false);
       if (location.hash === `#${dialog.id}`) history.replaceState(null, '', location.pathname + location.search);
-      playActive(dialog, false);
+      galleries.get(dialog)?.stop();
     });
-
-    // Thumbnails → cross-fade the main media
-    const slides = [...dialog.querySelectorAll<HTMLElement>('[data-slide]')];
-    const thumbs = [...dialog.querySelectorAll<HTMLButtonElement>('[data-thumb]')];
-    thumbs.forEach((thumb, i) =>
-      thumb.addEventListener('click', () => {
-        slides.forEach((s, k) => {
-          s.toggleAttribute('data-active', k === i);
-          if (k === i) s.removeAttribute('aria-hidden');
-          else s.setAttribute('aria-hidden', 'true');
-        });
-        thumbs.forEach((t, k) => t.setAttribute('aria-pressed', String(k === i)));
-        playActive(dialog, true);
-      }),
-    );
   });
 
   // Work cards open their project
@@ -228,6 +323,8 @@ const stats = [
     color: var(--text-primary);
     background: var(--bg-primary);
   }
+  /* The panel itself never shows a focus ring (its buttons and links still do). */
+  .modal:focus-visible { outline: none; }
   .modal::backdrop {
     background: var(--surface-scrim);
     -webkit-backdrop-filter: blur(12px);
@@ -252,6 +349,7 @@ const stats = [
     flex: none;
   }
 
+  /* Gallery */
   .modal__gallery { grid-area: gallery; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
   .modal__main {
     position: relative;
@@ -262,14 +360,15 @@ const stats = [
   }
   .modal__slide {
     grid-area: 1 / 1;
+    min-height: 0;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 200ms ease, visibility 0s linear 200ms;
+    transition: opacity 300ms ease, visibility 0s linear 300ms;
   }
   .modal__slide[data-active] {
     opacity: 1;
     visibility: visible;
-    transition: opacity 200ms ease, visibility 0s;
+    transition: opacity 300ms ease, visibility 0s;
   }
   .modal__slide :global(img),
   .modal__slide :global(video),
@@ -279,26 +378,70 @@ const stats = [
     height: 100%;
     object-fit: cover;
     object-position: top;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
   }
 
-  .modal__thumbs { display: flex; gap: 8px; }
+  /* Thumbnail strip: 5 visible; more → drag or arrows. */
+  .modal__strip { position: relative; }
+  .modal__thumbs-viewport { overflow: hidden; }
+  .modal__thumbs-viewport.is-dragging { cursor: grabbing; }
+  .modal__thumbs {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    touch-action: pan-y pinch-zoom;
+  }
   .modal__thumb {
     position: relative;
-    flex: 0 0 calc((100% - 4 * 8px) / 5); /* room for 5 thumbs */
+    flex: 0 0 calc((100% - 4 * 8px) / 5);
+    margin-right: 8px; /* gap as margin: the strip carousel measures margins */
     height: 48px;
     background: var(--bg-tertiary);
     overflow: hidden;
   }
+  .modal__thumb:last-child { margin-right: 0; }
   .modal__thumb[aria-pressed='true']::after {
     content: "";
     position: absolute;
     inset: 0;
     box-shadow: inset 0 0 0 1.5px var(--text-primary); /* 1.5px inside outline */
   }
+  .modal__strip-arrow {
+    position: absolute;
+    top: 50%;
+    translate: 0 -50%;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    background: var(--surface-overlay);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    color: var(--text-primary);
+    transition: scale 200ms ease;
+  }
+  .modal__strip-arrow--prev { left: 8px; }
+  .modal__strip-arrow--next { right: 8px; }
+  .modal__strip-arrow:focus-visible { scale: 1.05; }
+  @media (hover: hover) and (pointer: fine) {
+    .modal__strip-arrow:hover { scale: 1.05; }
+  }
 
+  /* Details */
   .modal__body { grid-area: body; display: flex; flex-direction: column; gap: 24px; min-width: 0; }
   .modal__info { display: flex; flex-direction: column; gap: 12px; }
   .modal__summary { color: var(--text-secondary); }
+
+  .modal__tags { display: flex; flex-wrap: wrap; gap: 10px; margin: 0; padding: 0; list-style: none; }
+  .modal__tag {
+    padding: 4px 8px;
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+  }
 
   .modal__stats {
     display: flex;
@@ -312,18 +455,14 @@ const stats = [
   .modal__stat--wide { width: 100%; }
   .modal__stat dt { color: var(--text-secondary); }
   .modal__stat dd { margin: 0; }
+  .modal__stat-value {
+    font-size: var(--font-size-body-sm);
+    line-height: var(--line-height-body-sm);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
 
   .modal__spacer { display: none; }
-  .modal__tags { display: flex; align-items: center; gap: 10px; color: var(--text-secondary); }
-  .modal__tag + .modal__tag::before {
-    content: "";
-    display: inline-block;
-    width: var(--border-width, 1px);
-    height: 14px;
-    margin-right: 10px;
-    vertical-align: -2px;
-    background: var(--border-secondary);
-  }
   .modal__cta-desktop { display: none; }
 
   /* ── Open / close animation ─────────────────────────────────────────── */
@@ -342,7 +481,7 @@ const stats = [
   @keyframes modal-fade-in { from { opacity: 0; } to { opacity: 1; } }
   @keyframes modal-fade-out { from { opacity: 1; } to { opacity: 0; } }
 
-  /* ── Mobile / tablet: bottom sheet ───────────────────────────────────── */
+  /* ── Mobile / tablet: bottom sheet (square corners, as Figma) ─────────── */
   .modal {
     position: fixed;
     inset: 48px 0 0 0;
@@ -351,7 +490,7 @@ const stats = [
     height: auto;
     max-height: none;
     margin: 0;
-    border-radius: 20px 20px 0 0;
+    border-radius: 0;
     overflow-y: auto;
     overscroll-behavior: contain;
   }
@@ -363,6 +502,7 @@ const stats = [
     row-gap: 16px;
     padding: 12px 20px 0;
   }
+  .modal--no-bar[open] { padding-bottom: 32px; }
   .modal__grabber {
     grid-area: grabber;
     justify-self: center;
@@ -380,7 +520,7 @@ const stats = [
     position: sticky;
     bottom: 0;
     margin: 0 -20px;
-    margin-top: 48px; /* tags → button ≈ 36px, as in Figma; the last item always clears the bar */
+    margin-top: 48px;
   }
   .modal__bar-fade {
     height: 32px;
@@ -397,15 +537,18 @@ const stats = [
   @media (min-width: 1024px) {
     .modal {
       inset: 0;
-      width: min(1120px, 100vw - 64px);
+      /* 80% of the screen, at least 900px, at most 1600px — never wider than the screen minus 64px. */
+      width: min(max(900px, 80vw), 1600px, 100vw - 64px);
       height: fit-content; /* centred by margin:auto instead of stretching */
       max-height: calc(100dvh - 64px);
       margin: auto;
-      border-radius: 16px;
+      border-radius: 0;
       overflow: hidden;
     }
-    .modal[open] {
-      grid-template-columns: minmax(0, 664fr) minmax(0, 376fr);
+    .modal[open],
+    .modal--no-bar[open] {
+      /* Gallery takes the extra width; the details column stays readable (Figma: 664 | 376 at 1120). */
+      grid-template-columns: minmax(0, 1fr) clamp(376px, 30%, 460px);
       grid-template-rows: auto minmax(0, 1fr);
       grid-template-areas:
         "gallery top"
@@ -417,11 +560,19 @@ const stats = [
     .modal__grabber,
     .modal__bar { display: none; }
     .modal__gallery { margin: 0; align-self: start; }
-    .modal__main { aspect-ratio: 664 / 457; }
+    /* Same shape as Figma (664 × 457), but never taller than the screen allows. */
+    .modal__main {
+      aspect-ratio: 664 / 457;
+      max-height: calc(100dvh - 64px - 48px - 8px - 84px);
+    }
     .modal__thumb { height: 84px; }
+    .modal__strip-arrow { width: 36px; height: 36px; }
+    .modal__strip-arrow--prev { left: 12px; }
+    .modal__strip-arrow--next { right: 12px; }
 
-    .modal__body { overflow-y: auto; padding-bottom: 0; }
-    .modal__stats { flex-direction: column; gap: 16px; }
+    .modal__title { font-size: var(--font-size-h3); line-height: var(--line-height-h2); }
+    .modal__body { overflow-y: auto; padding-bottom: 0; gap: 20px; }
+    .modal__stats { flex-direction: column; gap: 12px; padding-top: 20px; }
     .modal__stat,
     .modal__stat--wide {
       width: 100%;
@@ -430,9 +581,12 @@ const stats = [
       justify-content: space-between;
       gap: 16px;
     }
-    .modal__stat dd { text-align: right; }
+    .modal__stat-value {
+      font-size: var(--font-size-label);
+      line-height: var(--line-height-h5);
+      text-align: right;
+    }
     .modal__spacer { display: block; flex: 1; }
-    .modal__footer { display: flex; flex-direction: column; gap: 12px; }
     .modal__cta-desktop { display: block; }
   }
 </style>

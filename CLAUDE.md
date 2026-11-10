@@ -55,6 +55,7 @@ If they disagree or something isn't covered: check Figma, then ask Emon. Never i
 - 2026-11-10 — Dev-only Vite plugin `cleanStaleContentAssets` in astro.config.mjs: works around an Astro bug where `.astro/content-assets.mjs` keeps imports of images that Keystatic deleted (switching Image → Video caused ImageNotFound until restart). On unlink in src/assets/ it removes imports whose file is gone and full-reloads.
 - 2026-11-10 — Showcase: autoplay pauses only during drag (native pointer events) + hidden tab; no hover pause. Grab/grabbing cursor. Bottom row cards hug their media height (no fixed 200/140, no crop).
 - 2026-11-10 — Showcase bottom row: own Embla + Autoplay (same as top), loop, cards = half a top slide wide, align fn puts two cards under the centred top slide; fill to ≥12 items (Embla silently disables loop when content < viewport). Old row-sync removed.
+- 2026-11-10 — Project Modal per updated Figma: radius 0, tag chips under the summary, tighter stats. Desktop width 80vw (min 900, max 1600). Gallery = thumbnail + CMS gallery (≤9, 10 total), 3s endless slideshow, draggable Embla thumb strip (5 visible) with prev/next arrows. `liveUrl` → `liveSite {show, label, url}`.
 - Still open: pricing badge pill radius (asked); Lens photo count (Emon to decide); sticky nav (ask in Phase 6); `sharp` install (ask in Phase 4).
 
 ## Dev commands

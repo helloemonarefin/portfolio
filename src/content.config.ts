@@ -40,8 +40,14 @@ const projects = defineCollection({
       tags: z.array(z.string()).max(3).default([]),
       summary: z.string(),
       thumbnail: media(image),
-      gallery: z.array(media(image)).min(1).max(5),
-      liveUrl: optionalUrl,
+      gallery: z.array(media(image)).max(9).default([]),
+      liveSite: z
+        .object({
+          show: z.boolean().default(true),
+          label: z.string().nullish().transform((v) => v || 'View live site'),
+          url: optionalUrl,
+        })
+        .default({ show: true, label: 'View live site', url: '' }),
       priceRange: optionalText,
       duration: optionalText,
       scope: optionalText,

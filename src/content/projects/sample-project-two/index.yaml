@@ -18,7 +18,10 @@ gallery:
     value: ../../../assets/projects/sample-project-two/gallery/1.png
   - discriminant: image
     value: ../../../assets/projects/sample-project-two/gallery/2.png
-liveUrl: https://example.com
+liveSite:
+  show: true
+  label: View live site
+  url: https://example.com
 priceRange: $600 – $800
 duration: 7 – 10 days
 scope: Design + Framer build
