@@ -46,8 +46,9 @@ const projects = defineCollection({
           show: z.boolean().default(true),
           label: z.string().nullish().transform((v) => v || 'View live site'),
           url: optionalUrl,
+          newTab: z.boolean().default(true),
         })
-        .default({ show: true, label: 'View live site', url: '' }),
+        .default({ show: true, label: 'View live site', url: '', newTab: true }),
       priceRange: optionalText,
       duration: optionalText,
       scope: optionalText,

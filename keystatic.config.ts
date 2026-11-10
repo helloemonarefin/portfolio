@@ -189,7 +189,12 @@ export default config({
           {
             show: fields.checkbox({ label: 'Show the button', defaultValue: true }),
             label: fields.text({ label: 'Button label', defaultValue: 'View live site' }),
-            url: fields.url({ label: 'Link', description: 'Opens in a new tab.' }),
+            url: fields.url({ label: 'Link' }),
+            newTab: fields.checkbox({
+              label: 'Open in a new tab',
+              description: 'On: the link opens in a new browser tab. Off: it opens in the same tab.',
+              defaultValue: true,
+            }),
           },
           { label: 'Live site button', description: 'The button at the bottom of the project pop-up. Hidden if "Show" is off or there is no link.' },
         ),

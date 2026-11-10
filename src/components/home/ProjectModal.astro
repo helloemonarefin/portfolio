@@ -126,7 +126,7 @@ const stats = [
     {
       live && (
         <div class="modal__cta-desktop">
-          <Button label={live.label} layout="fill" href={live.url} external />
+          <Button label={live.label} layout="fill" href={live.url} external={live.newTab !== false} />
         </div>
       )
     }
@@ -137,7 +137,7 @@ const stats = [
       <div class="modal__bar">
         <div class="modal__bar-fade" aria-hidden="true"></div>
         <div class="modal__bar-body">
-          <Button label={live.label} layout="fill" href={live.url} external />
+          <Button label={live.label} layout="fill" href={live.url} external={live.newTab !== false} />
         </div>
       </div>
     )

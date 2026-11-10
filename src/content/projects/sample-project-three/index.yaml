@@ -19,6 +19,7 @@ liveSite:
   show: true
   label: View live site
   url: https://example.com
+  newTab: true
 priceRange: $600 – $800
 duration: 7 – 10 days
 scope: Design + Framer build

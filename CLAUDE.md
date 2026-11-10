@@ -57,6 +57,7 @@ If they disagree or something isn't covered: check Figma, then ask Emon. Never i
 - 2026-11-10 — Showcase bottom row: own Embla + Autoplay (same as top), loop, cards = half a top slide wide, align fn puts two cards under the centred top slide; fill to ≥12 items (Embla silently disables loop when content < viewport). Old row-sync removed.
 - 2026-11-10 — Project Modal per updated Figma: radius 0, tag chips under the summary, tighter stats. Desktop width 80vw (min 900, max 1600). Gallery = thumbnail + CMS gallery (≤9, 10 total), 3s endless slideshow, draggable Embla thumb strip (5 visible) with prev/next arrows. `liveUrl` → `liveSite {show, label, url}`.
 - 2026-11-10 — Modal gallery: thumbnails use the main image's ratio (664/457); strip loops and the selected thumbnail always sits at the left end.
+- 2026-11-10 — `liveSite.newTab` checkbox (default on): live-site button opens in a new tab or the same tab. Missing value = new tab (dev keeps stale cached entries after a schema change).
 - Still open: pricing badge pill radius (asked); Lens photo count (Emon to decide); sticky nav (ask in Phase 6); `sharp` install (ask in Phase 4).
 
 ## Dev commands
