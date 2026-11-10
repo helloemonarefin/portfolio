@@ -127,7 +127,7 @@ Image fields must save into `src/assets/projects/<slug>/` so the Astro schema ca
 - **Focus ring:** 2px solid `--text-primary`, 2px offset, on every interactive element.
 - **Section anchors:** `#work`, `#pricing`, `#book`. Nav "Works" → `/#work`, "Pricing" → `/#pricing`, "Contact" and every "Hire Me" / "Book a call" → `/#book`, "About" → `/about`, "Home" → `/`. Use `scroll-behavior: smooth` (disabled under reduced motion) with `scroll-margin-top` equal to the nav height.
 - **Section backgrounds** (DESIGN_SYSTEM.md §4, updated 2026-11-08): Hero white (grey arc) → Showcase white → Work white → Pricing white with grey cards → Book white → Footer white with a top border.
-- **Section header:** desktop = one row with the heading (`display`) on the left and an optional right slot (filters or meta) aligned to the bottom. Mobile = heading, then the right-slot content underneath, left-aligned, gap 20. **There are no subheadings.**
+- **Section header:** desktop = one row with the heading (`display`) on the left and an optional right slot (filters or meta) aligned to the bottom. Mobile = heading, then the right-slot content underneath, left-aligned, gap 20. Work keeps this stacked layout up to 1279px (filters don't fit beside the title at 1024). **There are no subheadings.**
 
 ---
 
@@ -209,7 +209,7 @@ Props: `variant` (`primary` | `secondary` | `secondary-chip`), `size` (`md` 40px
 - **Autoplay:** both rows advance **together**, one item every **5s** (4s hold + ~1s slide), easing as close as Embla allows to `cubic-bezier(.645,.045,.355,1)`. Pause while hovered, while the tab is hidden, and while the user drags; resume 5s after the last interaction.
 - **Drag/swipe** either row left or right; keep the two rows in sync (moving one moves the other to the matching index). If a row has fewer than 5 items, duplicate them so the loop still looks full.
 - **Arrows:** round buttons 40×40 (32×32 mobile), `--surface-overlay` + `backdrop-filter: blur(12px)`, chevron 16px `--text-primary`, vertically centred on the featured row. Desktop: sitting on the peeking slides, `left: calc(50% - 548px)` and `right: calc(50% - 548px)` (24px outside the featured slide's edges). Mobile: 8px from the screen edges. Previous/next move both rows by one. Hover: scale 1.05, 200ms.
-- **Pagination:** centred pill, height 32 (28 mobile), padding `0 16`, radius 999, `--bg-tertiary`; one 8px dot per featured slide, gap 10 (8 mobile). Active dot `--text-primary`, inactive `--text-tertiary` at 60%, colour transition 200ms. Click a dot to jump there.
+- **Pagination:** centred pill, height 32 (28 mobile), padding `0 16`, radius 999, `--bg-tertiary`; one 8px dot per featured slide, 12px apart (20px centre to centre). Active dot = a 20px-wide pill (width eases 300ms) `--text-primary`; inactive `--text-tertiary` at 60%; 200ms colour transition. Click a dot to jump there.
 - A11y: `aria-roledescription="carousel"`, `aria-label="Showcase"`, arrows labelled "Previous" / "Next", dots `aria-label="Go to slide n"` with `aria-current="true"` on the active one, slides with empty `alt` (decorative).
 
 ### 6.6 Work section (`home/WorkSection.astro`, `home/WorkCard.astro`)
@@ -329,7 +329,7 @@ It matches the Figma frame at **390** and **1440** within a couple of pixels, lo
 5. **About page,** static.
 6. **Interactivity.** Filters, gallery (autoplay, drag, arrows, dots, sync), modal (desktop Split + mobile sheet with sticky bar, hash, focus handling), mobile menu, Cal.com embed.
 7. **Motion.** Hero intro timeline (§6.4), card hovers, button sweeps, Arrow Button, Live Dot, modal transitions; reduced-motion check.
-8. **QA.** Compare against Figma at 390 / 768 / 1024 / 1440, keyboard walkthrough, Lighthouse, fix issues. Remove `/styleguide` (or keep it hidden, ask me).
+8. **QA.** Compare against Figma at 390 / 768 / 1024 / 1440, keyboard walkthrough, Lighthouse, fix issues. `/styleguide` kept, hidden from search engines (Emon, 2026-11-10).
 9. **Deploy.** Walk me through creating a GitHub repo and pushing, connecting Netlify (or Vercel), adding the adapter, switching Keystatic to GitHub storage, and pointing emonarefin.com (bought on Namecheap) at the site.
 
 ---

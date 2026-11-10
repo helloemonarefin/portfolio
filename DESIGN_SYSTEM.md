@@ -46,8 +46,8 @@
 | Token | Value | Used for |
 |---|---|---|
 | `--text-primary` | `#162026` | Headings, body, icons |
-| `--text-secondary` | `#6B767D` | Supporting text, nav links, tags |
-| `--text-tertiary` | `#9AA0A5` | Meta, counts, placeholders |
+| `--text-secondary` | `#5F6A71` | Supporting text, nav links, tags |
+| `--text-tertiary` | `#656E74` | Meta, counts, placeholders |
 | `--text-inverse` | `#FFFFFF` | Text on dark fills |
 | `--bg-primary` | `#FFFFFF` | Page, cards on grey bands, modal |
 | `--bg-secondary` | `#F5F5F7` | Grey bands, hero arc, work thumbnail tiles, chips, modal close button |
@@ -71,7 +71,7 @@
 ```css
 /* src/styles/tokens.css */
 :root {
-  --text-primary:#162026; --text-secondary:#6B767D; --text-tertiary:#9AA0A5; --text-inverse:#FFFFFF;
+  --text-primary:#162026; --text-secondary:#5F6A71; --text-tertiary:#656E74; --text-inverse:#FFFFFF;
   --bg-primary:#FFFFFF; --bg-secondary:#F5F5F7; --bg-tertiary:#E8E8ED;
   --border-primary:#E3E5E8; --border-secondary:#D5D9DD; --border-subtle:rgba(0,0,0,.12);
   --button-primary-bg:#162026; --button-primary-text:#FFFFFF; --button-primary-chip:rgba(255,255,255,.16); --button-primary-bg-hover:#FF280F;
@@ -210,12 +210,13 @@ Each maps to a Figma component of the same name (page "Portfolio Website", right
 - **Autoplay:** both rows advance **together**, one item every **5s** (4s hold + ~1s slide), easing as close to `cubic-bezier(.645,.045,.355,1)` as Embla allows. Pause while hovered, while the tab is hidden and during drag; resume 5s after the last interaction.
 - **Drag/swipe** either row; the rows stay **in sync** (moving one moves the other to the matching index). If a row has fewer than 5 items, duplicate them so the loop still looks full.
 - **Arrows:** 40×40 (32×32 mobile) round buttons, `--surface-overlay` + `backdrop-filter: blur(12px)`, chevron 16px `--text-primary`, vertically centred on the featured row. Desktop: on the peeking slides at `left: calc(50% - 548px)` / `right: calc(50% - 548px)` (= x 172 and 1228 at 1440, 24px outside the featured slide's edges). Mobile: 8px from the screen edges. Previous/next move both rows one step. Hover: scale 1.05, 200ms. Labels "Previous" / "Next".
-- **Pagination:** centred pill, height 32 (28 mobile), padding `0 16`, radius 999, `--bg-tertiary`; one 8px dot per featured slide, gap 10 (8 mobile). Active `--text-primary`; inactive `--text-tertiary` at 60%; 200ms colour transition. Click a dot to jump there; `aria-label="Go to slide n"`, `aria-current="true"` on the active one.
+- **Pagination:** centred pill, height 32 (28 mobile), padding `0 16`, radius 999, `--bg-tertiary`; one 8px dot per featured slide, 12px apart (20px centre to centre). Active dot = a 20px-wide pill (width eases 300ms) `--text-primary`; inactive `--text-tertiary` at 60%; 200ms colour transition. Click a dot to jump there; `aria-label="Go to slide n"`, `aria-current="true"` on the active one.
 - Library: Embla Carousel + Autoplay plugin. Container: `aria-roledescription="carousel"`, `aria-label="Showcase"`.
 
 ### 5.5 Section Header
 - Desktop: one row — heading (`display`, left) and optional right slot (filters, meta) aligned to the bottom, `justify-content: space-between`. **No subheadings.**
 - Mobile: heading, then right-slot content underneath, left-aligned, gap 20.
+- Work only: stays stacked (filters under the heading) up to 1279px; one row from 1280px (`stackUntilXl`).
 
 ### 5.6 Filter chips (Work)
 - Labels: All, Agency, SaaS, Portfolio, Templates. Height 36, padding `0 16`, radius 6, `label`.
@@ -333,7 +334,7 @@ The hero is `position: sticky; top: 0`; every following section (`.hero ~ *`) sc
 |---|---|
 | Gallery advance | every 5s (4s hold + ~1s slide), `cubic-bezier(.645,.045,.355,1)`; drag/swipe; pause on hover/hidden tab/drag, resume 5s after |
 | Gallery arrow hover | scale 1.05, 200ms |
-| Gallery dots | colour 200ms |
+| Gallery dots | colour 200ms, active pill width 300ms |
 | Filter chips / cards | chip colour 200ms; cards fade 200ms |
 | Work card hover | 350ms ease-out (image grow + outline + overlay fade + label rises 16px) |
 | Primary / secondary-chip sweep | 450ms `cubic-bezier(.22,1,.36,1)` |
@@ -363,7 +364,7 @@ Links: "Home" → `/` · "Works" → `/#work` · "Pricing" → `/#pricing` · "A
 ---
 
 ## 9. Accessibility checklist
-- Colour contrast ≥ 4.5:1 for body text (secondary `#6B767D` on white passes; tertiary is for non-essential meta only).
+- Colour contrast ≥ 4.5:1 for body text (secondary `#5F6A71` on white passes; tertiary is for non-essential meta only).
 - Focus ring: 2px `--text-primary` outline, 2px offset, on every interactive element.
 - Gallery: `aria-roledescription="carousel"`, autoplay pausable, not keyboard-trapping; images decorative (`alt=""`) unless they convey content.
 - Modal: native `<dialog>` via `showModal()`, labelled by the project title, `Esc` closes, focus returns to the opening card.

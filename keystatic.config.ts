@@ -289,8 +289,8 @@ export default config({
         text: fields.object(
           {
             primary: color('Text primary', '#162026'),
-            secondary: color('Text secondary', '#6B767D'),
-            tertiary: color('Text tertiary', '#9AA0A5'),
+            secondary: color('Text secondary', '#5F6A71'),
+            tertiary: color('Text tertiary', '#656E74'),
             inverse: color('Text inverse', '#FFFFFF'),
           },
           { label: 'Text', layout: [6, 6, 6, 6] },

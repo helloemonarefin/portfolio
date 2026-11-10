@@ -23,7 +23,7 @@ const filters = [{ value: 'all', label: 'All' }, ...Object.entries(categoryLabel
 
 <section id={id} class="section work" aria-labelledby={`${id}-title`} data-work-section>
   <div class:list={['container', 'section__inner', { 'container--full': fullWidth }]}>
-    <SectionHeader title="Real work. Real impact." id={`${id}-title`}>
+    <SectionHeader title="Real work. Real impact." id={`${id}-title`} stackUntilXl>
       <div class="filters" role="group" aria-label="Filter projects">
         {
           filters.map((f) => (

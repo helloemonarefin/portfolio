@@ -5,6 +5,7 @@
  * Hover (real pointers) + keyboard focus, var(--m-card-time, 350ms) var(--m-card-ease, ease-out): the image grows to fill the tile,
  * a 1px inside outline appears, a frosted overlay fades in and "View Project" + Arrow Button rise 16px.
  * Hovering anywhere on the card also plays the Arrow Button's own hover (brand fill + arrow swap).
+ * Accessible name = the visible title + tags (no aria-label, so it matches what people see — QA, 2026-11-10).
  */
 import Media from '../ui/Media.astro';
 import ArrowButton from '../ui/ArrowButton.astro';
@@ -23,7 +24,6 @@ const { title, tags, thumbnail, category } = project.data;
   data-category={category}
   data-open-project={project.id}
   aria-haspopup="dialog"
-  aria-label={`View project: ${title}`}
 >
   <span class="work-card__tile" data-reveal>
     <span class="work-card__image">

@@ -2,8 +2,8 @@ brand:
   accent: '#FF280F'
 text:
   primary: '#162026'
-  secondary: '#6B767D'
-  tertiary: '#9AA0A5'
+  secondary: '#5F6A71'
+  tertiary: '#656E74'
   inverse: '#FFFFFF'
 background:
   primary: '#FCFDFF'

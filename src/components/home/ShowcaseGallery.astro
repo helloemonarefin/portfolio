@@ -295,17 +295,19 @@ const moreSlides = fill(more, 12);
   @media (min-width: 1024px) {
     .showcase__pagination { padding-top: 4px; } /* + row gap 14 = 18 */
   }
+  /* Dots: 8px, 20px apart centre to centre (12px gap); the selected one stretches to a 20px pill
+     (Emon, 2026-11-10). */
   .showcase__dots {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
     height: 28px;
     padding: 0 14px;
     border-radius: 999px;
     background: var(--bg-tertiary);
   }
   @media (min-width: 1024px) {
-    .showcase__dots { gap: 10px; height: 32px; padding: 0 16px; }
+    .showcase__dots { height: 32px; padding: 0 16px; }
   }
   .showcase__dot {
     position: relative;
@@ -314,11 +316,12 @@ const moreSlides = fill(more, 12);
     border-radius: 999px;
     background: var(--text-tertiary);
     opacity: 0.6;
-    transition: background-color 200ms ease, opacity 200ms ease;
+    transition: width 300ms cubic-bezier(0.22, 1, 0.36, 1), background-color 200ms ease, opacity 200ms ease;
   }
-  /* Bigger invisible hit area around each 8px dot. */
-  .showcase__dot::after { content: ""; position: absolute; inset: -8px -5px; }
+  /* Bigger invisible hit area around each dot (fills the gaps, no overlap). */
+  .showcase__dot::after { content: ""; position: absolute; inset: -8px -6px; }
   .showcase__dot[aria-current='true'] {
+    width: 20px;
     background: var(--text-primary);
     opacity: 1;
   }

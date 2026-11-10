@@ -17,8 +17,8 @@ If they disagree or something isn't covered: check Figma, then ask Emon. Never i
 
 ## Status
 - Stack: Astro 7.4.7, TypeScript strict, Node 26, plain CSS.
-- Current phase: **7 — Motion + Emon's motion feedback (done, awaiting OK)**. Next: Phase 8 — QA.
-- Temporary `/styleguide` page exists (noindex) — remove or hide in Phase 8.
+- Current phase: **8 — QA (done, awaiting OK)**. Next: Phase 9 — Deploy (only with Emon's explicit go-ahead).
+- `/styleguide` kept as a private reference page (noindex, not linked) — Emon, 2026-11-10.
 
 ## Decisions log
 - 2026-11-08 — DESIGN_SYSTEM.md and BUILD_PROMPT.md reconciled by Emon; no open conflicts.
@@ -61,6 +61,7 @@ If they disagree or something isn't covered: check Figma, then ask Emon. Never i
 - 2026-11-10 — Mobile menu: links 18px (h5), "Book a call" (same as desktop nav) right under the links, social links row at the bottom.
 - 2026-11-10 — Mobile menu per Figma "Mobile Nav Dropdown" (251:2232): 16px medium links, bordered social boxes (2×2 under 390px), copyright line. QA: favicon.ico slimmed to 16/32/48 (422→15 KB); fade-ins start at opacity 0.001 so LCP is recorded; autoplay videos lazy-load + pause offscreen (src/scripts/videos.ts, `data-video-group`); CSS inlined; Cal box grows with the calendar.
 - 2026-11-10 — Mobile menu animation (Motion → Mobile menu, src/content/motion/menu.yaml): panel unrolls 0.6s, items staggered 12px. Settings → AI summary buttons (name / icon in src/assets/brand/ai / url) drive the footer; footer "Connect" → "Social" with the menu's ↗ icon.
+- 2026-11-10 — QA decisions (Emon): --text-secondary #6B767D → #5F6A71, --text-tertiary #9AA0A5 → #656E74 (Emon OK'd #697278; nudged one step so "03" counts pass 4.5:1 on the grey nav). Showcase dots 12px apart (20 centre-to-centre), active = 20px pill — Lighthouse target-size still flags them (needs 24px spacing), accepted trade-off. Work header stacks filters under the title up to 1279px. No video posters; Emon will compress videos to <1 MB. Work cards: no aria-label (name = visible title + tags). Lighthouse after QA: Perf/BP/SEO 100 everywhere, A11y 100 About, 96 Home (dots only).
 - Still open: pricing badge pill radius (asked); Lens photo count (Emon to decide); sticky nav (ask in Phase 6); `sharp` install (ask in Phase 4).
 
 ## Dev commands
