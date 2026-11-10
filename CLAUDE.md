@@ -59,6 +59,7 @@ If they disagree or something isn't covered: check Figma, then ask Emon. Never i
 - 2026-11-10 — Modal gallery: thumbnails use the main image's ratio (664/457); strip loops and the selected thumbnail always sits at the left end.
 - 2026-11-10 — `liveSite.newTab` checkbox (default on): live-site button opens in a new tab or the same tab. Missing value = new tab (dev keeps stale cached entries after a schema change).
 - 2026-11-10 — Mobile menu: links 18px (h5), "Book a call" (same as desktop nav) right under the links, social links row at the bottom.
+- 2026-11-10 — Mobile menu per Figma "Mobile Nav Dropdown" (251:2232): 16px medium links, bordered social boxes (2×2 under 390px), copyright line. QA: favicon.ico slimmed to 16/32/48 (422→15 KB); fade-ins start at opacity 0.001 so LCP is recorded; autoplay videos lazy-load + pause offscreen (src/scripts/videos.ts, `data-video-group`); CSS inlined; Cal box grows with the calendar.
 - Still open: pricing badge pill radius (asked); Lens photo count (Emon to decide); sticky nav (ask in Phase 6); `sharp` install (ask in Phase 4).
 
 ## Dev commands
