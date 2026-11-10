@@ -83,12 +83,17 @@ const stats = [
               ))}
             </div>
           </div>
-          <button class="modal__strip-arrow modal__strip-arrow--prev" type="button" aria-label="Previous image" data-gprev>
-            <Icon name="arrow-left" />
-          </button>
-          <button class="modal__strip-arrow modal__strip-arrow--next" type="button" aria-label="Next image" data-gnext>
-            <Icon name="arrow-right" />
-          </button>
+          {/* Arrows only when the strip is a slider (more than 5 items) — Figma 2026-11-10 shows none for 5. */}
+          {items.length > 5 && (
+            <button class="modal__strip-arrow modal__strip-arrow--prev" type="button" aria-label="Previous image" data-gprev>
+              <Icon name="arrow-left" />
+            </button>
+          )}
+          {items.length > 5 && (
+            <button class="modal__strip-arrow modal__strip-arrow--next" type="button" aria-label="Next image" data-gnext>
+              <Icon name="arrow-right" />
+            </button>
+          )}
         </div>
       )
     }
@@ -533,8 +538,17 @@ const stats = [
   @media (min-width: 1024px) {
     .modal {
       inset: 0;
-      /* 80% of the screen, at least 900px, at most 1600px — never wider than the screen minus 64px. */
-      width: min(max(900px, 80vw), 1600px, 100vw - 64px);
+      /* Target width: ~87% of the screen (Figma: 1251 at 1440), at least 900px, at most 1600px,
+         never wider than the screen minus 64px. */
+      --modal-w: min(max(900px, 86.875vw), 1600px, 100vw - 64px);
+      /* Details column: 30% of the inner width, 372–460px (Figma: 372 at 1440). */
+      --side-w: clamp(372px, (var(--modal-w) - 48px) * 0.3, 460px);
+      /* Gallery gets the rest — but never so wide that it would be taller than the screen:
+         main image (W / ratio) + 8 + one thumbnail row ((W − 32) / 5 / ratio) must fit in 100dvh − 112.
+         Solving for W gives the cap (1.2108 = (664/457) / 1.2). */
+      --gallery-w: min(var(--modal-w) - 80px - var(--side-w), (100dvh - 120px) * 1.2108 + 5px);
+      /* On short screens the modal shrinks with the gallery (no empty gap between the two columns). */
+      width: calc(var(--gallery-w) + var(--side-w) + 80px);
       height: fit-content; /* centred by margin:auto instead of stretching */
       max-height: calc(100dvh - 64px);
       margin: auto;
@@ -543,8 +557,8 @@ const stats = [
     }
     .modal[open],
     .modal--no-bar[open] {
-      /* Gallery takes the extra width; the details column stays readable (Figma: 664 | 376 at 1120). */
-      grid-template-columns: minmax(0, 1fr) clamp(376px, 30%, 460px);
+      /* Gallery takes the extra width; the details column stays readable (Figma: 799 | 372 at 1440). */
+      grid-template-columns: var(--gallery-w) var(--side-w);
       grid-template-rows: auto minmax(0, 1fr);
       grid-template-areas:
         "gallery top"
@@ -555,9 +569,7 @@ const stats = [
     }
     .modal__grabber,
     .modal__bar { display: none; }
-    /* Never taller than the screen: main image (W / ratio) + 8 + one thumbnail row ((W − 32) / 5 / ratio)
-       must fit in 100dvh − 112. Solving for the width W gives this cap (1.2108 = (664/457) / 1.2). */
-    .modal__gallery { margin: 0; align-self: start; width: 100%; max-width: calc((100dvh - 120px) * 1.2108 + 5px); }
+    .modal__gallery { margin: 0; align-self: start; width: 100%; }
     .modal__strip-arrow { width: 36px; height: 36px; }
     .modal__strip-arrow--prev { left: 12px; }
     .modal__strip-arrow--next { right: 12px; }
