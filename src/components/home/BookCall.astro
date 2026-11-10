@@ -157,14 +157,14 @@ const meta = [
 
   .book__embed {
     position: relative;
-    height: 620px;
+    min-height: 620px; /* grows with the calendar (Cal.com sizes its own frame), so nothing is cut off */
     border-radius: 0; /* sharp edges (2026-11-09) */
     background: var(--bg-secondary);
     border: var(--border-width, 1px) dashed var(--border-secondary);
     overflow: hidden;
   }
   @media (min-width: 1024px) {
-    .book__embed { height: 680px; }
+    .book__embed { min-height: 680px; }
   }
   .book__placeholder {
     position: absolute;
@@ -178,11 +178,7 @@ const meta = [
     color: var(--text-tertiary);
   }
   .book__placeholder p { color: var(--text-primary); }
-  .book__cal {
-    position: relative;
-    height: 100%;
-    overflow: auto;
-  }
+  .book__cal { position: relative; }
   .book__embed.is-loaded { border-style: solid; border-color: transparent; }
   .book__embed.is-loaded .book__placeholder { opacity: 0; pointer-events: none; }
 

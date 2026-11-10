@@ -202,7 +202,7 @@ const { worksCount } = Astro.props;
     to { transform: translateY(0); }
   }
   @keyframes hero-text {
-    from { opacity: 0; transform: translateY(20px); }
+    from { opacity: 0.001; transform: translateY(20px); } /* 0.001, not 0: browsers ignore fully invisible text for LCP */
     to { opacity: 1; transform: translateY(0); }
   }
 

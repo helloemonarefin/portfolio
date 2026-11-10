@@ -38,7 +38,7 @@ const moreSlides = fill(more, 12);
       data-showcase
       data-unique={featured.length}
     >
-      <div class="showcase__row showcase__row--featured" data-reveal-group>
+      <div class="showcase__row showcase__row--featured" data-reveal-group data-video-group>
         <div class="showcase__viewport" data-featured>
           <div class="showcase__track">
             {featuredSlides.map((p, i) => (
@@ -63,7 +63,7 @@ const moreSlides = fill(more, 12);
       </div>
 
       {moreSlides.length > 0 && (
-        <div class="showcase__row showcase__row--more" data-reveal-group>
+        <div class="showcase__row showcase__row--more" data-reveal-group data-video-group>
           <div class="showcase__viewport" data-more>
             <div class="showcase__track">
               {moreSlides.map((p) => (

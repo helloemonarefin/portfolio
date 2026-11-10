@@ -205,7 +205,7 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
   }
   .nav__brand { display: inline-flex; }
   @keyframes nav-in {
-    from { opacity: 0; translate: 0 calc(var(--m-nav-distance, 150px) * -1); }
+    from { opacity: 0.001; translate: 0 calc(var(--m-nav-distance, 150px) * -1); }
     to { opacity: 1; translate: 0 0; }
   }
   .nav__row {

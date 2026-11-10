@@ -65,6 +65,9 @@ function cleanStaleContentAssets() {
 export default defineConfig({
   site: 'https://emonarefin.com',
 
+  // Put the (small) CSS inside each page instead of separate files: no extra requests before the first paint.
+  build: { inlineStylesheets: 'always' },
+
   // Inter, self-hosted: downloaded at build time and served from this site.
   // https://docs.astro.build/en/guides/fonts/
   fonts: [

@@ -40,6 +40,8 @@ if (media.discriminant === 'video' && media.value.poster) {
   const largest = Math.max(...widths);
   posterSrc = (await getImage({ src: media.value.poster, width: largest, format: 'webp' })).src;
 }
+// Autoplaying videos that aren't marked eager only download when they come near the screen (src/scripts/videos.ts).
+const lazyVideo = media.discriminant === 'video' && autoplay && loading !== 'eager';
 const ext = media.discriminant === 'video' ? media.value.file.split('.').pop()?.toLowerCase() : '';
 const type = ext === 'webm' ? 'video/webm' : ext === 'mov' ? 'video/quicktime' : 'video/mp4';
 ---
@@ -73,14 +75,15 @@ const type = ext === 'webm' ? 'video/webm' : ext === 'mov' ? 'video/quicktime' :
       muted
       loop
       playsinline
-      autoplay={autoplay}
+      autoplay={autoplay && loading === 'eager'}
       data-autoplay={autoplay ? '' : undefined}
-      preload={loading === 'eager' ? 'auto' : 'metadata'}
+      data-lazy-video={lazyVideo ? '' : undefined}
+      preload={loading === 'eager' ? 'auto' : lazyVideo ? 'none' : 'metadata'}
       aria-label={alt || undefined}
       aria-hidden={alt ? undefined : 'true'}
       disablepictureinpicture
     >
-      <source src={media.value.file} type={type} />
+      {lazyVideo ? <source data-src={media.value.file} type={type} /> : <source src={media.value.file} type={type} />}
     </video>
   )
 }

@@ -54,16 +54,10 @@ const designVars = await designCss();
     <script>
       import { initScroll } from '../scripts/scroll';
       import { initReveal } from '../scripts/reveal';
+      import { initVideos } from '../scripts/videos';
       initScroll();
       initReveal();
-
-      // Reduced motion: background videos don't autoplay (DESIGN_SYSTEM §0 rule 5).
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        document.querySelectorAll<HTMLVideoElement>('video[data-autoplay]').forEach((v) => {
-          v.removeAttribute('autoplay');
-          v.pause();
-        });
-      }
+      initVideos();
     </script>
   </body>
 </html>
