@@ -1,6 +1,6 @@
 desktop:
-  paddingY: 32
-  paddingX: 24
+  paddingY: 0
+  paddingX: 0
 mobile:
-  paddingY: 16
-  paddingX: 12
+  paddingY: 0
+  paddingX: 0
