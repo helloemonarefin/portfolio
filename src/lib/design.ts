@@ -1,5 +1,5 @@
 /**
- * Design settings (Keystatic → Design: Colours, Borders, Hero layout) → CSS custom properties.
+ * Design settings (Keystatic → Design: Colours, Borders, Hero layout, Work cards) → CSS custom properties.
  * Output uses `:root:root` so it always wins over the defaults in src/styles/tokens.css.
  * Values are validated here as well (only real colours / numbers reach the CSS).
  */
@@ -68,6 +68,16 @@ export async function designCss(): Promise<string> {
     if (size) root.push(`--hero-portrait-size-${suffix}: ${size};`);
     if (top) root.push(`--hero-gap-below-nav-${suffix}: ${top};`);
     if (bottom) root.push(`--hero-space-below-ctas-${suffix}: ${bottom};`);
+  }
+
+  // Work card thumbnail padding (read by WorkCard.astro). Both 0 → hover zooms the image 5% instead.
+  for (const [key, suffix] of [['mobile', 'm'], ['desktop', 'd']] as const) {
+    const g = ((files.cards ?? {})[key] ?? {}) as Record<string, unknown>;
+    const y = px(g.paddingY, 0, 200);
+    const x = px(g.paddingX, 0, 200);
+    if (y) root.push(`--card-pad-y-${suffix}: ${y};`);
+    if (x) root.push(`--card-pad-x-${suffix}: ${x};`);
+    if (y === '0px' && x === '0px') root.push(`--card-zoom-${suffix}: 1.05;`);
   }
 
   return root.length ? `:root:root{${root.join('')}}` : '';

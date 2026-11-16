@@ -1,0 +1,6 @@
+desktop:
+  paddingY: 32
+  paddingX: 24
+mobile:
+  paddingY: 16
+  paddingX: 12

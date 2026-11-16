@@ -221,7 +221,7 @@ Props: `variant` (`primary` | `secondary` | `secondary-chip`), `size` (`md` 40px
   - Tile: `--bg-secondary`, padding **32 (top/bottom) × 24 (left/right)** desktop, **16 × 12** mobile, aspect ratio 676:485; the image fills the inner area (`object-fit: cover; object-position: top`).
   - Title row, 16px below the tile: title (`body`, 500, `--text-primary`) left; tags right (`caption`, `--text-secondary`, separated by 1px × 14px `--border-secondary` dividers, gap 10). Mobile: tags go under the title, gap 8.
 - **Hover (desktop pointer, also on `:focus-visible`), all 350ms ease-out:**
-  1. The image grows to fill the whole tile (inset animates 32/24 → 0); this is the subtle zoom.
+  1. The image grows to fill the whole tile (inset animates 32/24 → 0; padding editable in Keystatic → Design → Work cards; at padding 0 the image scales to 1.05 instead); this is the subtle zoom.
   2. A 1px inside outline `--border-subtle` appears on the tile.
   3. Overlay over the tile: `--surface-overlay` + `backdrop-filter: blur(18px)`, opacity 0 → 1.
   4. Centred row "View Project" (20px, weight 400, `--text-primary`) + Arrow Button, gap 16. It **rises 16px** (translateY 16px → 0) while fading in.

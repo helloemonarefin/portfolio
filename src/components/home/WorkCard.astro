@@ -71,16 +71,23 @@ const { title, tags, thumbnail, category } = project.data;
     aspect-ratio: 676 / 485;
     background: var(--bg-secondary);
     overflow: hidden;
-    --inset-y: 16px;
-    --inset-x: 12px;
+    /* Space between the tile edge and the thumbnail before hover: Keystatic → Design → Work cards. */
+    --inset-y: var(--card-pad-y-m, 16px);
+    --inset-x: var(--card-pad-x-m, 12px);
+    --zoom: var(--card-zoom-m, 1);
   }
   @media (min-width: 1024px) {
-    .work-card__tile { --inset-y: 32px; --inset-x: 24px; }
+    .work-card__tile {
+      --inset-y: var(--card-pad-y-d, 32px);
+      --inset-x: var(--card-pad-x-d, 24px);
+      --zoom: var(--card-zoom-d, 1);
+    }
   }
   .work-card__image {
     position: absolute;
     inset: var(--inset-y) var(--inset-x);
-    transition: inset var(--m-card-time, 350ms) var(--m-card-ease, ease-out);
+    transition: inset var(--m-card-time, 350ms) var(--m-card-ease, ease-out),
+      scale var(--m-card-time, 350ms) var(--m-card-ease, ease-out);
   }
 
   /* 1px inside outline (shown on hover) */
@@ -124,7 +131,11 @@ const { title, tags, thumbnail, category } = project.data;
   @media (hover: hover) and (pointer: fine) {
     .work-card__overlay { display: grid; }
     .work-card:hover .work-card__image,
-    .work-card:focus-visible .work-card__image { inset: 0; }
+    .work-card:focus-visible .work-card__image {
+      inset: 0;
+      /* With padding 0 there is nothing to grow into, so the thumbnail scales up instead (same feel). */
+      scale: var(--zoom);
+    }
     .work-card:hover .work-card__tile::after,
     .work-card:focus-visible .work-card__tile::after,
     .work-card:hover .work-card__overlay,

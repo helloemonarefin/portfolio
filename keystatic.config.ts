@@ -132,7 +132,7 @@ export default config({
     navigation: {
       Content: ['projects', 'showcase', 'photos'],
       Settings: ['settings', 'pricing'],
-      Design: ['designColors', 'designBorders', 'designHero'],
+      Design: ['designColors', 'designBorders', 'designHero', 'designCards'],
       Motion: ['motionHero', 'motionParallax', 'motionNav', 'motionReveal', 'motionButtons', 'motionCards', 'motionTextRoll', 'motionModal', 'motionMenu'],
     },
   },
@@ -374,6 +374,28 @@ export default config({
             spaceBelowButtons: fields.number({ label: 'Gap: buttons → hero bottom (px)', defaultValue: 48, step: 1 }),
           },
           { label: 'Phone & tablet', layout: [4, 4, 4] },
+        ),
+      },
+    }),
+
+    designCards: singleton({
+      label: 'Work cards',
+      path: 'src/content/design/cards',
+      format: { data: 'yaml' },
+      schema: {
+        desktop: fields.object(
+          {
+            paddingY: fields.number({ label: 'Padding top & bottom (px)', description: 'Space between the card edge and the thumbnail before hover. 0 = edge to edge.', defaultValue: 32, step: 1 }),
+            paddingX: fields.number({ label: 'Padding left & right (px)', defaultValue: 24, step: 1 }),
+          },
+          { label: 'Desktop (1024px and wider)', layout: [6, 6] },
+        ),
+        mobile: fields.object(
+          {
+            paddingY: fields.number({ label: 'Padding top & bottom (px)', defaultValue: 16, step: 1 }),
+            paddingX: fields.number({ label: 'Padding left & right (px)', defaultValue: 12, step: 1 }),
+          },
+          { label: 'Phone & tablet', layout: [6, 6] },
         ),
       },
     }),

@@ -190,7 +190,7 @@ Each maps to a Figma component of the same name (page "Portfolio Website", right
 - ~~Hover (of the button itself):~~ fill → `--button-primary-bg`; arrow A moves to `translate(18px, -18px)` (exits top-right) while arrow B moves to `translate(0,0)`, both in `--button-primary-text`. 350ms `cubic-bezier(.22,1,.36,1)`.
 
 ### 5.2 Nav
-- Desktop (≥1024): height 85, padding `24 48`, transparent background, `position: absolute` over the hero, `z-index: 4`. Brand (logo mark 32 + "Emon Arefin" `h5`) · links: Home, Works <count>, About, Pricing, Contact (`label`, `--text-secondary`, hover `--text-primary` 150ms; the count in `--text-tertiary`) · Primary sm "Hire Me".
+- Desktop (≥1024): height 85, padding `24 48`, transparent background, `position: absolute` over the hero, `z-index: 4`. Brand (logo mark 32 + "Emon Arefin" `h5`) · links: Home, Works <count>, About, Pricing, Contact (**16 / 24, weight 400** — Emon 2026-11-16, larger than `label`; link box 32 tall, padding 4 10; `--text-secondary`, hover `--text-primary` 150ms; the count in `--text-tertiary`) · Primary sm "Hire Me".
 - Mobile: height 64, padding `14 20`. Brand + 36×36 menu button (radius 6, `--bg-secondary`, two-line icon).
 - **Mobile menu (not designed in Figma — build, then confirm with Emon):** a white panel under the nav with the links stacked (16px medium, gap 20, padding 20), then the **same "Book a call" button as the desktop nav** (primary, full width, 28px under the links); at the bottom four equal bordered social boxes (LinkedIn, X / Twitter, Dribbble, Behance from Settings → Socials; 46px tall, `label` `--text-secondary` + 16px ↗ icon, 1px `--border-primary`, hover `--bg-secondary`; 2 × 2 below 390px) and "© 2026 Emon Arefin. All rights reserved." (`caption` `--text-secondary`) — Figma "Mobile Nav Dropdown" 251:2232 (Emon, 2026-11-10); fades in and moves 8px down over 250ms; the icon morphs to ×. Closes on link tap, ×, or Esc; focus trapped and body scroll locked while open.
 - **Sticky (decided 2026-11-08):** the nav stays pinned to the top while scrolling. At the very top of Home it is transparent over the hero; once the page scrolls it gets `--surface-overlay` + 12px backdrop blur (1px `--border-primary` bottom border throughout).
@@ -228,7 +228,7 @@ Each maps to a Figma component of the same name (page "Portfolio Website", right
 - Thumbnail tile: `--bg-secondary`, aspect ratio **676:485**, **padding 32 (top/bottom) × 24 (left/right)** desktop, **16 × 12** mobile; image fills the inner area (`object-fit: cover; object-position: top`).
 - Below (gap 16): **Title row** — title (`body`, 500, `--text-primary`) left; tags right, e.g. `Portfolio | AI | Framer` (`caption`, `--text-secondary`, separated by 1×14px `--border-secondary` dividers, gap 10). Mobile: tags go under the title, gap 8.
 - **Hover (desktop pointer) and `:focus-visible`, all 350ms ease-out:**
-  1. The image grows to fill the whole tile (inset 32/24 → 0) — the subtle zoom.
+  1. The image grows to fill the whole tile (inset 32/24 → 0, phone 16/12 → 0) — the subtle zoom. The padding is set in Keystatic → Design → Work cards (desktop / phone, top-bottom + left-right); when both are 0 the image scales to 1.05 instead (same timing), so the zoom is always there.
   2. A 1px inside outline `--border-subtle` appears on the tile.
   3. Overlay `--surface-overlay` + `backdrop-filter: blur(18px)` fades in (opacity 0 → 1).
   4. Centred row "View Project" (20px, 400, `--text-primary`) + Arrow Button (§5.1b), gap 16, **rises 16px** (translateY 16px → 0) while fading in.
@@ -411,7 +411,7 @@ Separate from projects: short glimpses of work (a hero, a card, an animation).
 `title` (slug, internal name), `row` (top · bottom), `media` (Image incl. **GIF** — served as-is so it animates — or Video), `order`, `draft` (hidden). Top row = 940/330 wide, height follows the media; bottom row = 355×200 / 220×140, cropped from the top.
 
 ### Design & Motion settings (singletons, added 2026-11-09)
-Keystatic sidebar → **Design**: *Colours* (every colour token + Brand/accent → `--button-primary-bg-hover` & `--text-accent`), *Borders* (`--border-width` hairlines/outlines, `--border-width-thin` secondary button), *Hero layout* (portrait size, gap nav → portrait, gap buttons → hero bottom; desktop and phone). → `src/lib/design.ts` → `:root:root{…}` overrides.
+Keystatic sidebar → **Design**: *Colours* (every colour token + Brand/accent → `--button-primary-bg-hover` & `--text-accent`), *Borders* (`--border-width` hairlines/outlines, `--border-width-thin` secondary button), *Hero layout* (portrait size, gap nav → portrait, gap buttons → hero bottom; desktop and phone), *Work cards* (thumbnail padding before hover → `--card-pad-{y,x}-{d,m}`, `--card-zoom-{d,m}`). → `src/lib/design.ts` → `:root:root{…}` overrides.
 Sidebar → **Motion**: one page per component (Hero intro, Nav intro, Scroll reveal, Buttons, Work card hover, Text link roll, Project modal). Files in `src/content/motion/*.yaml`. Keystatic has no collapsible sections, so the sidebar acts as the index.
 
 ### `photos` (collection) — Through My Lens

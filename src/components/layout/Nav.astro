@@ -380,8 +380,12 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
       align-items: center;
       gap: 4px;
       height: 32px;
-      padding: 5px 10px;
+      padding: 4px 10px;
       border-radius: 4px;
+      /* 16px / 24px, regular (Emon, 2026-11-16) — bigger than the shared label style. */
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: 400;
       color: var(--text-secondary);
       text-decoration: none;
       white-space: nowrap;
